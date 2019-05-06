@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/element_upper_bar"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="32dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/campaigns"
+                    android:textAlignment="center"
+                    android:drawableTop="@drawable/ic_campaign" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/characters"
+                    android:textAlignment="center"
+                    android:drawableTop="@drawable/ic_character"
+                    android:onClick="goToCharactersScreen" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/combats"
+                    android:textAlignment="center"
+                    android:drawableTop="@drawable/ic_combat" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <include layout="@layout/element_button_home"/>
+
+</android.support.constraint.ConstraintLayout>
