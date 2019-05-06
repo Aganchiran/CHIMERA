@@ -1,15 +1,15 @@
-package com.example.chimera.chimerafront.controllers;
+package com.example.chimera.chimerafront.activities;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
 import com.example.chimera.R;
 
-public class MainMenu extends AppCompatActivity {
+public class CommingSoonActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainmenu);
+        setContentView(R.layout.activity_comming_soon);
     }
-
 }
