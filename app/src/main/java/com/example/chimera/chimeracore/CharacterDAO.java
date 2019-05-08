@@ -24,6 +24,9 @@ public interface CharacterDAO {
     @Query("DELETE FROM character_table")
     void deleteAllCharacters();
 
+    @Query("SELECT * FROM character_table WHERE id = :id")
+    LiveData<CharacterModel> getCharacterById(int id);
+
     @Query("SELECT * FROM character_table ORDER BY displayPosition ASC")
     LiveData<List<CharacterModel>> getAllCharacters();
 

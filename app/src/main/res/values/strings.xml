@@ -14,4 +14,6 @@
     <string name="name">Name</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_characters">Delete characters</string>
+    <string name="edit_character">Edit character</string>
 </resources>

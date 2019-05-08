@@ -28,4 +28,11 @@
             android:maxLines="1"
             android:ellipsize="end"/>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check"
+        android:layout_gravity="top|end"
+        android:visibility="invisible"/>
 </android.support.v7.widget.CardView>

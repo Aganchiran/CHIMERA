@@ -24,7 +24,7 @@
             android:name=".chimerafront.activities.CharacterListActivity"
             android:launchMode="singleTop" />
         <activity android:name=".chimerafront.activities.CharacterDetailsActivity" />
-        <activity android:name=".chimerafront.activities.AddCharacterActivity" />
+        <activity android:name=".chimerafront.activities.AddEditCharacterActivity" />
     </application>
 
 </manifest>

@@ -1,7 +1,6 @@
 package com.example.chimera.chimerafront.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +11,7 @@ import com.example.chimera.R;
 import com.example.chimera.chimeracore.CharacterModel;
 import com.example.chimera.viewmodel.ChimeraViewModel;
 
-public class AddCharacterActivity extends AppCompatActivity {
+public class AddEditCharacterActivity extends AppCompatActivity {
 
     private ChimeraViewModel chimeraViewModel;
     private EditText nameEditText;
@@ -21,7 +20,7 @@ public class AddCharacterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_add_update_character);
+        setContentView(R.layout.activity_add_edit_character);
         chimeraViewModel = ViewModelProviders.of(this).get(ChimeraViewModel.class);
 
         nameEditText = findViewById(R.id.character_edit_name);

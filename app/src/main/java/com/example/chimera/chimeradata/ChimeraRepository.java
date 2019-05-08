@@ -40,6 +40,10 @@ public class ChimeraRepository {
 
     }
 
+    public LiveData<CharacterModel> getCharacterById(int id){
+        return characterDAO.getCharacterById(id);
+    }
+
     public LiveData<List<CharacterModel>> getAllCharacters(){
         return allCharacters;
     }
@@ -101,6 +105,20 @@ public class ChimeraRepository {
         protected Void doInBackground(Void... voids) {
             characterDAO.deleteAllCharacters();
             return null;
+        }
+    }
+
+    private static class GetCharacterAsyncTask extends AsyncTask<CharacterModel, Void, LiveData<CharacterModel>> {
+
+        private CharacterDAO characterDAO;
+
+        private GetCharacterAsyncTask(CharacterDAO characterDAO){
+            this.characterDAO = characterDAO;
+        }
+
+        @Override
+        protected LiveData<CharacterModel> doInBackground(CharacterModel... characterModels) {
+            return characterDAO.getCharacterById(characterModels[0].getId());
         }
     }
 

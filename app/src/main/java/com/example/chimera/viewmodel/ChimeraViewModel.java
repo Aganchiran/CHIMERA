@@ -37,6 +37,10 @@ public class ChimeraViewModel extends AndroidViewModel {
         repository.deleteAllCharacters();
     }
 
+    public LiveData<CharacterModel> getCharacterById(int id){
+        return repository.getCharacterById(id);
+    }
+
     public LiveData<List<CharacterModel>> getAllCharacters() {
         return allCharacters;
     }

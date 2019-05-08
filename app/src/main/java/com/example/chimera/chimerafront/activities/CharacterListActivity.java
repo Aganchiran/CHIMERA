@@ -11,7 +11,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.DragEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.chimera.R;
@@ -23,9 +25,7 @@ import com.example.chimera.viewmodel.ChimeraViewModel;
 import java.util.Collections;
 import java.util.List;
 
-public class CharacterListActivity extends ActivityWithUpperBar implements View.OnDragListener {
-
-    public static final int ADD_CHARACTER_REQUEST = 1;
+public class CharacterListActivity extends ActivityWithUpperBar {
 
     private ChimeraViewModel chimeraViewModel;
     private CharacterAdapter adapter;
@@ -40,25 +40,12 @@ public class CharacterListActivity extends ActivityWithUpperBar implements View.
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CharacterListActivity.this, AddCharacterActivity.class);
-                startActivityForResult(intent, ADD_CHARACTER_REQUEST);
+                Intent intent = new Intent(CharacterListActivity.this, AddEditCharacterActivity.class);
+                startActivity(intent);
             }
         });
 
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ADD_CHARACTER_REQUEST && resultCode == RESULT_OK) {
-            final String name = data.getStringExtra(AddCharacterActivity.EXTRA_NAME);
-            final String description = data.getStringExtra(AddCharacterActivity.EXTRA_DESCRIPTION);
-
-            CharacterModel characterModel = new CharacterModel(name, description);
-            chimeraViewModel.insert(characterModel);
-        }
     }
 
     private void setupGrid() {
@@ -69,18 +56,21 @@ public class CharacterListActivity extends ActivityWithUpperBar implements View.
         int columnNumber = screenWidth / characterWidth;
 
         final RecyclerView recyclerView = findViewById(R.id.character_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(CharacterListActivity.this, columnNumber));
+        recyclerView.setLayoutManager(
+                new GridLayoutManager(CharacterListActivity.this, columnNumber));
         recyclerView.setHasFixedSize(true);
 
         adapter = new CharacterAdapter();
         adapter.setOnItemClickListener(new CharacterAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CharacterModel characterModel) {
-                Intent intent = new Intent(CharacterListActivity.this, CharacterDetailsActivity.class);
-                intent.putExtra("CHARACTER", characterModel);
-                startActivity(intent);
+                    Intent intent = new Intent(CharacterListActivity.this,
+                            CharacterDetailsActivity.class);
+                    intent.putExtra("CHARACTER", characterModel);
+                    startActivity(intent);
             }
         });
+
         recyclerView.setAdapter(adapter);
 
         chimeraViewModel.getAllCharacters().observe(this, new Observer<List<CharacterModel>>() {
@@ -117,21 +107,49 @@ public class CharacterListActivity extends ActivityWithUpperBar implements View.
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            }
 
         }).attachToRecyclerView(recyclerView);
-    }
-
-    @Override
-    public boolean onDrag(View v, DragEvent event) {
-
-        return false;
     }
 
     @Override
     protected void onStop() {
         new ReorderCharacterAsyncTask(adapter, chimeraViewModel).execute();
         super.onStop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.character_list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_characters:
+                if (!adapter.isDeleteModeEnabled()){
+                    adapter.enableDeleteMode();
+                    findViewById(R.id.character_deletion_interface).setVisibility(View.VISIBLE);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void cancelCharacterDeletion(View view){
+        adapter.disableDeleteMode();
+        findViewById(R.id.character_deletion_interface).setVisibility(View.INVISIBLE);
+    }
+
+    public void deleteSelectedCharacters(View view){
+        for (CharacterModel characterModel : adapter.getCheckedCharacterModels()){
+            chimeraViewModel.delete(characterModel);
+        }
+        cancelCharacterDeletion(view);
     }
 
     private static class ReorderCharacterAsyncTask extends AsyncTask<Void, Void, Void> {
