@@ -10,8 +10,17 @@
     <string name="characters">Characters</string>
     <string name="combats">Combats</string>
     <string name="loading_text">Loading</string>
-    <string name="settings">Settings</string>
+    <string name="action_settings">Settings</string>
     <string name="name">Name</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_characters">Delete characters</string>
+    <string name="edit_character">Edit character</string>
+    <string name="title_activity_character_management">CharacterManagementActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="tab_details">Details</string>
+    <string name="tab_consumables">Consumables</string>
+    <string name="minimum">Minimum</string>
+    <string name="maximum">Maximum</string>
+    <string name="delete_consumables">Delete consumables</string>
 </resources>

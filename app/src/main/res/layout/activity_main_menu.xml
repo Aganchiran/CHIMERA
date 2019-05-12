@@ -22,7 +22,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/campaigns"
                     android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_campaign" />
+                    android:drawableTop="@drawable/ic_campaign"
+                    android:onClick="goToCommingSoonScreen"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -37,7 +38,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/combats"
                     android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_combat" />
+                    android:drawableTop="@drawable/ic_combat"
+                    android:onClick="goToCommingSoonScreen"/>
         </LinearLayout>
     </LinearLayout>
 

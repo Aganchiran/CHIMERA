@@ -9,6 +9,6 @@
     <color name="secondaryTextColor">#000000</color>
     <color name="lightTextColor">#6b6b6b</color>
 
-    <color name="backgroundLightColor">#6b6b6b</color>
+    <color name="backgroundLightColor">#404040</color>
     <color name="backgroundColor">#1a1a1a</color>
 </resources>
