@@ -16,7 +16,8 @@
 
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="10">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/character_recycler_view"
@@ -31,41 +32,44 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="16dp"
-                android:src="@drawable/characterlist_icon_add" />
+                android:src="@drawable/ic_add" />
 
         </android.support.design.widget.CoordinatorLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/character_deletion_interface"
+            android:layout_width="match_parent"
+            android:layout_weight="0"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:background="@color/backgroundColor"
+            android:gravity="center|end"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-    <LinearLayout
-        android:id="@+id/character_deletion_interface"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:background="@color/backgroundColor"
-        android:gravity="center"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+            <Button
+                android:id="@+id/cancel_character_creation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="#00000000"
+                android:onClick="cancelCharacterDeletion"
+                android:text="@string/cancel"
+                android:textColor="@color/contrastColor" />
 
-        <Button
-            android:id="@+id/cancel_character_creation_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00000000"
-            android:onClick="cancelCharacterDeletion"
-            android:text="@string/cancel"
-            android:textColor="@color/contrastColor" />
+            <Button
+                android:id="@+id/accept_character_creation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/contrastColor"
+                android:onClick="deleteSelectedCharacters"
+                android:text="@string/accept"
+                android:textColor="@color/backgroundColor" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/accept_character_creation_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/contrastColor"
-            android:onClick="deleteSelectedCharacters"
-            android:text="@string/accept"
-            android:textColor="@color/backgroundColor" />
     </LinearLayout>
 
     <include layout="@layout/element_button_home" />
