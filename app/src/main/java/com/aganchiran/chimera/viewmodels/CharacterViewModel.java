@@ -29,6 +29,10 @@ public class CharacterViewModel extends AndroidViewModel {
         characterRepository.update(characterModel);
     }
 
+    public void updateCharacters(List<CharacterModel> characterModelList){
+        characterRepository.updateCharacters(characterModelList);
+    }
+
     public void delete(CharacterModel characterModel){
         characterRepository.delete(characterModel);
     }

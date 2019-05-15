@@ -8,6 +8,7 @@ import com.aganchiran.chimera.chimeracore.CharacterDAO;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
 import com.aganchiran.chimera.chimeradata.ChimeraDB;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,6 +30,12 @@ public class CharacterRepository {
     public void update(CharacterModel characterModel){
         new UpdateCharacterAsyncTask(characterDAO).execute(characterModel);
 
+    }
+
+    public void updateCharacters(List<CharacterModel> characterModelList){
+        CharacterModel[] characterArray = new CharacterModel[characterModelList.size()];
+        characterArray = characterModelList.toArray(characterArray);
+        new UpdateCharacterListAsyncTask(characterDAO).execute(characterArray);
     }
 
     public void delete(CharacterModel characterModel){
@@ -75,6 +82,22 @@ public class CharacterRepository {
         @Override
         protected Void doInBackground(CharacterModel... characterModels) {
             characterDAO.update(characterModels[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateCharacterListAsyncTask extends AsyncTask<CharacterModel, Void, Void> {
+
+        private CharacterDAO characterDAO;
+
+        private UpdateCharacterListAsyncTask(CharacterDAO characterDAO){
+            this.characterDAO = characterDAO;
+        }
+
+
+        @Override
+        protected final Void doInBackground(CharacterModel... characterModels) {
+            characterDAO.updateCharacters(Arrays.asList(characterModels));
             return null;
         }
     }

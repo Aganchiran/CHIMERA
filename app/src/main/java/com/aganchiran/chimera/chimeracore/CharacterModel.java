@@ -54,4 +54,13 @@ public class CharacterModel implements Serializable {
     public void setDisplayPosition(int displayPosition) {
         this.displayPosition = displayPosition;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof CharacterModel
+                && ((CharacterModel) obj).getId() == this.getId()
+                && ((CharacterModel) obj).getName().equals(this.getName())
+                && ((CharacterModel) obj).getDescription().equals(this.getDescription())
+                && ((CharacterModel) obj).getDisplayPosition() == this.getDisplayPosition());
+    }
 }

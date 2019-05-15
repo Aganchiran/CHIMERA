@@ -27,7 +27,7 @@ import com.aganchiran.chimera.chimeracore.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
 import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
-import com.aganchiran.chimera.chimerafront.utils.ScreenSizeManager;
+import com.aganchiran.chimera.chimerafront.utils.SizeManager;
 import com.aganchiran.chimera.viewmodels.ConsumableViewModel;
 
 import java.util.Collections;
@@ -103,8 +103,8 @@ public class ConsumableManagerFragment extends Fragment {
 
         final View consumableCard = getLayoutInflater().inflate(R.layout.item_consumable, null);
         final View characterLayout = consumableCard.findViewById(R.id.consumable_item_layout);
-        int characterWidth = ScreenSizeManager.getViewWidth(characterLayout);
-        int screenWidth = ScreenSizeManager.getScreenWidth(Objects.requireNonNull(getContext()));
+        int characterWidth = SizeManager.getViewWidth(characterLayout);
+        int screenWidth = SizeManager.getScreenWidth(Objects.requireNonNull(getContext()));
         int columnNumber = screenWidth / characterWidth;
 
         recyclerView.setLayoutManager(
@@ -112,7 +112,7 @@ public class ConsumableManagerFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         adapter = new ConsumableAdapter();
-        adapter.setListener(new ConsumableAdapter.OnItemClickListener() {
+        adapter.setListener(new ConsumableAdapter.OnItemClickListener<ConsumableModel>() {
             @Override
             public void onItemClick(final ConsumableModel consumableModel) {
                 ModifyConsumableDialog dialog = new ModifyConsumableDialog();
@@ -132,34 +132,34 @@ public class ConsumableManagerFragment extends Fragment {
                 dialog.show(getFragmentManager(), "modify consumable");
             }
 
-            @Override
-            public void onEditClick(final ConsumableModel consumableModel) {
-                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
-                dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
-                    @Override
-                    public void saveConsumable(String name, long max, long min) {
-                        consumableModel.setName(name);
-                        consumableModel.setMaxValue(max);
-                        consumableModel.setMinValue(min);
-
-                        final long current = consumableModel.getCurrentValue();
-                        if (current > max){
-                            consumableModel.setCurrentValue(max);
-                        }else if(current < min){
-                            consumableModel.setCurrentValue(min);
-                        }
-
-                        consumableViewModel.update(consumableModel);
-                    }
-
-                    @Override
-                    public ConsumableModel getConsumable() {
-                        return consumableModel;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "edit consumable");
-            }
+//            @Override
+//            public void onEditClick(final ConsumableModel consumableModel) {
+//                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
+//                dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
+//                    @Override
+//                    public void saveConsumable(String name, long max, long min) {
+//                        consumableModel.setName(name);
+//                        consumableModel.setMaxValue(max);
+//                        consumableModel.setMinValue(min);
+//
+//                        final long current = consumableModel.getCurrentValue();
+//                        if (current > max){
+//                            consumableModel.setCurrentValue(max);
+//                        }else if(current < min){
+//                            consumableModel.setCurrentValue(min);
+//                        }
+//
+//                        consumableViewModel.update(consumableModel);
+//                    }
+//
+//                    @Override
+//                    public ConsumableModel getConsumable() {
+//                        return consumableModel;
+//                    }
+//                });
+//                assert getFragmentManager() != null;
+//                dialog.show(getFragmentManager(), "edit consumable");
+//            }
         });
 
         recyclerView.setAdapter(adapter);
@@ -167,7 +167,7 @@ public class ConsumableManagerFragment extends Fragment {
         data.observe(this, new Observer<List<ConsumableModel>>() {
             @Override
             public void onChanged(@Nullable List<ConsumableModel> consumableModels) {
-                adapter.setConsumableModels(consumableModels);
+                adapter.setItemModels(consumableModels);
             }
         });
 
@@ -185,11 +185,11 @@ public class ConsumableManagerFragment extends Fragment {
 
                 if (fromPosition < toPosition) {
                     for (int i = fromPosition; i < toPosition; i++) {
-                        Collections.swap(adapter.getConsumableModels(), i, i + 1);
+                        Collections.swap(adapter.getItemModels(), i, i + 1);
                     }
                 } else {
                     for (int i = fromPosition; i > toPosition; i--) {
-                        Collections.swap(adapter.getConsumableModels(), i, i - 1);
+                        Collections.swap(adapter.getItemModels(), i, i - 1);
                     }
                 }
 
@@ -232,7 +232,7 @@ public class ConsumableManagerFragment extends Fragment {
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (ConsumableModel consumableModel : adapter.getCheckedConsumableModels()) {
+                for (ConsumableModel consumableModel : adapter.getCheckedItemModels()) {
                     consumableViewModel.delete(consumableModel);
                 }
                 cancelCharacterDeletion(rootView);
@@ -304,7 +304,7 @@ public class ConsumableManagerFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                ConsumableModel consumableModel = adapter.getConsumableModels().get(i);
+                ConsumableModel consumableModel = adapter.getItemAt(i);
                 consumableModel.setDisplayPosition(i);
                 consumableViewModel.update(consumableModel);
             }

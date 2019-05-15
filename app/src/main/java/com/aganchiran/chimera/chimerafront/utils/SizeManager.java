@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public final class ScreenSizeManager {
+public final class SizeManager {
     /**
      * Retrieves the screen width in dp.
      *
@@ -32,5 +32,12 @@ public final class ScreenSizeManager {
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         return view.getMeasuredWidth();
+    }
+
+    public static int getViewHeight(View view) {
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        return view.getMeasuredHeight();
     }
 }

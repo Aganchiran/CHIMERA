@@ -5,12 +5,10 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,10 +18,11 @@ import android.widget.LinearLayout;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
 import com.aganchiran.chimera.chimerafront.utils.CharacterAdapter;
-import com.aganchiran.chimera.chimerafront.utils.ScreenSizeManager;
+import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
+import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.SizeManager;
 import com.aganchiran.chimera.viewmodels.CharacterViewModel;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CharacterListActivity extends ActivityWithUpperBar {
@@ -60,8 +59,8 @@ public class CharacterListActivity extends ActivityWithUpperBar {
     private void setupGrid() {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
-        int characterWidth = ScreenSizeManager.getViewWidth(characterLayout);
-        int screenWidth = ScreenSizeManager.getScreenWidth(CharacterListActivity.this);
+        int characterWidth = SizeManager.getViewWidth(characterLayout);
+        int screenWidth = SizeManager.getScreenWidth(CharacterListActivity.this);
         int columnNumber = screenWidth / characterWidth;
 
         final RecyclerView recyclerView = findViewById(R.id.character_recycler_view);
@@ -70,7 +69,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         recyclerView.setHasFixedSize(true);
 
         adapter = new CharacterAdapter();
-        adapter.setOnItemClickListener(new CharacterAdapter.OnItemClickListener() {
+        adapter.setListener(new CharacterAdapter.OnItemClickListener<CharacterModel>() {
             @Override
             public void onItemClick(CharacterModel characterModel) {
                 Intent intent = new Intent(CharacterListActivity.this,
@@ -81,52 +80,61 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         });
 
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnDragListener(new DragItemListener(adapter) {
+            @Override
+            protected void onDrop(View hiddenView) {
+                super.onDrop(hiddenView);
+                new ReorderCharacterAsyncTask(adapter, characterViewModel).execute();
+            }
+        });
 
         characterViewModel.getAllCharacters().observe(this, new Observer<List<CharacterModel>>() {
             @Override
             public void onChanged(@Nullable List<CharacterModel> characterModels) {
-                adapter.setCharacterModels(characterModels);
+                if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), characterModels)) {
+                    adapter.setItemModels(characterModels);
+                }
             }
         });
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP
-                        | ItemTouchHelper.DOWN
-                        | ItemTouchHelper.RIGHT
-                        | ItemTouchHelper.LEFT, 0) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder from,
-                                  @NonNull RecyclerView.ViewHolder to) {
-                final int fromPosition = from.getAdapterPosition();
-                final int toPosition = to.getAdapterPosition();
-
-                if (fromPosition < toPosition) {
-                    for (int i = fromPosition; i < toPosition; i++) {
-                        Collections.swap(adapter.getCharacterModels(), i, i + 1);
-                    }
-                } else {
-                    for (int i = fromPosition; i > toPosition; i--) {
-                        Collections.swap(adapter.getCharacterModels(), i, i - 1);
-                    }
-                }
-
-                adapter.notifyItemMoved(fromPosition, toPosition);
-                return true;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-
-        }).attachToRecyclerView(recyclerView);
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+//                ItemTouchHelper.UP
+//                        | ItemTouchHelper.DOWN
+//                        | ItemTouchHelper.RIGHT
+//                        | ItemTouchHelper.LEFT, 0) {
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView,
+//                                  @NonNull RecyclerView.ViewHolder from,
+//                                  @NonNull RecyclerView.ViewHolder to) {
+//                final int fromPosition = from.getAdapterPosition();
+//                final int toPosition = to.getAdapterPosition();
+//
+//                if (fromPosition < toPosition) {
+//                    for (int i = fromPosition; i < toPosition; i++) {
+//                        Collections.swap(adapter.getItemModels(), i, i + 1);
+//                    }
+//                } else {
+//                    for (int i = fromPosition; i > toPosition; i--) {
+//                        Collections.swap(adapter.getItemModels(), i, i - 1);
+//                    }
+//                }
+//
+//                adapter.notifyItemMoved(fromPosition, toPosition);
+//                return true;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//            }
+//
+//        }).attachToRecyclerView(recyclerView);
     }
 
-    @Override
-    protected void onStop() {
-        new ReorderCharacterAsyncTask(adapter, characterViewModel).execute();
-        super.onStop();
-    }
+//    @Override
+//    protected void onStop() {
+//        new ReorderCharacterAsyncTask(adapter, characterViewModel).execute();
+//        super.onStop();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,7 +165,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
     }
 
     public void deleteSelectedCharacters(View view) {
-        for (CharacterModel characterModel : adapter.getCheckedCharacterModels()) {
+        for (CharacterModel characterModel : adapter.getCheckedItemModels()) {
             characterViewModel.delete(characterModel);
         }
         cancelCharacterDeletion(view);
@@ -175,10 +183,10 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                CharacterModel characterModel = adapter.getCharacterModels().get(i);
+                CharacterModel characterModel = adapter.getItemAt(i);
                 characterModel.setDisplayPosition(i);
-                characterViewModel.update(characterModel);
             }
+            characterViewModel.updateCharacters(adapter.getItemModels());
             return null;
         }
     }
