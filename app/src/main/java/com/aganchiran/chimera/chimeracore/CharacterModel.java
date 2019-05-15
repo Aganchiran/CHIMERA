@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity(tableName = "character_table")
-public class CharacterModel implements Serializable {
+public class CharacterModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -23,10 +23,12 @@ public class CharacterModel implements Serializable {
         this.displayPosition = Integer.MAX_VALUE;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }

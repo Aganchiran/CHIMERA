@@ -10,7 +10,7 @@ import com.aganchiran.chimera.repositories.CharacterRepository;
 
 import java.util.List;
 
-public class CharacterViewModel extends AndroidViewModel {
+public class CharacterViewModel extends AndroidViewModel implements ItemViewModel<CharacterModel> {
 
     private CharacterRepository characterRepository;
     private LiveData<List<CharacterModel>> allCharacters;
@@ -21,10 +21,12 @@ public class CharacterViewModel extends AndroidViewModel {
         allCharacters = characterRepository.getAllCharacters();
     }
 
+    @Override
     public void insert(CharacterModel characterModel){
         characterRepository.insert(characterModel);
     }
 
+    @Override
     public void update(CharacterModel characterModel){
         characterRepository.update(characterModel);
     }
@@ -33,6 +35,7 @@ public class CharacterViewModel extends AndroidViewModel {
         characterRepository.updateCharacters(characterModelList);
     }
 
+    @Override
     public void delete(CharacterModel characterModel){
         characterRepository.delete(characterModel);
     }

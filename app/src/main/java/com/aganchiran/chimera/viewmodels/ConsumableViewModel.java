@@ -10,7 +10,7 @@ import com.aganchiran.chimera.repositories.ConsumableRepository;
 
 import java.util.List;
 
-public class ConsumableViewModel extends AndroidViewModel {
+public class ConsumableViewModel extends AndroidViewModel implements ItemViewModel<ConsumableModel>{
 
     private ConsumableRepository consumableRepository;
     private LiveData<List<ConsumableModel>> allConsumables;
@@ -21,14 +21,17 @@ public class ConsumableViewModel extends AndroidViewModel {
         allConsumables = consumableRepository.getAllConsumables();
     }
 
+    @Override
     public void insert(ConsumableModel consumableModel){
         consumableRepository.insert(consumableModel);
     }
 
+    @Override
     public void update(ConsumableModel consumableModel){
         consumableRepository.update(consumableModel);
     }
 
+    @Override
     public void delete(ConsumableModel consumableModel){
         consumableRepository.delete(consumableModel);
     }

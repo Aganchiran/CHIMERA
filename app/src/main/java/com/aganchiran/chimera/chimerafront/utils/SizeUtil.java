@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public final class SizeManager {
+public final class SizeUtil {
     /**
      * Retrieves the screen width in dp.
      *

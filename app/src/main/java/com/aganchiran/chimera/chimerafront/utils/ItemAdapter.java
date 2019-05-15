@@ -104,7 +104,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
         this.flyingItemPos = flyingItemPos;
     }
 
-    class ItemHolder extends RecyclerView.ViewHolder {
+    public class ItemHolder extends RecyclerView.ViewHolder {
 
         private boolean checked = false;
         private GestureDetector gestureDetector;

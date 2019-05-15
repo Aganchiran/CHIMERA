@@ -37,7 +37,8 @@ public class DragItemListener implements View.OnDragListener {
 
                 final boolean hoverScrollDown = event.getY() - scrollY > recyclerView.getBottom() - 250;
                 final boolean hoverScrollUp = event.getY() - scrollY < recyclerView.getTop() + 250;
-                if (hoverScrollDown && recyclerView.canScrollVertically(1)) {
+                final boolean hoverDeleteArea = event.getX() > recyclerView.getRight() - 250;
+                if (hoverScrollDown && !hoverDeleteArea && recyclerView.canScrollVertically(1)) {
                     recyclerView.scrollBy(0, 30);
                 } else if (hoverScrollUp && recyclerView.canScrollVertically(-1)) {
                     recyclerView.scrollBy(0, -30);

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "consumable_table",foreignKeys ={@ForeignKey(onDelete = CASCADE,entity = CharacterModel.class, parentColumns = "id",childColumns = "characterId")},indices = {@Index("characterId")})
-public class ConsumableModel implements Serializable {
+public class ConsumableModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -45,10 +45,12 @@ public class ConsumableModel implements Serializable {
         this.characterId = characterId;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }

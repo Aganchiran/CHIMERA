@@ -9,10 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.aganchiran.chimera.R;
@@ -20,7 +22,8 @@ import com.aganchiran.chimera.chimeracore.CharacterModel;
 import com.aganchiran.chimera.chimerafront.utils.CharacterAdapter;
 import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.SizeManager;
+import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
+import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CharacterViewModel;
 
 import java.util.List;
@@ -52,6 +55,23 @@ public class CharacterListActivity extends ActivityWithUpperBar {
                 startActivity(intent);
             }
         });
+        addCharacterButton.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        ((FloatingActionButton) v).hide();
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        ((FloatingActionButton) v).show();
+                        break;
+                }
+                return true;
+            }
+        });
+
+        final ImageView deleteArea = findViewById(R.id.delete_area);
+        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, characterViewModel));
 
         super.onCreate(savedInstanceState);
     }
@@ -59,8 +79,8 @@ public class CharacterListActivity extends ActivityWithUpperBar {
     private void setupGrid() {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
-        int characterWidth = SizeManager.getViewWidth(characterLayout);
-        int screenWidth = SizeManager.getScreenWidth(CharacterListActivity.this);
+        int characterWidth = SizeUtil.getViewWidth(characterLayout);
+        int screenWidth = SizeUtil.getScreenWidth(CharacterListActivity.this);
         int columnNumber = screenWidth / characterWidth;
 
         final RecyclerView recyclerView = findViewById(R.id.character_recycler_view);
@@ -91,6 +111,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         characterViewModel.getAllCharacters().observe(this, new Observer<List<CharacterModel>>() {
             @Override
             public void onChanged(@Nullable List<CharacterModel> characterModels) {
+                assert characterModels != null;
                 if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), characterModels)) {
                     adapter.setItemModels(characterModels);
                 }

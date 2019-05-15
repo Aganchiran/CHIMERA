@@ -27,7 +27,7 @@ import com.aganchiran.chimera.chimeracore.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
 import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
-import com.aganchiran.chimera.chimerafront.utils.SizeManager;
+import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.ConsumableViewModel;
 
 import java.util.Collections;
@@ -103,8 +103,8 @@ public class ConsumableManagerFragment extends Fragment {
 
         final View consumableCard = getLayoutInflater().inflate(R.layout.item_consumable, null);
         final View characterLayout = consumableCard.findViewById(R.id.consumable_item_layout);
-        int characterWidth = SizeManager.getViewWidth(characterLayout);
-        int screenWidth = SizeManager.getScreenWidth(Objects.requireNonNull(getContext()));
+        int characterWidth = SizeUtil.getViewWidth(characterLayout);
+        int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
         int columnNumber = screenWidth / characterWidth;
 
         recyclerView.setLayoutManager(
