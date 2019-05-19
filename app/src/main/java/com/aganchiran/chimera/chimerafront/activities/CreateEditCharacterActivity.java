@@ -11,7 +11,7 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
 import com.aganchiran.chimera.viewmodels.CharacterViewModel;
 
-public class AddEditCharacterActivity extends AppCompatActivity {
+public class CreateEditCharacterActivity extends AppCompatActivity {
 
     private CharacterViewModel characterViewModel;
     private EditText nameEditText;
@@ -20,7 +20,7 @@ public class AddEditCharacterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_add_edit_character);
+        setContentView(R.layout.activity_create_edit_character);
         characterViewModel = ViewModelProviders.of(this).get(CharacterViewModel.class);
 
         nameEditText = findViewById(R.id.character_edit_name);

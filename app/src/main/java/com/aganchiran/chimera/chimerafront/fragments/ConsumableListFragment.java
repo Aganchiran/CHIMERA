@@ -11,7 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.aganchiran.chimera.R;
@@ -27,14 +28,15 @@ import com.aganchiran.chimera.chimeracore.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
 import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
+import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.ConsumableViewModel;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class ConsumableManagerFragment extends Fragment {
+public class ConsumableListFragment extends Fragment {
 
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -53,15 +55,15 @@ public class ConsumableManagerFragment extends Fragment {
     private static final String ARG_CHARACTER_MODEL = "character_model";
 
 
-    public ConsumableManagerFragment() {
+    public ConsumableListFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static ConsumableManagerFragment newInstance(CharacterModel characterModel) {
-        ConsumableManagerFragment fragment = new ConsumableManagerFragment();
+    public static ConsumableListFragment newInstance(CharacterModel characterModel) {
+        ConsumableListFragment fragment = new ConsumableListFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CHARACTER_MODEL, characterModel);
         fragment.setArguments(args);
@@ -78,7 +80,7 @@ public class ConsumableManagerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater
-                .inflate(R.layout.fragment_consumable_manager, container, false);
+                .inflate(R.layout.fragment_consumable_list, container, false);
         consumableViewModel = ViewModelProviders.of(this).get(ConsumableViewModel.class);
 
         assert getArguments() != null;
@@ -96,6 +98,9 @@ public class ConsumableManagerFragment extends Fragment {
 
         setupButtons(rootView);
 
+        final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
+        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, consumableViewModel));
+
         return rootView;
     }
 
@@ -107,8 +112,7 @@ public class ConsumableManagerFragment extends Fragment {
         int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
         int columnNumber = screenWidth / characterWidth;
 
-        recyclerView.setLayoutManager(
-                new GridLayoutManager(getContext(), columnNumber));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
 
         adapter = new ConsumableAdapter();
@@ -131,38 +135,16 @@ public class ConsumableManagerFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "modify consumable");
             }
-
-//            @Override
-//            public void onEditClick(final ConsumableModel consumableModel) {
-//                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
-//                dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
-//                    @Override
-//                    public void saveConsumable(String name, long max, long min) {
-//                        consumableModel.setName(name);
-//                        consumableModel.setMaxValue(max);
-//                        consumableModel.setMinValue(min);
-//
-//                        final long current = consumableModel.getCurrentValue();
-//                        if (current > max){
-//                            consumableModel.setCurrentValue(max);
-//                        }else if(current < min){
-//                            consumableModel.setCurrentValue(min);
-//                        }
-//
-//                        consumableViewModel.update(consumableModel);
-//                    }
-//
-//                    @Override
-//                    public ConsumableModel getConsumable() {
-//                        return consumableModel;
-//                    }
-//                });
-//                assert getFragmentManager() != null;
-//                dialog.show(getFragmentManager(), "edit consumable");
-//            }
         });
 
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnDragListener(new DragItemListener(adapter) {
+            @Override
+            protected void onDrop(View hiddenView) {
+                super.onDrop(hiddenView);
+                new ReorderConsumableAsyncTask(adapter, consumableViewModel).execute();
+            }
+        });
 
         data.observe(this, new Observer<List<ConsumableModel>>() {
             @Override
@@ -170,42 +152,24 @@ public class ConsumableManagerFragment extends Fragment {
                 adapter.setItemModels(consumableModels);
             }
         });
-
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP
-                        | ItemTouchHelper.DOWN
-                        | ItemTouchHelper.RIGHT
-                        | ItemTouchHelper.LEFT, 0) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder from,
-                                  @NonNull RecyclerView.ViewHolder to) {
-                final int fromPosition = from.getAdapterPosition();
-                final int toPosition = to.getAdapterPosition();
-
-                if (fromPosition < toPosition) {
-                    for (int i = fromPosition; i < toPosition; i++) {
-                        Collections.swap(adapter.getItemModels(), i, i + 1);
-                    }
-                } else {
-                    for (int i = fromPosition; i > toPosition; i--) {
-                        Collections.swap(adapter.getItemModels(), i, i - 1);
-                    }
-                }
-
-                adapter.notifyItemMoved(fromPosition, toPosition);
-                return true;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-
-        }).attachToRecyclerView(recyclerView);
     }
 
     private void setupButtons(final View rootView) {
         addCharacterButton = rootView.findViewById(R.id.add_consumable_button);
+        addCharacterButton.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        ((FloatingActionButton) v).hide();
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        ((FloatingActionButton) v).show();
+                        break;
+                }
+                return true;
+            }
+        });
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,7 +178,7 @@ public class ConsumableManagerFragment extends Fragment {
                 dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
                     @Override
                     public void saveConsumable(String name, long max, long min) {
-                        ConsumableManagerFragment.this.createConsumableImp(name, max, min);
+                        ConsumableListFragment.this.createConsumableImp(name, max, min);
                     }
 
                     @Override
@@ -288,7 +252,7 @@ public class ConsumableManagerFragment extends Fragment {
 
     @Override
     public void onStop() {
-        new ConsumableManagerFragment.ReorderConsumableAsyncTask(adapter, consumableViewModel).execute();
+        new ConsumableListFragment.ReorderConsumableAsyncTask(adapter, consumableViewModel).execute();
         super.onStop();
     }
 
@@ -306,8 +270,8 @@ public class ConsumableManagerFragment extends Fragment {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 ConsumableModel consumableModel = adapter.getItemAt(i);
                 consumableModel.setDisplayPosition(i);
-                consumableViewModel.update(consumableModel);
             }
+            consumableViewModel.updateConsumables(adapter.getItemModels());
             return null;
         }
     }

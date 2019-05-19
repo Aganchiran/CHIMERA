@@ -20,13 +20,10 @@ public class DragItemListener implements View.OnDragListener {
     @Override
     public boolean onDrag(final View recyclerView, DragEvent event) {
         final View hiddenView = (View) event.getLocalState();
+        if (hiddenView == null) return false;
+
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-//                final CoordinatorLayout recyclerParent = (CoordinatorLayout) recyclerView.getParent();
-//                final LayoutInflater inflater = LayoutInflater.from(recyclerView.getContext());
-//                final ImageView deleteArea = (ImageView) inflater.inflate(R.layout.element_trash,
-//                        recyclerParent, false);
-//                recyclerParent.addView(deleteArea);
                 if (previousIndex < 0) {
                     previousIndex = ((RecyclerView) recyclerView).getChildAdapterPosition(hiddenView);
                 }
@@ -38,6 +35,7 @@ public class DragItemListener implements View.OnDragListener {
                 final boolean hoverScrollDown = event.getY() - scrollY > recyclerView.getBottom() - 250;
                 final boolean hoverScrollUp = event.getY() - scrollY < recyclerView.getTop() + 250;
                 final boolean hoverDeleteArea = event.getX() > recyclerView.getRight() - 250;
+
                 if (hoverScrollDown && !hoverDeleteArea && recyclerView.canScrollVertically(1)) {
                     recyclerView.scrollBy(0, 30);
                 } else if (hoverScrollUp && recyclerView.canScrollVertically(-1)) {
@@ -95,10 +93,12 @@ public class DragItemListener implements View.OnDragListener {
         final float viewWidth = v.getWidth();
         final float cellMarginsH = layoutParams.rightMargin + layoutParams.leftMargin;
         final float cellWidth = cellMarginsH + viewWidth;
-        int column = (int) (x / cellWidth);
 
         final int recyclerColumns = (int) (recyclerView.getWidth() / cellWidth);
+        int column = (int) (x / cellWidth);
         if (column > recyclerColumns - 1) column = recyclerColumns - 1;
+        if (column < 0) column = 0;
+
 
         final float viewHeight = v.getHeight();
         final float cellMarginsV = layoutParams.topMargin + layoutParams.bottomMargin;
@@ -108,9 +108,13 @@ public class DragItemListener implements View.OnDragListener {
 
         float scrollOffset = recyclerView.computeVerticalScrollOffset();
         int row = (int) Math.floor((y + scrollOffset) / cellHeight);
-        if (!recyclerView.canScrollVertically(1)) {
+        if (!recyclerView.canScrollVertically(1)
+                && recyclerView.canScrollVertically(-1)) {
             row = recyclerRows - (int) Math.ceil((recyclerView.getBottom() - y) / cellHeight);
         }
+        if (row > recyclerRows - 1) row = recyclerRows - 1;
+        if (row < 0) row = 0;
+
 
         int index = row * recyclerColumns + column;
         if (index > adapter.getItemCount() - 1) index = adapter.getItemCount() - 1;

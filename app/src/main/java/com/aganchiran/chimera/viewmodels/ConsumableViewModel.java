@@ -31,6 +31,10 @@ public class ConsumableViewModel extends AndroidViewModel implements ItemViewMod
         consumableRepository.update(consumableModel);
     }
 
+    public void updateConsumables(List<ConsumableModel> consumableModelList){
+        consumableRepository.updateConsumables(consumableModelList);
+    }
+
     @Override
     public void delete(ConsumableModel consumableModel){
         consumableRepository.delete(consumableModel);

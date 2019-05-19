@@ -1,14 +1,17 @@
 package com.aganchiran.chimera.chimerafront.utils;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
+import com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity;
 
 
 public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapter.CharacterHolder> {
@@ -29,11 +32,35 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
 
     class CharacterHolder extends ItemAdapter.ItemHolder {
         private TextView textViewName;
-        private boolean checked = false;
 
         CharacterHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.character_name);
+        }
+
+        @Override
+        protected int getPopupMenu() {
+            return R.menu.menu_character_item;
+        }
+
+        @Override
+        protected PopupMenu.OnMenuItemClickListener getPopupItemClickListener() {
+            return new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.edit_character:
+                            Intent intent = new Intent(itemView.getContext(), CreateEditCharacterActivity.class);
+                            intent.putExtra("CHARACTER", CharacterAdapter.this.getItemAt(
+                                    CharacterHolder.this.getAdapterPosition()));
+
+                            itemView.getContext().startActivity(intent);
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            };
         }
     }
 

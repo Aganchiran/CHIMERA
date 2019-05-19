@@ -32,12 +32,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="16dp"
-                android:src="@drawable/ic_add" />
+                android:src="@drawable/ic_add"/>
 
             <ImageView
                 android:id="@+id/delete_area"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="end|bottom"
                 android:src="@drawable/ic_delete"
                 android:alpha="0"/>

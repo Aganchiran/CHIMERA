@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.AddEditCharacterActivity;
+import com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity;
 import com.aganchiran.chimera.viewmodels.CharacterViewModel;
 
 public class CharacterDetailsFragment extends Fragment {
@@ -81,7 +81,7 @@ public class CharacterDetailsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_character_details, menu);
+        inflater.inflate(R.menu.menu_character_item, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -90,7 +90,7 @@ public class CharacterDetailsFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.edit_character:
-                Intent intent = new Intent(getActivity(), AddEditCharacterActivity.class);
+                Intent intent = new Intent(getActivity(), CreateEditCharacterActivity.class);
 
                 assert getArguments() != null;
                 intent.putExtra("CHARACTER",getArguments().getSerializable(ARG_CHARACTER_MODEL));

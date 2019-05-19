@@ -5,8 +5,8 @@ import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -104,18 +104,60 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
         this.flyingItemPos = flyingItemPos;
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder {
+    public abstract class ItemHolder extends RecyclerView.ViewHolder {
 
         private boolean checked = false;
         private GestureDetector gestureDetector;
+        private boolean longClicked = false;
+        private PopupMenu popup;
 
         ItemHolder(@NonNull View itemView) {
             super(itemView);
             gestureDetector = new GestureDetector(itemView.getContext(), new ItemGestureListener(this));
 
+            popup = new PopupMenu(itemView.getContext(), itemView);
+            popup.setOnMenuItemClickListener(getPopupItemClickListener());
+            popup.inflate(getPopupMenu());
+
             itemView.setOnTouchListener(new View.OnTouchListener() {
+
+                private static final int DRAG_THRESHOLD = 10;
+                private float downX;
+                private float downY;
+
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            downX = event.getX();
+                            downY = event.getY();
+                            setLongClicked(false);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            boolean dragOnX = Math.abs(downX - event.getX()) > DRAG_THRESHOLD;
+                            boolean dragOnY = Math.abs(downY - event.getY()) > DRAG_THRESHOLD;
+
+                            if (longClicked && (dragOnX || dragOnY)) {
+                                popup.dismiss();
+
+                                final ClipData clipData = ClipData.newPlainText("", "");
+
+                                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    v.startDragAndDrop(clipData, shadowBuilder, v, 0);
+                                } else {
+                                    v.startDrag(clipData, shadowBuilder, v, 0);
+                                }
+                                v.setVisibility(View.INVISIBLE);
+                            } else {
+                                return false;
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            setLongClicked(false);
+                            break;
+                    }
+
                     return gestureDetector.onTouchEvent(event);
                 }
             });
@@ -131,6 +173,14 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
                 }
             });
         }
+
+        private void showPopup() {
+            popup.show();
+        }
+
+        protected abstract int getPopupMenu();
+
+        protected abstract PopupMenu.OnMenuItemClickListener getPopupItemClickListener();
 
         void checkItem() {
             ImageView check = itemView.findViewById(R.id.check);
@@ -166,6 +216,13 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
             itemView.setVisibility(visibility);
         }
 
+        public boolean isLongClicked() {
+            return longClicked;
+        }
+
+        public void setLongClicked(boolean longClicked) {
+            this.longClicked = longClicked;
+        }
     }
 
     protected OnItemClickListener<M> getListener() {
@@ -181,6 +238,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
     }
 
     class ItemGestureListener extends GestureDetector.SimpleOnGestureListener {
+
         private ItemHolder itemHolder;
 
         ItemGestureListener(ItemHolder itemHolder) {
@@ -189,10 +247,6 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         @Override
         public boolean onDown(MotionEvent event) {
-            Log.d("TAG", "onDown: ");
-
-            // don't return false here or else none of the other
-            // gestures will work
             return true;
         }
 
@@ -219,18 +273,8 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         @Override
         public void onLongPress(MotionEvent e) {
-            final View v = itemHolder.itemView;
-            Log.i("TAG", "onLongPress: ");
-            final ClipData clipData = ClipData.newPlainText("", "");
-
-            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                v.startDragAndDrop(clipData, shadowBuilder, v, 0);
-            } else {
-                v.startDrag(clipData, shadowBuilder, v, 0);
-            }
-            v.setVisibility(View.INVISIBLE);
+            itemHolder.showPopup();
+            itemHolder.setLongClicked(true);
         }
-
     }
 }

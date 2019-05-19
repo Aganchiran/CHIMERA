@@ -51,7 +51,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CharacterListActivity.this, AddEditCharacterActivity.class);
+                Intent intent = new Intent(CharacterListActivity.this, CreateEditCharacterActivity.class);
                 startActivity(intent);
             }
         });
@@ -117,45 +117,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
                 }
             }
         });
-
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-//                ItemTouchHelper.UP
-//                        | ItemTouchHelper.DOWN
-//                        | ItemTouchHelper.RIGHT
-//                        | ItemTouchHelper.LEFT, 0) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView,
-//                                  @NonNull RecyclerView.ViewHolder from,
-//                                  @NonNull RecyclerView.ViewHolder to) {
-//                final int fromPosition = from.getAdapterPosition();
-//                final int toPosition = to.getAdapterPosition();
-//
-//                if (fromPosition < toPosition) {
-//                    for (int i = fromPosition; i < toPosition; i++) {
-//                        Collections.swap(adapter.getItemModels(), i, i + 1);
-//                    }
-//                } else {
-//                    for (int i = fromPosition; i > toPosition; i--) {
-//                        Collections.swap(adapter.getItemModels(), i, i - 1);
-//                    }
-//                }
-//
-//                adapter.notifyItemMoved(fromPosition, toPosition);
-//                return true;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//            }
-//
-//        }).attachToRecyclerView(recyclerView);
     }
-
-//    @Override
-//    protected void onStop() {
-//        new ReorderCharacterAsyncTask(adapter, characterViewModel).execute();
-//        super.onStop();
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -11,7 +11,7 @@ import android.view.Menu;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.CharacterModel;
 import com.aganchiran.chimera.chimerafront.fragments.CharacterDetailsFragment;
-import com.aganchiran.chimera.chimerafront.fragments.ConsumableManagerFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
 
 public class CharacterProfileActivity extends ActivityWithUpperBar {
 
@@ -81,7 +81,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
                 case DETAILS_TAB:
                     return CharacterDetailsFragment.newInstance(characterModel);
                 case CONSUMABLES_TAB:
-                    return ConsumableManagerFragment.newInstance(characterModel);
+                    return ConsumableListFragment.newInstance(characterModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
             }

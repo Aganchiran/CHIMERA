@@ -23,4 +23,5 @@
     <string name="minimum">Minimum</string>
     <string name="maximum">Maximum</string>
     <string name="delete_consumables">Delete consumables</string>
+    <string name="edit_consumable">Edit consumable</string>
 </resources>

@@ -8,6 +8,7 @@ import com.aganchiran.chimera.chimeracore.ConsumableDAO;
 import com.aganchiran.chimera.chimeracore.ConsumableModel;
 import com.aganchiran.chimera.chimeradata.ChimeraDB;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,6 +30,12 @@ public class ConsumableRepository {
     public void update(ConsumableModel consumableModel) {
         new UpdateConsumableAsyncTask(consumableDAO).execute(consumableModel);
 
+    }
+
+    public void updateConsumables(List<ConsumableModel> consumableModelList){
+        ConsumableModel[] consumableArray = new ConsumableModel[consumableModelList.size()];
+        consumableArray = consumableModelList.toArray(consumableArray);
+        new UpdateConsumableListAsyncTask(consumableDAO).execute(consumableArray);
     }
 
     public void delete(ConsumableModel consumableModel) {
@@ -79,6 +86,22 @@ public class ConsumableRepository {
         @Override
         protected Void doInBackground(ConsumableModel... consumableModels) {
             consumableDAO.update(consumableModels[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateConsumableListAsyncTask extends AsyncTask<ConsumableModel, Void, Void> {
+
+        private ConsumableDAO consumableDAO;
+
+        private UpdateConsumableListAsyncTask(ConsumableDAO consumableDAO){
+            this.consumableDAO = consumableDAO;
+        }
+
+
+        @Override
+        protected final Void doInBackground(ConsumableModel... consumableModels) {
+            consumableDAO.updateConsumables(Arrays.asList(consumableModels));
             return null;
         }
     }
