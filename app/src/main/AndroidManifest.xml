@@ -17,8 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity"
-            android:configChanges="orientation|screenSize" />
+        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity"/>
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CommingSoonActivity" />
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterListActivity"
             android:label="@string/characters"

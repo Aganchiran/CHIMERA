@@ -24,6 +24,7 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setRetainInstance(true);
         final AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
@@ -47,8 +48,13 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
                 .setPositiveButton(R.string.accept, null);
 
 
-        final AlertDialog dialog = builder.create();
-        dialog.show();
+        return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        final AlertDialog dialog = (AlertDialog) getDialog();
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +72,6 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
                 dialog.dismiss();
             }
         });
-        return dialog;
     }
 
     public void setListener(CreateCharacterDialogListener listener) {

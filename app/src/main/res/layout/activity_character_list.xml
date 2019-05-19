@@ -48,6 +48,7 @@
             android:id="@+id/character_deletion_interface"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:minHeight="60dp"
             android:layout_weight="0"
             android:background="@color/backgroundColor"
             android:gravity="center|end"

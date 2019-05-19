@@ -25,6 +25,7 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setRetainInstance(true);
         final AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 

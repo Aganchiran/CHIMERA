@@ -274,8 +274,10 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         @Override
         public void onLongPress(MotionEvent e) {
-            itemHolder.showPopup();
-            itemHolder.setLongClicked(true);
+            if (!isDeleteModeEnabled()) {
+                itemHolder.showPopup();
+                itemHolder.setLongClicked(true);
+            }
         }
     }
 }
