@@ -8,23 +8,23 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.viewmodels.CharacterViewModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.viewmodels.CreateEditCharacterVM;
 
 public class CreateEditCharacterActivity extends AppCompatActivity {
 
-    private CharacterViewModel characterViewModel;
+    private CreateEditCharacterVM createEditCharacterVM;
     private EditText nameEditText;
     private EditText descriptionEditText;
     private CharacterModel characterModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_create_edit_character);
-        characterViewModel = ViewModelProviders.of(this).get(CharacterViewModel.class);
+        setContentView(R.layout.dialog_create_edit_character);
+        createEditCharacterVM = ViewModelProviders.of(this).get(CreateEditCharacterVM.class);
 
-        nameEditText = findViewById(R.id.character_edit_name);
-        descriptionEditText = findViewById(R.id.character_edit_description);
+        nameEditText = findViewById(R.id.name_value);
+        descriptionEditText = findViewById(R.id.description_value);
 
         characterModel = (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
         if (characterModel != null){
@@ -53,7 +53,7 @@ public class CreateEditCharacterActivity extends AppCompatActivity {
 
         characterModel.setName(name);
         characterModel.setDescription(description);
-        characterViewModel.update(characterModel);
+        createEditCharacterVM.update(characterModel);
         finish();
     }
 
@@ -66,7 +66,7 @@ public class CreateEditCharacterActivity extends AppCompatActivity {
         }
 
         CharacterModel characterModel = new CharacterModel(name, description);
-        characterViewModel.insert(characterModel);
+        createEditCharacterVM.insert(characterModel);
         finish();
     }
 

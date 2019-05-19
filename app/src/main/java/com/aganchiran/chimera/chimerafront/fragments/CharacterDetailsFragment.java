@@ -16,9 +16,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity;
-import com.aganchiran.chimera.viewmodels.CharacterViewModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.viewmodels.CharacterDetailsVM;
 
 public class CharacterDetailsFragment extends Fragment {
     /**
@@ -54,8 +53,8 @@ public class CharacterDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater
                 .inflate(R.layout.fragment_character_details, container, false);
-        CharacterViewModel characterViewModel =
-                ViewModelProviders.of(this).get(CharacterViewModel.class);
+        CharacterDetailsVM characterDetailsVM =
+                ViewModelProviders.of(this).get(CharacterDetailsVM.class);
 
         if (getArguments() != null) {
             CharacterModel characterModel = (CharacterModel) getArguments()
@@ -63,7 +62,7 @@ public class CharacterDetailsFragment extends Fragment {
 
             if (characterModel != null) {
                 LiveData<CharacterModel> characterLiveData =
-                        characterViewModel.getCharacterById(characterModel.getId());
+                        characterDetailsVM.getCharacterById(characterModel.getId());
                 characterLiveData.observe(this, new Observer<CharacterModel>() {
                     @Override
                     public void onChanged(@Nullable CharacterModel characterModel) {
@@ -79,25 +78,25 @@ public class CharacterDetailsFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_character_item, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.edit_character:
-                Intent intent = new Intent(getActivity(), CreateEditCharacterActivity.class);
-
-                assert getArguments() != null;
-                intent.putExtra("CHARACTER",getArguments().getSerializable(ARG_CHARACTER_MODEL));
-
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_character_item, menu);
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.edit_character:
+//                Intent intent = new Intent(getActivity(), CreateEditCharacterActivity.class);
+//
+//                assert getArguments() != null;
+//                intent.putExtra("CHARACTER",getArguments().getSerializable(ARG_CHARACTER_MODEL));
+//
+//                startActivity(intent);
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

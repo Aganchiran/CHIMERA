@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
+
+import java.util.Objects;
 
 public class CreateEditConsumableDialog extends AppCompatDialogFragment {
 
@@ -26,7 +28,7 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
         final AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_create_edit_consumable, null);
 
         editTextName = view.findViewById(R.id.name_value);

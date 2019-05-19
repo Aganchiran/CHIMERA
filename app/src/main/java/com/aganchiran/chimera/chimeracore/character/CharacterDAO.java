@@ -1,4 +1,4 @@
-package com.aganchiran.chimera.chimeracore;
+package com.aganchiran.chimera.chimeracore.character;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -9,7 +9,6 @@ import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
 import java.util.List;
-import java.util.Map;
 
 @Dao
 public abstract class CharacterDAO {

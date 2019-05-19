@@ -1,8 +1,6 @@
 package com.aganchiran.chimera.chimerafront.utils;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
-import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
-import com.aganchiran.chimera.viewmodels.ConsumableViewModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 
 public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAdapter.ConsumableHolder> {
+
+    private SaveConsumable saveConsumable;
 
     @NonNull
     @Override
@@ -30,7 +28,7 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
     public void onBindItemHolder(@NonNull ConsumableHolder holder, int position) {
         ConsumableModel currentConsumable = getItemAt(position);
         holder.textViewName.setText(currentConsumable.getName());
-        holder.setCurrentValue(currentConsumable.getCurrentValue());
+        holder.textViewCurrentValue.setText(currentConsumable.getCurrentValueFormated());
     }
 
     class ConsumableHolder extends ItemAdapter.ItemHolder {
@@ -55,39 +53,9 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.edit_consumable:
-                            CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
-                            dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
-                                @Override
-                                public void saveConsumable(String newName, long newMax, long newMin) {
-                                    final ConsumableModel consumable = ConsumableAdapter.this
-                                            .getItemAt(ConsumableHolder.this.getAdapterPosition());
-
-                                    final long current = consumable.getCurrentValue();
-                                    if (current > newMax) {
-                                        consumable.setCurrentValue(newMax);
-                                    } else if (current < newMin) {
-                                        consumable.setCurrentValue(newMin);
-                                    }
-
-                                    consumable.setName(newName);
-                                    consumable.setMaxValue(newMax);
-                                    consumable.setMinValue(newMin);
-
-                                    final ConsumableViewModel consumableViewModel =
-                                            ViewModelProviders.of(((AppCompatActivity)itemView
-                                                    .getContext())).get(ConsumableViewModel.class);
-
-
-                                    consumableViewModel.update(consumable);
-                                }
-
-                                @Override
-                                public ConsumableModel getConsumable() {
-                                    return ConsumableAdapter.this
-                                            .getItemAt(ConsumableHolder.this.getAdapterPosition());
-                                }
-                            });
-                            dialog.show(((AppCompatActivity) itemView.getContext()).getSupportFragmentManager(), "edit consumable");
+                            final ConsumableModel consumable = ConsumableAdapter.this
+                                    .getItemAt(ConsumableHolder.this.getAdapterPosition());
+                            saveConsumable.perform(consumable);
                             return true;
                         default:
                             return false;
@@ -95,33 +63,18 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
                 }
             };
         }
+    }
 
-        private void setCurrentValue(long numberWithSign) {
-            final String formattedNumber;
-            final long number = Math.abs(numberWithSign);
-            long sign = (number != 0) ? numberWithSign / number : 0;
+    private SaveConsumable getSaveConsumable() {
+        return saveConsumable;
+    }
 
+    public void setSaveConsumable(SaveConsumable saveConsumable) {
+        this.saveConsumable = saveConsumable;
+    }
 
-            if (number >= 1000000) {
-                if (number < 10000000) {
-                    formattedNumber = (Math.floor((number * sign / 1000000.0) * 10) / 10.0) + "M";
-                    textViewCurrentValue.setText(formattedNumber);
-                } else {
-                    formattedNumber = number * sign / 1000000 + "M";
-                    textViewCurrentValue.setText(formattedNumber);
-                }
-            } else if (number >= 1000) {
-                if (number < 10000) {
-                    formattedNumber = (Math.floor((number * sign / 1000.0) * 10) / 10.0) + "K";
-                    textViewCurrentValue.setText(formattedNumber);
-                } else {
-                    formattedNumber = number * sign / 1000 + "K";
-                    textViewCurrentValue.setText(formattedNumber);
-                }
-            } else {
-                textViewCurrentValue.setText(String.valueOf(number * sign));
-            }
-        }
+    public interface SaveConsumable {
+        void perform(ConsumableModel consumableModel);
     }
 
 }

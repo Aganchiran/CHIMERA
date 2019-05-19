@@ -5,17 +5,17 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.viewmodels.ItemViewModel;
+import com.aganchiran.chimera.viewmodels.ItemVM;
 
 public class DropToDeleteListener implements View.OnDragListener {
 
     private ItemAdapter adapter;
-    private ItemViewModel itemViewModel;
+    private ItemVM itemVM;
 
     public DropToDeleteListener(ItemAdapter adapter,
-                                ItemViewModel itemViewModel) {
+                                ItemVM itemVM) {
         this.adapter = adapter;
-        this.itemViewModel = itemViewModel;
+        this.itemVM = itemVM;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DropToDeleteListener implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 Object item = adapter.getItemAt(adapter.getFlyingItemPos());
                 try {
-                    itemViewModel.delete(item);
+                    itemVM.delete(item);
                 }catch (ClassCastException e){
                     throw new ClassCastException("Adapter and ViewModel doesn't have the same type");
                 }

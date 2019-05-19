@@ -4,20 +4,20 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import com.aganchiran.chimera.chimeracore.CharacterDAO;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterDAO;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeradata.ChimeraDB;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class CharacterRepository {
+public class CharacterRepo {
 
     private CharacterDAO characterDAO;
     private LiveData<List<CharacterModel>> allCharacters;
 
-    public CharacterRepository(Application application){
+    public CharacterRepo(Application application){
         ChimeraDB database = ChimeraDB.getInstance(application);
         characterDAO = database.characterDAO();
         allCharacters = characterDAO.getAllCharacters();

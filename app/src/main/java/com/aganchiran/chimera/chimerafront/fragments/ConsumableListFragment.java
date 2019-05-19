@@ -23,15 +23,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
+import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
 import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
-import com.aganchiran.chimera.viewmodels.ConsumableViewModel;
+import com.aganchiran.chimera.viewmodels.ConsumableListVM;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,22 +47,15 @@ public class ConsumableListFragment extends Fragment {
             0, 0);
 
     private FloatingActionButton addCharacterButton;
-    private ConsumableViewModel consumableViewModel;
+    private ConsumableListVM consumableListVM;
     private ConsumableAdapter adapter;
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
+
     private static final String ARG_CHARACTER_MODEL = "character_model";
 
 
     public ConsumableListFragment() {
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
     public static ConsumableListFragment newInstance(CharacterModel characterModel) {
         ConsumableListFragment fragment = new ConsumableListFragment();
         Bundle args = new Bundle();
@@ -81,7 +75,7 @@ public class ConsumableListFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater
                 .inflate(R.layout.fragment_consumable_list, container, false);
-        consumableViewModel = ViewModelProviders.of(this).get(ConsumableViewModel.class);
+        consumableListVM = ViewModelProviders.of(this).get(ConsumableListVM.class);
 
         assert getArguments() != null;
         CharacterModel characterModel = (CharacterModel) getArguments()
@@ -89,7 +83,7 @@ public class ConsumableListFragment extends Fragment {
 
         if (characterModel != null) {
             LiveData<List<ConsumableModel>> consumableListLiveData =
-                    consumableViewModel.getCharacterConsumables(characterModel.getId());
+                    consumableListVM.getCharacterConsumables(characterModel.getId());
             final RecyclerView recyclerView =
                     rootView.findViewById(R.id.consumable_recycler_view);
 
@@ -99,13 +93,12 @@ public class ConsumableListFragment extends Fragment {
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, consumableViewModel));
+        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, consumableListVM));
 
         return rootView;
     }
 
     private void setupGrid(LiveData<List<ConsumableModel>> data, RecyclerView recyclerView) {
-
         final View consumableCard = getLayoutInflater().inflate(R.layout.item_consumable, null);
         final View characterLayout = consumableCard.findViewById(R.id.consumable_item_layout);
         int characterWidth = SizeUtil.getViewWidth(characterLayout);
@@ -124,7 +117,7 @@ public class ConsumableListFragment extends Fragment {
                     @Override
                     public void saveValue(long value) {
                         consumableModel.setCurrentValue(value);
-                        consumableViewModel.update(consumableModel);
+                        consumableListVM.update(consumableModel);
                     }
 
                     @Override
@@ -136,20 +129,46 @@ public class ConsumableListFragment extends Fragment {
                 dialog.show(getFragmentManager(), "modify consumable");
             }
         });
+        adapter.setSaveConsumable(new ConsumableAdapter.SaveConsumable() {
+            @Override
+            public void perform(final ConsumableModel consumable) {
+                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
+                dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
+                    @Override
+                    public void saveConsumable(String newName, long newMax, long newMin) {
+                        consumable.setName(newName);
+                        consumable.setMaxValue(newMax);
+                        consumable.setMinValue(newMin);
+
+                        consumableListVM.update(consumable);
+                    }
+
+                    @Override
+                    public ConsumableModel getConsumable() {
+                        return consumable;
+                    }
+                });
+                assert getFragmentManager() != null;
+                dialog.show(getFragmentManager(), "edit consumable");
+            }
+        });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setOnDragListener(new DragItemListener(adapter) {
             @Override
             protected void onDrop(View hiddenView) {
                 super.onDrop(hiddenView);
-                new ReorderConsumableAsyncTask(adapter, consumableViewModel).execute();
+                new ReorderConsumableAsyncTask(adapter, consumableListVM).execute();
             }
         });
 
         data.observe(this, new Observer<List<ConsumableModel>>() {
             @Override
             public void onChanged(@Nullable List<ConsumableModel> consumableModels) {
-                adapter.setItemModels(consumableModels);
+                assert consumableModels != null;
+                if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), consumableModels)) {
+                    adapter.setItemModels(consumableModels);
+                }
             }
         });
     }
@@ -178,7 +197,7 @@ public class ConsumableListFragment extends Fragment {
                 dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
                     @Override
                     public void saveConsumable(String name, long max, long min) {
-                        ConsumableListFragment.this.createConsumableImp(name, max, min);
+                        ConsumableListFragment.this.createConsumable(name, max, min);
                     }
 
                     @Override
@@ -197,7 +216,7 @@ public class ConsumableListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 for (ConsumableModel consumableModel : adapter.getCheckedItemModels()) {
-                    consumableViewModel.delete(consumableModel);
+                    consumableListVM.delete(consumableModel);
                 }
                 cancelCharacterDeletion(rootView);
             }
@@ -218,14 +237,14 @@ public class ConsumableListFragment extends Fragment {
         addCharacterButton.show();
     }
 
-    private void createConsumableImp(String name, long max, long min) {
+    private void createConsumable(String name, long max, long min) {
         assert getArguments() != null;
         CharacterModel characterModel =
                 (CharacterModel) getArguments().getSerializable(ARG_CHARACTER_MODEL);
 
         ConsumableModel consumableModel = new ConsumableModel(name, max, min, max, min,
                 false, "FF0000", -1, characterModel.getId());
-        consumableViewModel.insert(consumableModel);
+        consumableListVM.insert(consumableModel);
     }
 
     @Override
@@ -250,19 +269,13 @@ public class ConsumableListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStop() {
-        new ConsumableListFragment.ReorderConsumableAsyncTask(adapter, consumableViewModel).execute();
-        super.onStop();
-    }
-
     private static class ReorderConsumableAsyncTask extends AsyncTask<Void, Void, Void> {
         private ConsumableAdapter adapter;
-        private ConsumableViewModel consumableViewModel;
+        private ConsumableListVM consumableListVM;
 
-        private ReorderConsumableAsyncTask(ConsumableAdapter adapter, ConsumableViewModel consumableViewModel) {
+        private ReorderConsumableAsyncTask(ConsumableAdapter adapter, ConsumableListVM consumableListVM) {
             this.adapter = adapter;
-            this.consumableViewModel = consumableViewModel;
+            this.consumableListVM = consumableListVM;
         }
 
         @Override
@@ -271,7 +284,7 @@ public class ConsumableListFragment extends Fragment {
                 ConsumableModel consumableModel = adapter.getItemAt(i);
                 consumableModel.setDisplayPosition(i);
             }
-            consumableViewModel.updateConsumables(adapter.getItemModels());
+            consumableListVM.updateConsumables(adapter.getItemModels());
             return null;
         }
     }

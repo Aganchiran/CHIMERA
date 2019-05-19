@@ -1,11 +1,12 @@
-package com.aganchiran.chimera.chimeracore;
+package com.aganchiran.chimera.chimeracore.consumable;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.io.Serializable;
+import com.aganchiran.chimera.chimeracore.ItemModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -68,6 +69,9 @@ public class ConsumableModel extends ItemModel {
     }
 
     public void setMaxValue(long maxValue) {
+        if (getCurrentValue() > maxValue) {
+            setCurrentValue(maxValue);
+        }
         this.maxValue = maxValue;
     }
 
@@ -76,11 +80,36 @@ public class ConsumableModel extends ItemModel {
     }
 
     public void setMinValue(long minValue) {
+        if (getCurrentValue() < minValue) {
+            setCurrentValue(minValue);
+        }
         this.minValue = minValue;
     }
 
     public long getCurrentValue() {
         return currentValue;
+    }
+
+    public String getCurrentValueFormated(){
+        final long number = Math.abs(currentValue);
+        long sign = (number != 0) ? currentValue / number : 0;
+        String formattedNumber = String.valueOf(currentValue);
+
+        if (number >= 1000000) {
+            if (number < 10000000) {
+                formattedNumber = (Math.floor((number * sign / 1000000.0) * 10) / 10.0) + "M";
+            } else {
+                formattedNumber = number * sign / 1000000 + "M";
+            }
+        } else if (number >= 1000) {
+            if (number < 10000) {
+                formattedNumber = (Math.floor((number * sign / 1000.0) * 10) / 10.0) + "K";
+            } else {
+                formattedNumber = number * sign / 1000 + "K";
+            }
+        }
+
+        return formattedNumber;
     }
 
     public void setCurrentValue(long currentValue) {

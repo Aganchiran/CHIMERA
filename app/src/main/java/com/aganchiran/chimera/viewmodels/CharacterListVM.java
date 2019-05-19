@@ -5,47 +5,47 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.repositories.CharacterRepository;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.repositories.CharacterRepo;
 
 import java.util.List;
 
-public class CharacterViewModel extends AndroidViewModel implements ItemViewModel<CharacterModel> {
+public class CharacterListVM extends AndroidViewModel implements ItemVM<CharacterModel> {
 
-    private CharacterRepository characterRepository;
+    private CharacterRepo characterRepo;
     private LiveData<List<CharacterModel>> allCharacters;
 
-    public CharacterViewModel(@NonNull Application application) {
+    public CharacterListVM(@NonNull Application application) {
         super(application);
-        characterRepository = new CharacterRepository(application);
-        allCharacters = characterRepository.getAllCharacters();
+        characterRepo = new CharacterRepo(application);
+        allCharacters = characterRepo.getAllCharacters();
     }
 
     @Override
     public void insert(CharacterModel characterModel){
-        characterRepository.insert(characterModel);
+        characterRepo.insert(characterModel);
     }
 
     @Override
     public void update(CharacterModel characterModel){
-        characterRepository.update(characterModel);
+        characterRepo.update(characterModel);
     }
 
     public void updateCharacters(List<CharacterModel> characterModelList){
-        characterRepository.updateCharacters(characterModelList);
+        characterRepo.updateCharacters(characterModelList);
     }
 
     @Override
     public void delete(CharacterModel characterModel){
-        characterRepository.delete(characterModel);
+        characterRepo.delete(characterModel);
     }
 
     public void deleteAllCharacters(){
-        characterRepository.deleteAllCharacters();
+        characterRepo.deleteAllCharacters();
     }
 
     public LiveData<CharacterModel> getCharacterById(int id){
-        return characterRepository.getCharacterById(id);
+        return characterRepo.getCharacterById(id);
     }
 
     public LiveData<List<CharacterModel>> getAllCharacters() {

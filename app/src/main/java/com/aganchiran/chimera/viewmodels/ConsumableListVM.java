@@ -5,51 +5,51 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
-import com.aganchiran.chimera.repositories.ConsumableRepository;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
+import com.aganchiran.chimera.repositories.ConsumableRepo;
 
 import java.util.List;
 
-public class ConsumableViewModel extends AndroidViewModel implements ItemViewModel<ConsumableModel>{
+public class ConsumableListVM extends AndroidViewModel implements ItemVM<ConsumableModel> {
 
-    private ConsumableRepository consumableRepository;
+    private ConsumableRepo consumableRepo;
     private LiveData<List<ConsumableModel>> allConsumables;
 
-    public ConsumableViewModel(@NonNull Application application) {
+    public ConsumableListVM(@NonNull Application application) {
         super(application);
-        consumableRepository = new ConsumableRepository(application);
-        allConsumables = consumableRepository.getAllConsumables();
+        consumableRepo = new ConsumableRepo(application);
+        allConsumables = consumableRepo.getAllConsumables();
     }
 
     @Override
     public void insert(ConsumableModel consumableModel){
-        consumableRepository.insert(consumableModel);
+        consumableRepo.insert(consumableModel);
     }
 
     @Override
     public void update(ConsumableModel consumableModel){
-        consumableRepository.update(consumableModel);
+        consumableRepo.update(consumableModel);
     }
 
     public void updateConsumables(List<ConsumableModel> consumableModelList){
-        consumableRepository.updateConsumables(consumableModelList);
+        consumableRepo.updateConsumables(consumableModelList);
     }
 
     @Override
     public void delete(ConsumableModel consumableModel){
-        consumableRepository.delete(consumableModel);
+        consumableRepo.delete(consumableModel);
     }
 
     public void deleteAllConsumables(){
-        consumableRepository.deleteAllConsumables();
+        consumableRepo.deleteAllConsumables();
     }
 
     public LiveData<ConsumableModel> getConsumableById(int id){
-        return consumableRepository.getConsumableById(id);
+        return consumableRepo.getConsumableById(id);
     }
 
     public LiveData<List<ConsumableModel>> getCharacterConsumables(int characterId){
-        return consumableRepository.getCharacterConsumables(characterId);
+        return consumableRepo.getCharacterConsumables(characterId);
     }
 
     public LiveData<List<ConsumableModel>> getAllConsumables() {

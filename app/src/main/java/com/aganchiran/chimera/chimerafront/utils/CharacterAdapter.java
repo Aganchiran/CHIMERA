@@ -1,6 +1,5 @@
 package com.aganchiran.chimera.chimerafront.utils;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
@@ -10,11 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 
 
 public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapter.CharacterHolder> {
+
+    private EditCharacter editCharacter;
 
     @NonNull
     @Override
@@ -48,13 +48,10 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
             return new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
-                    switch (menuItem.getItemId()){
+                    switch (menuItem.getItemId()) {
                         case R.id.edit_character:
-                            Intent intent = new Intent(itemView.getContext(), CreateEditCharacterActivity.class);
-                            intent.putExtra("CHARACTER", CharacterAdapter.this.getItemAt(
+                            editCharacter.perform(CharacterAdapter.this.getItemAt(
                                     CharacterHolder.this.getAdapterPosition()));
-
-                            itemView.getContext().startActivity(intent);
                             return true;
                         default:
                             return false;
@@ -62,6 +59,14 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
                 }
             };
         }
+    }
+
+    public void setEditCharacter(EditCharacter editCharacter) {
+        this.editCharacter = editCharacter;
+    }
+
+    public interface EditCharacter {
+        void perform(CharacterModel characterModel);
     }
 
 }

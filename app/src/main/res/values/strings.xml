@@ -1,6 +1,7 @@
 <resources>
     <!--Image descriptions-->
     <string name="character_image">Character image</string>
+    <string name="combat_image">Combat Image</string>
     <string name="settings_icon">Settings icon</string>
     <string name="description">Description</string>
 
@@ -24,4 +25,6 @@
     <string name="maximum">Maximum</string>
     <string name="delete_consumables">Delete consumables</string>
     <string name="edit_consumable">Edit consumable</string>
+    <string name="delete_combats">Delete Combats</string>
+    <string name="edit_combat">Edit combat</string>
 </resources>

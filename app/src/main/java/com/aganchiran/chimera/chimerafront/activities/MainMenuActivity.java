@@ -14,8 +14,13 @@ public class MainMenuActivity extends ActivityWithUpperBar {
         super.onCreate(savedInstanceState);
     }
 
-    public void goToCharactersScreen(final View view) {
+    public void goToCharactersList(final View view) {
         Intent intent = new Intent(this, CharacterListActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToCombatList(final View view) {
+        Intent intent = new Intent(this, CombatListActivity.class);
         startActivity(intent);
     }
 

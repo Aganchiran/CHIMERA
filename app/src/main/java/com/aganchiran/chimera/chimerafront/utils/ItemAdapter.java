@@ -121,7 +121,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
             itemView.setOnTouchListener(new View.OnTouchListener() {
 
-                private static final int DRAG_THRESHOLD = 10;
+                private static final int DRAG_THRESHOLD = 5;
                 private float downX;
                 private float downY;
 
@@ -148,6 +148,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
                                 } else {
                                     v.startDrag(clipData, shadowBuilder, v, 0);
                                 }
+
                                 v.setVisibility(View.INVISIBLE);
                             } else {
                                 return false;

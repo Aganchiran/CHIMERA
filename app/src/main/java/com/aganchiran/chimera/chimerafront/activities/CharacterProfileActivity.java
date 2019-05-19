@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimerafront.fragments.CharacterDetailsFragment;
 import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
 

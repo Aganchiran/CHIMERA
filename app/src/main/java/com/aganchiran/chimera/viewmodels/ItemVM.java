@@ -1,6 +1,6 @@
 package com.aganchiran.chimera.viewmodels;
 
-public interface ItemViewModel<M> {
+public interface ItemVM<M> {
 
     void insert(M itemModel);
 

@@ -1,4 +1,4 @@
-package com.aganchiran.chimera.chimeracore;
+package com.aganchiran.chimera.chimeracore.consumable;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;

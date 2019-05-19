@@ -1,9 +1,9 @@
-package com.aganchiran.chimera.chimeracore;
+package com.aganchiran.chimera.chimeracore.character;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.io.Serializable;
+import com.aganchiran.chimera.chimeracore.ItemModel;
 
 @Entity(tableName = "character_table")
 public class CharacterModel extends ItemModel {
