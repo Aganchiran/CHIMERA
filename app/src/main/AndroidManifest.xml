@@ -23,7 +23,11 @@
             android:label="@string/characters"
             android:launchMode="singleTop" />
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity" />
-        <activity android:name=".chimerafront.activities.CombatListActivity" />
+        <activity android:name=".chimerafront.activities.CombatListActivity"
+            android:label="@string/combats"
+            android:launchMode="singleTop"/>
+        <activity android:name=".chimerafront.activities.BattleActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

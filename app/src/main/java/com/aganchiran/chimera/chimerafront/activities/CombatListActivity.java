@@ -74,10 +74,10 @@ public class CombatListActivity extends ActivityWithUpperBar {
         adapter.setListener(new CombatAdapter.OnItemClickListener<CombatModel>() {
             @Override
             public void onItemClick(CombatModel combatModel) {
-//                Intent intent = new Intent(CombatListActivity.this,
-//                        CombatProfileActivity.class);
-//                intent.putExtra("COMBAT", combatModel);
-//                startActivity(intent);
+                Intent intent = new Intent(CombatListActivity.this,
+                        BattleActivity.class);
+                intent.putExtra("COMBAT", combatModel);
+                startActivity(intent);
             }
         });
         adapter.setEditCombat(new CombatAdapter.EditCombat() {

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <ImageView
+        android:id="@+id/character_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/character_image"
+        android:background="@color/backgroundColor"
+        android:src="@drawable/ic_character"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/frameBarr4"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameBarr3"
+        app:layout_constraintEnd_toEndOf="@+id/character_image"
+        app:layout_constraintStart_toStartOf="@+id/character_image">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:progress="100"
+            android:alpha="0.8"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameBarr3"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameBarr2"
+        app:layout_constraintEnd_toEndOf="@+id/character_image"
+        app:layout_constraintStart_toStartOf="@+id/character_image">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:progress="70"
+            android:alpha="0.8" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameBarr2"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameBarr1"
+        app:layout_constraintEnd_toEndOf="@+id/character_image"
+        app:layout_constraintStart_toStartOf="@+id/character_image">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:progress="85"
+            android:alpha="0.8" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameBarr1"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/character_image"
+        app:layout_constraintEnd_toEndOf="@+id/character_image"
+        app:layout_constraintStart_toStartOf="@+id/character_image">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:progress="40"
+            android:alpha="0.8" />
+    </FrameLayout>
+
+
+</android.support.constraint.ConstraintLayout>

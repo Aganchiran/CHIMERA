@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/element_upper_bar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/defenderRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/primaryDarkColor"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:listitem="@layout/item_character_icon" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="#00000000"
+        android:src="@drawable/ic_combat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
+        app:layout_constraintStart_toEndOf="@+id/attacker"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <FrameLayout
+        android:id="@+id/attacker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="0.2"
+        android:background="@color/primaryDarkColor"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
+        app:layout_constraintStart_toEndOf="@+id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <include
+            android:id="@+id/attacker_icon"
+            layout="@layout/item_character_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/backgroundLightColor"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:listitem="@layout/item_character_icon" />
+
+    <include layout="@layout/element_button_home" />
+
+</android.support.constraint.ConstraintLayout>
