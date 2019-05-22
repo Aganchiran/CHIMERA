@@ -13,14 +13,14 @@
         android:id="@+id/defenderRecycler"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@color/primaryDarkColor"
+        android:background="@color/primaryLightColor"
         android:orientation="vertical"
-        android:padding="4dp"
+        android:padding="@dimen/cell_distance"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/item_character_icon" />
+        tools:listitem="@layout/item_empty_defenders" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -30,36 +30,45 @@
         android:src="@drawable/ic_combat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
-        app:layout_constraintStart_toEndOf="@+id/attacker"
+        app:layout_constraintStart_toEndOf="@+id/attacker_frame"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <FrameLayout
-        android:id="@+id/attacker"
+        android:id="@+id/attacker_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_bias="0.2"
-        android:background="@color/primaryDarkColor"
-        android:padding="8dp"
+        android:background="@color/primaryLightColor"
+        android:padding="@dimen/cell_distance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
-        app:layout_constraintStart_toEndOf="@+id/recyclerView"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <include
-            android:id="@+id/attacker_icon"
+            android:id="@+id/attacker"
             layout="@layout/item_character_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </FrameLayout>
 
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/backgroundLightColor"
+        android:src="@drawable/ic_loop"
+        android:onClick="recalculateIni"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/initiativeRecycler"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@color/backgroundLightColor"
         android:orientation="vertical"
-        android:padding="4dp"
+        android:padding="@dimen/cell_distance"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

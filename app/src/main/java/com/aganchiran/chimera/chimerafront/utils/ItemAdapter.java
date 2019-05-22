@@ -23,13 +23,13 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
     private List<M> checkedItemModels = new ArrayList<>();
     private int flyingItemPos = -1;
     private OnItemClickListener<M> listener;
-    private ObservableBoolean deleteModeEnabled = new ObservableBoolean(false);
+    private ObservableBoolean selectModeEnabled = new ObservableBoolean(false);
 
     public abstract void onBindItemHolder(@NonNull VH holder, int position);
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        if (isDeleteModeEnabled()) {
+        if (getSelectModeEnabled()) {
             if (getCheckedItemModels().contains(getItemAt(holder.getAdapterPosition()))) {
                 holder.checkItem();
             } else {
@@ -84,16 +84,16 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
         return itemRemoved;
     }
 
-    public boolean isDeleteModeEnabled() {
-        return deleteModeEnabled.get();
+    public boolean getSelectModeEnabled() {
+        return selectModeEnabled.get();
     }
 
-    public void enableDeleteMode() {
-        deleteModeEnabled.set(true);
+    public void enableSelectMode() {
+        selectModeEnabled.set(true);
     }
 
-    public void disableDeleteMode() {
-        deleteModeEnabled.set(false);
+    public void disableSelectMode() {
+        selectModeEnabled.set(false);
     }
 
     public int getFlyingItemPos() {
@@ -113,7 +113,8 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         ItemHolder(@NonNull View itemView) {
             super(itemView);
-            gestureDetector = new GestureDetector(itemView.getContext(), new ItemGestureListener(this));
+            gestureDetector = new GestureDetector(itemView.getContext(),
+                    new ItemGestureListener(this));
 
             popup = new PopupMenu(itemView.getContext(), itemView);
             popup.setOnMenuItemClickListener(getPopupItemClickListener());
@@ -163,10 +164,10 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
                 }
             });
 
-            deleteModeEnabled.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            selectModeEnabled.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
                 @Override
                 public void onPropertyChanged(Observable sender, int propertyId) {
-                    if (deleteModeEnabled.get()) {
+                    if (selectModeEnabled.get()) {
                         uncheckItem();
                     } else {
                         disableCheck();
@@ -253,7 +254,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (deleteModeEnabled.get()) {
+            if (selectModeEnabled.get()) {
                 if (itemHolder.checked) {
                     itemHolder.uncheckItem();
                     M itemModel = itemModels.get(itemHolder.getAdapterPosition());
@@ -274,7 +275,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
 
         @Override
         public void onLongPress(MotionEvent e) {
-            if (!isDeleteModeEnabled()) {
+            if (!getSelectModeEnabled()) {
                 itemHolder.showPopup();
                 itemHolder.setLongClicked(true);
             }

@@ -11,12 +11,14 @@ import android.view.Menu;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimerafront.fragments.CharacterDetailsFragment;
+import com.aganchiran.chimera.chimerafront.fragments.CombatProfileFragment;
 import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
 
 public class CharacterProfileActivity extends ActivityWithUpperBar {
 
     public static final int DETAILS_TAB = 0;
     public static final int CONSUMABLES_TAB = 1;
+    public static final int COMBAT_TAB = 2;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -82,6 +84,8 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
                     return CharacterDetailsFragment.newInstance(characterModel);
                 case CONSUMABLES_TAB:
                     return ConsumableListFragment.newInstance(characterModel);
+                case COMBAT_TAB:
+                    return CombatProfileFragment.newInstance(characterModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
             }
@@ -89,7 +93,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

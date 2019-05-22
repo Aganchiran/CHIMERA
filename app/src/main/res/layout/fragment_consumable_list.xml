@@ -41,7 +41,6 @@
     <LinearLayout
         android:id="@+id/deletion_interface"
         android:layout_width="match_parent"
-        android:layout_weight="0"
         android:layout_height="0dp"
         android:minHeight="60dp"
         android:orientation="horizontal"
@@ -57,7 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="#00000000"
-            android:onClick="cancelCharacterDeletion"
             android:text="@string/cancel"
             android:textColor="@color/contrastColor" />
 
@@ -67,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/contrastColor"
-            android:onClick="deleteSelectedCharacters"
             android:text="@string/accept"
             android:textColor="@color/backgroundColor" />
     </LinearLayout>

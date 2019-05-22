@@ -27,4 +27,16 @@
     <string name="edit_consumable">Edit consumable</string>
     <string name="delete_combats">Delete Combats</string>
     <string name="edit_combat">Edit combat</string>
+    <string name="empty_defenders_message">Swipe characters to select defenders</string>
+    <string name="attack">Attack</string>
+    <string name="attack_value">Attack value:</string>
+    <string name="attack_modifier">Attack modifier:</string>
+    <string name="initiative">Initiative</string>
+    <string name="initiative_modifier">Initiative modifier:</string>
+    <string name="initiative_value">Initiative value:</string>
+    <string name="defense">Defense</string>
+    <string name="defense_value">Defense value:</string>
+    <string name="defense_modifier">Defense modifier:</string>
+    <string name="save">Save</string>
+    <string name="combat">Combat</string>
 </resources>

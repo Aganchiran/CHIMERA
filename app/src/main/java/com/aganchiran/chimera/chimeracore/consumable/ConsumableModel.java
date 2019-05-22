@@ -2,6 +2,7 @@ package com.aganchiran.chimera.chimeracore.consumable;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -33,6 +34,19 @@ public class ConsumableModel extends ItemModel {
     private int displayPosition;
 
     private int characterId;
+
+    @Ignore
+    public ConsumableModel(String name, long maxValue, long minValue, String color, int characterId) {
+        this.name = name;
+        this.maxValue = maxValue;
+        this.minValue = minValue;
+        this.currentValue = maxValue;
+        this.increment = 1;
+        this.showOnIcon = false;
+        this.color = color;
+        this.displayPosition = Integer.MAX_VALUE;
+        this.characterId = characterId;
+    }
 
     public ConsumableModel(String name, long maxValue, long minValue, long currentValue, long increment, boolean showOnIcon, String color, int displayPosition, int characterId) {
         this.name = name;

@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class CharacterDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater
                 .inflate(R.layout.fragment_character_details, container, false);
@@ -66,6 +67,7 @@ public class CharacterDetailsFragment extends Fragment {
                 characterLiveData.observe(this, new Observer<CharacterModel>() {
                     @Override
                     public void onChanged(@Nullable CharacterModel characterModel) {
+                        assert characterModel != null;
                         ((TextView) rootView.findViewById(R.id.character_portrait))
                                 .setText(characterModel.getName());
                         ((TextView) rootView.findViewById(R.id.description_text_view))

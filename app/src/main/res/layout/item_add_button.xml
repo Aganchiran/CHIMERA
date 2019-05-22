@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/cell_size"
+    android:layout_height="@dimen/cell_size"
+    android:backgroundTint="@color/backgroundColor"
+    android:src="@drawable/ic_add"
+    android:tint="@color/primaryTextColor"
+    android:layout_margin="@dimen/cell_distance"/>

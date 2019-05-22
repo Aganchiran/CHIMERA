@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -28,20 +30,29 @@ import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CharacterListVM;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterListActivity extends ActivityWithUpperBar {
 
+    private static final int NONE = 0;
+    private static final int DELETE = 1;
+    private static final int SEND = 2;
+
+
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 1);
+            ViewGroup.LayoutParams.WRAP_CONTENT);
     private static final LinearLayout.LayoutParams INVISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 0);
+            0);
 
     private FloatingActionButton addCharacterButton;
     private CharacterListVM characterListVM;
     private CharacterAdapter adapter;
+
+    private int selectionMode = NONE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,11 @@ public class CharacterListActivity extends ActivityWithUpperBar {
 
         final ImageView deleteArea = findViewById(R.id.delete_area);
         deleteArea.setOnDragListener(new DropToDeleteListener(adapter, characterListVM));
+
+        if (getIntent().getBooleanExtra("SELECTION_SCREEN", false)) {
+            selectionMode = SEND;
+            enableSelectMode();
+        }
 
         super.onCreate(savedInstanceState);
     }
@@ -123,7 +139,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         });
     }
 
-    private void setupButtons(){
+    private void setupButtons() {
         addCharacterButton = findViewById(R.id.add_character_button);
         addCharacterButton.setOnDragListener(new View.OnDragListener() {
             @Override
@@ -160,19 +176,57 @@ public class CharacterListActivity extends ActivityWithUpperBar {
             }
         });
 
+        Button acceptDeletion = findViewById(R.id.accept_button);
+        acceptDeletion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (selectionMode) {
+                    case DELETE:
+                        deleteSelectedCharacters();
+                        break;
+                    case SEND:
+                        sendSelectedCharacters();
+                        break;
+                }
+            }
+        });
+
+        Button cancelDeletion = findViewById(R.id.cancel_button);
+        cancelDeletion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (selectionMode) {
+                    case SEND:
+                        setResult(RESULT_CANCELED);
+                        finish();
+                        break;
+                    default:
+                        cancelCharacterSelection();
+                }
+            }
+        });
     }
 
-    public void cancelCharacterDeletion(View view) {
-        adapter.disableDeleteMode();
-        findViewById(R.id.character_deletion_interface).setLayoutParams(INVISIBLE);
+    private void cancelCharacterSelection() {
+        selectionMode = NONE;
+        adapter.disableSelectMode();
+        findViewById(R.id.selection_interface).setLayoutParams(INVISIBLE);
         addCharacterButton.show();
     }
 
-    public void deleteSelectedCharacters(View view) {
+    private void deleteSelectedCharacters() {
         for (CharacterModel characterModel : adapter.getCheckedItemModels()) {
             characterListVM.delete(characterModel);
         }
-        cancelCharacterDeletion(view);
+        cancelCharacterSelection();
+    }
+
+    private void sendSelectedCharacters() {
+        Intent intent = new Intent();
+        List<CharacterModel> characters = adapter.getCheckedItemModels();
+        intent.putExtra("CHARACTERS", (Serializable) characters);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -186,15 +240,20 @@ public class CharacterListActivity extends ActivityWithUpperBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_characters:
-                if (!adapter.isDeleteModeEnabled()) {
-                    adapter.enableDeleteMode();
-                    findViewById(R.id.character_deletion_interface).setLayoutParams(VISIBLE);
-                    addCharacterButton.hide();
+                if (!adapter.getSelectModeEnabled()) {
+                    selectionMode = DELETE;
+                    enableSelectMode();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void enableSelectMode() {
+        adapter.enableSelectMode();
+        findViewById(R.id.selection_interface).setLayoutParams(VISIBLE);
+        addCharacterButton.hide();
     }
 
     private static class ReorderCharacterAsyncTask extends AsyncTask<Void, Void, Void> {

@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 
 import com.aganchiran.chimera.chimeracore.character.CharacterDAO;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacter;
+import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacterDAO;
 import com.aganchiran.chimera.chimeradata.ChimeraDB;
 
 import java.util.Arrays;
@@ -55,6 +57,11 @@ public class CharacterRepo {
     public LiveData<List<CharacterModel>> getAllCharacters(){
         return allCharacters;
     }
+
+
+    /////////////////////////
+    //////////TASKS//////////
+    /////////////////////////
 
     private static class InsertCharacterAsyncTask extends AsyncTask<CharacterModel, Void, Void> {
 
@@ -132,18 +139,18 @@ public class CharacterRepo {
         }
     }
 
-    private static class GetCharacterAsyncTask extends AsyncTask<CharacterModel, Void, LiveData<CharacterModel>> {
-
-        private CharacterDAO characterDAO;
-
-        private GetCharacterAsyncTask(CharacterDAO characterDAO){
-            this.characterDAO = characterDAO;
-        }
-
-        @Override
-        protected LiveData<CharacterModel> doInBackground(CharacterModel... characterModels) {
-            return characterDAO.getCharacterById(characterModels[0].getId());
-        }
-    }
+//    private static class GetCharacterAsyncTask extends AsyncTask<CharacterModel, Void, LiveData<CharacterModel>> {
+//
+//        private CharacterDAO characterDAO;
+//
+//        private GetCharacterAsyncTask(CharacterDAO characterDAO){
+//            this.characterDAO = characterDAO;
+//        }
+//
+//        @Override
+//        protected LiveData<CharacterModel> doInBackground(CharacterModel... characterModels) {
+//            return characterDAO.getCharacterById(characterModels[0].getId());
+//        }
+//    }
 
 }

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -34,10 +35,10 @@ public class CombatListActivity extends ActivityWithUpperBar {
 
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 1);
+            ViewGroup.LayoutParams.WRAP_CONTENT);
     private static final LinearLayout.LayoutParams INVISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 0);
+            0);
 
     private FloatingActionButton addCombatButton;
     private CombatListVM combatListVM;
@@ -161,7 +162,7 @@ public class CombatListActivity extends ActivityWithUpperBar {
     }
 
     public void cancelCombatDeletion(View view) {
-        adapter.disableDeleteMode();
+        adapter.disableSelectMode();
         findViewById(R.id.combat_deletion_interface).setLayoutParams(INVISIBLE);
         addCombatButton.show();
     }
@@ -184,8 +185,8 @@ public class CombatListActivity extends ActivityWithUpperBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_combats:
-                if (!adapter.isDeleteModeEnabled()) {
-                    adapter.enableDeleteMode();
+                if (!adapter.getSelectModeEnabled()) {
+                    adapter.enableSelectMode();
                     findViewById(R.id.combat_deletion_interface).setLayoutParams(VISIBLE);
                     addCombatButton.hide();
                 }

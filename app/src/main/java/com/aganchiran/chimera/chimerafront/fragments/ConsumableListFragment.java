@@ -41,10 +41,10 @@ public class ConsumableListFragment extends Fragment {
 
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 1);
+            ViewGroup.LayoutParams.WRAP_CONTENT);
     private static final LinearLayout.LayoutParams INVISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            0, 0);
+            0);
 
     private FloatingActionButton addCharacterButton;
     private ConsumableListVM consumableListVM;
@@ -232,7 +232,7 @@ public class ConsumableListFragment extends Fragment {
     }
 
     private void cancelCharacterDeletion(View rootView) {
-        adapter.disableDeleteMode();
+        adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addCharacterButton.show();
     }
@@ -242,8 +242,9 @@ public class ConsumableListFragment extends Fragment {
         CharacterModel characterModel =
                 (CharacterModel) getArguments().getSerializable(ARG_CHARACTER_MODEL);
 
-        ConsumableModel consumableModel = new ConsumableModel(name, max, min, max, min,
-                false, "FF0000", -1, characterModel.getId());
+        assert characterModel != null;
+        ConsumableModel consumableModel = new ConsumableModel(name, max, min,
+                "FF0000", characterModel.getId());
         consumableListVM.insert(consumableModel);
     }
 
@@ -258,8 +259,8 @@ public class ConsumableListFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.delete_consumables:
-                if (!adapter.isDeleteModeEnabled()) {
-                    adapter.enableDeleteMode();
+                if (!adapter.getSelectModeEnabled()) {
+                    adapter.enableSelectMode();
                     Objects.requireNonNull(getActivity()).findViewById(R.id.deletion_interface)
                             .setLayoutParams(VISIBLE);
                     addCharacterButton.hide();
