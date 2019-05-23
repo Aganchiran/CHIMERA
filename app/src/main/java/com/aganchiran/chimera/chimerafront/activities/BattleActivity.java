@@ -10,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
@@ -25,8 +28,10 @@ import org.apache.commons.collections4.list.SetUniqueList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class BattleActivity extends ActivityWithUpperBar {
 
@@ -69,8 +74,16 @@ public class BattleActivity extends ActivityWithUpperBar {
         initiativeAdapter.setListener(new InitiativeAdapter.OnCharacterClickListener() {
 
             @Override
-            public void onCharacterClick(View characterCell) {
-                changeAttacker(characterCell);
+            public void onCharacterClick(InitiativeAdapter.InitiativeHolder holder) {
+                if (initiativeAdapter.getAttacker() == null ||
+                        initiativeAdapter.getCharacterAt(holder.getAdapterPosition()).getId()
+                        != initiativeAdapter.getAttacker().getId()) {
+                    changeAttacker(holder.getCopy());
+                    holder.selectAsAttacker();
+                }else {
+                    changeAttacker(NO_ATTACKER);
+                    holder.disselectAsAttacker();
+                }
             }
 
             @Override
@@ -125,7 +138,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                     final CharacterModel chaToRemove
                             = initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
                     final int posRemoved = defendersAdapter.getItemPositionById(chaToRemove.getId());
-                    if (posRemoved >= 0){
+                    if (posRemoved >= 0) {
                         defenders.remove(chaToRemove);
                         defendersAdapter.submitList(defenders);
                         defendersAdapter.notifyItemRemoved(posRemoved);
@@ -145,7 +158,13 @@ public class BattleActivity extends ActivityWithUpperBar {
                     if (initiativeAdapter.getAttacker() == null) {
                         changeAttacker(NO_ATTACKER);
                     } else {
-                        changeAttacker(initiativeAdapter.getAttacker().getCopy());
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View newView = inflater.inflate(R.layout.item_initiative_cell, null);
+
+                        TextView newName = newView.findViewById(R.id.name_label);
+                        newName.setText(initiativeAdapter.getAttacker().getName());
+                        changeAttacker(newView);
                     }
                     defenders.add(characterToAdd);
                     defendersAdapter.submitList(defenders);
@@ -226,15 +245,19 @@ public class BattleActivity extends ActivityWithUpperBar {
     }
 
     public void recalculateIni(View view) {
+
         final Quicksort<CharacterModel> quicksort = new Quicksort<CharacterModel>() {
             @Override
             protected int compare(CharacterModel a, CharacterModel b) {
-                return a.getIniRoll() - b.getIniRoll();
+                return b.getIniRoll() - a.getIniRoll();
             }
         };
         List<CharacterModel> sortedList = initiatives.getValue();
         if (sortedList != null) {
             sortedList.removeAll(Collections.singleton(null));
+            for (CharacterModel character : sortedList) {
+                character.rollIni();
+            }
             quicksort.sort(sortedList);
             initiatives.setValue(sortedList);
             initiativeAdapter.notifyDataSetChanged();

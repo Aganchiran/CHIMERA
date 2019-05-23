@@ -24,7 +24,7 @@ import java.util.List;
 public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.ViewHolder> {
 
     private CharacterModel addButton = null;
-    private InitiativeHolder attacker;
+    private CharacterModel attacker;
     private List<CharacterModel> defenders = SetUniqueList.setUniqueList(new ArrayList<CharacterModel>());
     private OnCharacterClickListener listener;
 
@@ -79,7 +79,10 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         if (getItemViewType(position) == CHARACTER_VIEW) {
             CharacterModel currentCharacter = getCharacterAt(position);
             ((InitiativeHolder) holder).textViewName.setText(currentCharacter.getName());
-            if (attacker != null && holder.getAdapterPosition() == attacker.getAdapterPosition()){
+            ((InitiativeHolder) holder).iniRoll.setText(String.valueOf(currentCharacter.getIniRoll()));
+
+            ((InitiativeHolder) holder).attackerIcon.setVisibility(View.INVISIBLE);
+            if (attacker != null && currentCharacter.getId() == attacker.getId()){
                 ((InitiativeHolder) holder).selectAsAttacker();
             }
             ((InitiativeHolder) holder).disselectAsDefender();
@@ -116,8 +119,12 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         return getItem(position);
     }
 
-    public InitiativeHolder getAttacker() {
+    public CharacterModel getAttacker() {
         return attacker;
+    }
+
+    public void setAttacker(CharacterModel attacker) {
+        this.attacker = attacker;
     }
 
     public List<CharacterModel> getDefenders() {
@@ -131,6 +138,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
     public class InitiativeHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewName;
+        private TextView iniRoll;
         private GestureDetector gestureDetector;
         private View attackerIcon;
         private View defenderIcon;
@@ -138,6 +146,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         InitiativeHolder(@NonNull final View characterView) {
             super(characterView);
             textViewName = itemView.findViewById(R.id.name_label);
+            iniRoll = itemView.findViewById(R.id.ini_roll);
             attackerIcon = itemView.findViewById(R.id.attacker_icon);
             defenderIcon = itemView.findViewById(R.id.defender_icon);
             gestureDetector = new GestureDetector(itemView.getContext(),
@@ -165,17 +174,13 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
 
         private void selectCell(){
             if (listener != null) {
-                listener.onCharacterClick(getCopy());
+                listener.onCharacterClick(this);
             }
-            selectAsAttacker();
         }
 
         public void selectAsAttacker(){
-            if (attacker != null){
-                attacker.disselectAsAttacker();
-            }
             attackerIcon.setVisibility(View.VISIBLE);
-            attacker = this;
+            attacker = getCharacterAt(getAdapterPosition());
         }
 
         public void disselectAsAttacker(){
@@ -222,7 +227,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
     }
 
     public interface OnCharacterClickListener{
-        void onCharacterClick(View characterCell);
+        void onCharacterClick(InitiativeHolder holder);
 
         void addCharacter();
     }
@@ -243,6 +248,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             itemHolder.selectCell();
+            notifyDataSetChanged();
             return true;
         }
 

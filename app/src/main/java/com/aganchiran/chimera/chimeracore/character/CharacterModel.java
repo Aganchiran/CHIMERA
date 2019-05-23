@@ -1,6 +1,7 @@
 package com.aganchiran.chimera.chimeracore.character;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.aganchiran.chimera.chimeracore.ItemModel;
@@ -32,6 +33,8 @@ public class CharacterModel extends ItemModel {
 
     private int defenseMod;
 
+    @Ignore
+    private int iniRoll = 0;
 
     public CharacterModel(String name, String description) {
         this.name = name;
@@ -126,7 +129,15 @@ public class CharacterModel extends ItemModel {
         this.defenseMod = defenseMod;
     }
 
-    public int getIniRoll(){
+    public int getIniRoll() {
+        return iniRoll;
+    }
+
+    public void setIniRoll(int iniRoll) {
+        this.iniRoll = iniRoll;
+    }
+
+    public void rollIni(){
         int roll = AnimaDice.getRoll();
         switch (roll){
             case 1:
@@ -139,7 +150,7 @@ public class CharacterModel extends ItemModel {
                 roll = -75;
                 break;
         }
-        return roll + getInitiative() + getInitiativeMod();
+        iniRoll = roll + getInitiative() + getInitiativeMod();
     }
 
     @Override
