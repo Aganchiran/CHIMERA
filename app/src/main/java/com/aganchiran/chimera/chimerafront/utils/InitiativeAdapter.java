@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,13 +15,17 @@ import android.widget.TextView;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 
+import org.apache.commons.collections4.list.SetUniqueList;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.ViewHolder> {
 
     private CharacterModel addButton = null;
     private InitiativeHolder attacker;
+    private List<CharacterModel> defenders = SetUniqueList.setUniqueList(new ArrayList<CharacterModel>());
     private OnCharacterClickListener listener;
 
     private static final int CHARACTER_VIEW = 0;
@@ -36,13 +39,12 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
             = new DiffUtil.ItemCallback<CharacterModel>() {
         @Override
         public boolean areItemsTheSame(@NonNull CharacterModel c1, @NonNull CharacterModel c2) {
-            return c1.getId() == c2.getId();
+            return c1.equals(c2);
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull CharacterModel c1, @NonNull CharacterModel c2) {
-            return c1.getName().equals(c2.getName())
-                    && c1.getDescription().equals(c2.getDescription());
+            return c1.contentsTheSame(c2);
         }
     };
 
@@ -52,11 +54,11 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
 
         if (viewType == CHARACTER_VIEW) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_character_icon, parent, false);
+                    .inflate(R.layout.item_initiative_cell, parent, false);
             return new InitiativeAdapter.InitiativeHolder(itemView);
         } else {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_add_button, parent, false);
+                    .inflate(R.layout.item_add_cell, parent, false);
             return new InitiativeAdapter.AddButtonHolder(itemView);
         }
     }
@@ -66,6 +68,8 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         if (list == null) {
             list = new ArrayList<>();
         }
+
+        list.removeAll(Collections.singleton(null));
         list.add(addButton);
         super.submitList(list);
     }
@@ -78,16 +82,34 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
             if (attacker != null && holder.getAdapterPosition() == attacker.getAdapterPosition()){
                 ((InitiativeHolder) holder).selectAsAttacker();
             }
+            ((InitiativeHolder) holder).disselectAsDefender();
+            for (CharacterModel defender : defenders){
+                if (defender.getId() == currentCharacter.getId()){
+                    ((InitiativeHolder) holder).selectAsDefender();
+                }
+            }
         }
     }
 
+
     @Override
     public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
+        if (getItem(position) == null) {
             return ADD_BUTTON_VIEW;
         } else {
             return CHARACTER_VIEW;
         }
+    }
+
+    public int getItemPositionById(int id){
+
+        for (int i = 0 ; i < getItemCount() ; i++){
+            if (getCharacterAt(i).getId() == id){
+                return i;
+            }
+        }
+        return -1;
+
     }
 
     public CharacterModel getCharacterAt(int position) {
@@ -98,16 +120,26 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         return attacker;
     }
 
+    public List<CharacterModel> getDefenders() {
+        return defenders;
+    }
+
+    public void setDefenders(List<CharacterModel> defenders) {
+        this.defenders = defenders;
+    }
+
     public class InitiativeHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewName;
         private GestureDetector gestureDetector;
         private View attackerIcon;
+        private View defenderIcon;
 
         InitiativeHolder(@NonNull final View characterView) {
             super(characterView);
             textViewName = itemView.findViewById(R.id.name_label);
             attackerIcon = itemView.findViewById(R.id.attacker_icon);
+            defenderIcon = itemView.findViewById(R.id.defender_icon);
             gestureDetector = new GestureDetector(itemView.getContext(),
                     new ItemGestureListener(this));
 
@@ -123,7 +155,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
 
         public View getCopy(){
             LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-            View newView = inflater.inflate(R.layout.item_character_icon, null);
+            View newView = inflater.inflate(R.layout.item_initiative_cell, null);
 
             TextView newName = newView.findViewById(R.id.name_label);
             newName.setText(textViewName.getText());
@@ -149,6 +181,14 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         public void disselectAsAttacker(){
             attackerIcon.setVisibility(View.INVISIBLE);
             attacker = null;
+        }
+
+        public void selectAsDefender(){
+            defenderIcon.setVisibility(View.VISIBLE);
+        }
+
+        public void disselectAsDefender(){
+            defenderIcon.setVisibility(View.INVISIBLE);
         }
     }
 

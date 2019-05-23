@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
+import com.aganchiran.chimera.viewmodels.BattleVM;
 
 public class BattleVMFactory implements ViewModelProvider.Factory {
 
@@ -20,6 +21,6 @@ public class BattleVMFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new BattleVM(mApplication, combatModel);
+        return (T) new BattleVM(mApplication);
     }
 }

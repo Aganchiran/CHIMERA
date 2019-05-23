@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/cell_size"
-    android:layout_height="@dimen/cell_size"
-    android:layout_margin="@dimen/cell_distance">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/character_image"
@@ -16,16 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/name_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        app:layout_constraintBottom_toBottomOf="@+id/character_image"
-        app:layout_constraintEnd_toEndOf="@+id/character_image"
-        app:layout_constraintStart_toStartOf="@+id/character_image"
-        app:layout_constraintTop_toTopOf="@+id/character_image" />
 
     <FrameLayout
         android:id="@+id/frameBarr4"
@@ -94,17 +83,4 @@
             android:progress="40"
             android:alpha="0.8" />
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/attacker_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/combat_image"
-        android:src="@drawable/ic_combat"
-        android:tint="@color/contrastColor"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

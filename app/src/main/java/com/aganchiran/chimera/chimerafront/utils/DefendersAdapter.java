@@ -16,12 +16,12 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.ViewHolder> {
 
     private CharacterModel empty = null;
-    private DefenderHolder attacker;
     private OnCharacterClickListener listener;
 
     private static final int CHARACTER_VIEW = 0;
@@ -35,13 +35,12 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
             = new DiffUtil.ItemCallback<CharacterModel>() {
         @Override
         public boolean areItemsTheSame(@NonNull CharacterModel c1, @NonNull CharacterModel c2) {
-            return c1.getId() == c2.getId();
+            return c1.equals(c2);
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull CharacterModel c1, @NonNull CharacterModel c2) {
-            return c1.getName().equals(c2.getName())
-                    && c1.getDescription().equals(c2.getDescription());
+            return c1.contentsTheSame(c2);
         }
     };
 
@@ -51,7 +50,7 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
 
         if (viewType == CHARACTER_VIEW) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_character_icon, parent, false);
+                    .inflate(R.layout.item_defender_cell, parent, false);
             return new DefenderHolder(itemView);
         } else {
             View itemView = LayoutInflater.from(parent.getContext())
@@ -65,6 +64,8 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         if (list == null || list.isEmpty()) {
             list = new ArrayList<>();
             list.add(empty);
+        } else {
+            list.removeAll(Collections.singleton(null));
         }
         super.submitList(list);
     }
@@ -86,6 +87,17 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         }
     }
 
+    public int getItemPositionById(int id){
+
+        for (int i = 0 ; i < getItemCount() ; i++){
+            if (getCharacterAt(i) != null && getCharacterAt(i).getId() == id){
+                return i;
+            }
+        }
+        return -1;
+
+    }
+
     public CharacterModel getCharacterAt(int position) {
         return getItem(position);
     }
@@ -94,12 +106,10 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
 
         private TextView textViewName;
         private GestureDetector gestureDetector;
-        private View attackerIcon;
 
         DefenderHolder(@NonNull final View characterView) {
             super(characterView);
             textViewName = itemView.findViewById(R.id.name_label);
-            attackerIcon = itemView.findViewById(R.id.attacker_icon);
             gestureDetector = new GestureDetector(itemView.getContext(),
                     new ItemGestureListener(this));
 
@@ -113,35 +123,6 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
 
         }
 
-        private View getCopy(){
-            LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-            View newView = inflater.inflate(R.layout.item_character_icon, null);
-
-            TextView newName = newView.findViewById(R.id.name_label);
-            newName.setText(textViewName.getText());
-
-            return newView;
-        }
-
-        private void selectCell(){
-            if (listener != null) {
-                listener.onCharacterClick(getCopy());
-            }
-            selectAsAttacker();
-        }
-
-        public void selectAsAttacker(){
-            if (attacker != null){
-                attacker.disselectAsAttacker();
-            }
-            attackerIcon.setVisibility(View.VISIBLE);
-            attacker = this;
-        }
-
-        public void disselectAsAttacker(){
-            attackerIcon.setVisibility(View.INVISIBLE);
-            attacker = null;
-        }
     }
 
     public class EmptyHolder extends RecyclerView.ViewHolder {
@@ -157,7 +138,7 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
     }
 
     public interface OnCharacterClickListener{
-        void onCharacterClick(View characterCell);
+        void onCharacterClick(CharacterModel characterModel);
     }
 
     class ItemGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -175,7 +156,9 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            itemHolder.selectCell();
+            if (listener != null) {
+                listener.onCharacterClick(getCharacterAt(itemHolder.getAdapterPosition()));
+            }
             return true;
         }
 

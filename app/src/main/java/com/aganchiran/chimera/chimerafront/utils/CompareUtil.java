@@ -11,5 +11,4 @@ public class CompareUtil {
         }
         return result;
     }
-
 }

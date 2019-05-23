@@ -1,5 +1,6 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -17,12 +18,14 @@ import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import com.aganchiran.chimera.chimerafront.utils.DefendersAdapter;
 import com.aganchiran.chimera.chimerafront.utils.InitiativeAdapter;
-import com.aganchiran.chimera.viewmodels.battle.BattleVM;
-import com.aganchiran.chimera.viewmodels.battle.BattleVMFactory;
+import com.aganchiran.chimera.chimerafront.utils.Quicksort;
+import com.aganchiran.chimera.viewmodels.BattleVM;
 
 import org.apache.commons.collections4.list.SetUniqueList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class BattleActivity extends ActivityWithUpperBar {
@@ -31,24 +34,24 @@ public class BattleActivity extends ActivityWithUpperBar {
     private View NO_ATTACKER;
 
     private BattleVM battleVM;
+    private CombatModel combat;
     private InitiativeAdapter initiativeAdapter;
+    private RecyclerView initiativeRecycler;
     private View attacker;
     private List<CharacterModel> defenders = SetUniqueList.setUniqueList(new ArrayList<CharacterModel>());
+    private MutableLiveData<List<CharacterModel>> initiatives = new MutableLiveData<>();
     private DefendersAdapter defendersAdapter;
     private RecyclerView defenderRecycler;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_battle);
+        battleVM = ViewModelProviders.of(this).get(BattleVM.class);
         NO_ATTACKER = findViewById(R.id.attacker);
         attacker = NO_ATTACKER;
 
         Intent intent = this.getIntent();
-        CombatModel combat = (CombatModel) intent.getSerializableExtra("COMBAT");
-        battleVM = ViewModelProviders.of(this,
-                new BattleVMFactory(this.getApplication(), combat)).get(BattleVM.class);
-
-
+        combat = (CombatModel) intent.getSerializableExtra("COMBAT");
         setupInitiativeList();
         setupDefendersList();
 
@@ -56,12 +59,13 @@ public class BattleActivity extends ActivityWithUpperBar {
     }
 
     private void setupInitiativeList() {
-        final RecyclerView initiativeRecycler = findViewById(R.id.initiativeRecycler);
+        initiativeRecycler = findViewById(R.id.initiativeRecycler);
         initiativeRecycler.setLayoutManager(new LinearLayoutManager(BattleActivity.this,
                 LinearLayoutManager.VERTICAL, false));
         initiativeRecycler.setHasFixedSize(true);
 
-        initiativeAdapter = battleVM.getInitiativeAdapter();
+        initiativeAdapter = new InitiativeAdapter();
+        initiativeRecycler.setAdapter(initiativeAdapter);
         initiativeAdapter.setListener(new InitiativeAdapter.OnCharacterClickListener() {
 
             @Override
@@ -76,17 +80,22 @@ public class BattleActivity extends ActivityWithUpperBar {
                 startActivityForResult(intent, ADD_CHARACTERS);
             }
         });
-
-        battleVM.getCharactersForCombat().observe(this, new Observer<List<CharacterModel>>() {
+        initiativeAdapter.submitList(new ArrayList<CharacterModel>());
+        battleVM.getCharactersForCombat(combat.getId()).observe(this, new Observer<List<CharacterModel>>() {
             @Override
             public void onChanged(@Nullable List<CharacterModel> characterModels) {
-                if (battleVM.getIniCharacters() == null){
-                    battleVM.setIniCharacters(characterModels);
-                    initiativeAdapter.submitList(characterModels);
+                if (initiatives.getValue() == null) {
+                    initiatives.setValue(characterModels);
                 }
             }
         });
-        initiativeRecycler.setAdapter(initiativeAdapter);
+
+        initiatives.observe(this, new Observer<List<CharacterModel>>() {
+            @Override
+            public void onChanged(@Nullable List<CharacterModel> characterModels) {
+                initiativeAdapter.submitList(characterModels);
+            }
+        });
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -113,14 +122,23 @@ public class BattleActivity extends ActivityWithUpperBar {
                     ((InitiativeAdapter.InitiativeHolder) holder).disselectAsAttacker();
                     changeAttacker(NO_ATTACKER);
 
-                    CharacterModel characterToDelete =
-                            initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
-                    defenders.remove(characterToDelete);
-                    defendersAdapter.submitList(defenders);
-                    battleVM.unlinkCharacterFromCombat(characterToDelete);
-                    initiativeAdapter.notifyItemRemoved(holder.getAdapterPosition());
-                    initiativeAdapter.submitList(battleVM.getIniCharacters());
+                    final CharacterModel chaToRemove
+                            = initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
+                    final int posRemoved = defendersAdapter.getItemPositionById(chaToRemove.getId());
+                    if (posRemoved >= 0){
+                        defenders.remove(chaToRemove);
+                        defendersAdapter.submitList(defenders);
+                        defendersAdapter.notifyItemRemoved(posRemoved);
+                        initiativeAdapter.setDefenders(defenders);
+                    }
 
+                    battleVM.unlinkCharacterFromCombat(combat.getId(), chaToRemove.getId());
+
+
+                    List<CharacterModel> charactersIni = initiatives.getValue();
+                    assert charactersIni != null;
+                    charactersIni.remove(holder.getAdapterPosition());
+                    initiativeAdapter.notifyItemRemoved(holder.getAdapterPosition());
                 } else {
                     final CharacterModel characterToAdd =
                             initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
@@ -131,6 +149,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                     }
                     defenders.add(characterToAdd);
                     defendersAdapter.submitList(defenders);
+                    initiativeAdapter.setDefenders(defenders);
                     initiativeAdapter.notifyItemChanged(holder.getAdapterPosition());
                 }
             }
@@ -159,15 +178,20 @@ public class BattleActivity extends ActivityWithUpperBar {
                     defenders.add(onAir);
                 }
                 defendersAdapter.submitList(defenders);
+                initiativeAdapter.setDefenders(defenders);
                 defendersAdapter.notifyItemMoved(source.getAdapterPosition(), target.getAdapterPosition());
                 return true;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder holder, int direction) {
+
                 defenders.remove(holder.getAdapterPosition());
                 defendersAdapter.notifyItemRemoved(holder.getAdapterPosition());
                 defendersAdapter.submitList(defenders);
+                initiativeAdapter.setDefenders(defenders);
+                initiativeAdapter.notifyDataSetChanged();
+
             }
         }).attachToRecyclerView(defenderRecycler);
     }
@@ -186,13 +210,35 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             List<CharacterModel> charactersToAdd
                     = (List<CharacterModel>) data.getSerializableExtra("CHARACTERS");
+            ArrayList<Integer> charactersIds = new ArrayList<>();
+            for (CharacterModel c : charactersToAdd) {
+                charactersIds.add(c.getId());
+            }
 
-            battleVM.linkCharactersToCombat(charactersToAdd);
+            List<CharacterModel> newList = initiatives.getValue();
+            assert newList != null;
+            newList.addAll(charactersToAdd);
+            newList.removeAll(Collections.singleton(null));
+            initiatives.setValue(new ArrayList<>(new HashSet<>(newList)));
+            initiativeAdapter.notifyDataSetChanged();
+            battleVM.linkCharactersToCombat(combat.getId(), charactersIds);
         }
     }
 
-    public void recalculateIni(View view){
-        battleVM.recalculateIni();
+    public void recalculateIni(View view) {
+        final Quicksort<CharacterModel> quicksort = new Quicksort<CharacterModel>() {
+            @Override
+            protected int compare(CharacterModel a, CharacterModel b) {
+                return a.getIniRoll() - b.getIniRoll();
+            }
+        };
+        List<CharacterModel> sortedList = initiatives.getValue();
+        if (sortedList != null) {
+            sortedList.removeAll(Collections.singleton(null));
+            quicksort.sort(sortedList);
+            initiatives.setValue(sortedList);
+            initiativeAdapter.notifyDataSetChanged();
+        }
     }
 
 }

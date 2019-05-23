@@ -6,6 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 import com.aganchiran.chimera.chimeracore.ItemModel;
 import com.aganchiran.chimera.chimeracore.dice.AnimaDice;
 
+import java.util.Objects;
+
 @Entity(tableName = "character_table")
 public class CharacterModel extends ItemModel {
 
@@ -142,6 +144,16 @@ public class CharacterModel extends ItemModel {
 
     @Override
     public boolean equals(Object obj) {
+        return (obj instanceof CharacterModel
+                && ((CharacterModel) obj).getId() == this.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public boolean contentsTheSame(Object obj){
         return (obj instanceof CharacterModel
                 && ((CharacterModel) obj).getId() == this.getId()
                 && ((CharacterModel) obj).getName().equals(this.getName())
