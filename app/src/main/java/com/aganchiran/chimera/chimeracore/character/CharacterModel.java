@@ -33,9 +33,9 @@ public class CharacterModel extends ItemModel {
 
     private int defenseMod;
 
-    private boolean attackEnabled;
+    private boolean attackEnabled = true;
 
-    private boolean defenseEnabled;
+    private boolean defenseEnabled = true;
 
     private int life = 100;
 
@@ -190,16 +190,8 @@ public class CharacterModel extends ItemModel {
         return attackRoll;
     }
 
-    public void setAttackRoll(int attackRoll) {
-        this.attackRoll = attackRoll;
-    }
-
     public int getDefenseRoll() {
         return defenseRoll;
-    }
-
-    public void setDefenseRoll(int defenseRoll) {
-        this.defenseRoll = defenseRoll;
     }
 
     public int getLastHit() {
@@ -210,6 +202,11 @@ public class CharacterModel extends ItemModel {
         this.lastHit = lastHit;
     }
 
+    public void endCombat(){
+        attackRoll = 0;
+        defenseRoll = 0;
+        lastHit = 0;
+    }
     public void hit(int damage) {
         life -= damage;
     }
@@ -231,17 +228,23 @@ public class CharacterModel extends ItemModel {
     }
 
     public void rollAttack() {
-        int roll = AnimaDice.getRollOpen();
-        if (roll <= 3) {
-            roll -= AnimaDice.getRoll();
+        int roll = 0;
+        if (isAttackEnabled()) {
+            roll = AnimaDice.getRollOpen();
+            if (roll <= 3) {
+                roll -= AnimaDice.getRoll();
+            }
         }
         attackRoll = roll + getAttack() + getAttackMod();
     }
 
     public void rollDefense() {
-        int roll = AnimaDice.getRollOpen();
-        if (roll <= 3) {
-            roll -= AnimaDice.getRoll();
+        int roll = 0;
+        if (isDefenseEnabled()) {
+            roll = AnimaDice.getRollOpen();
+            if (roll <= 3) {
+                roll -= AnimaDice.getRoll();
+            }
         }
         defenseRoll = roll + getDefense() + getDefenseMod();
     }

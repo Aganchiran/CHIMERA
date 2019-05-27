@@ -245,6 +245,15 @@
                         android:maxLength="6"
                         app:layout_constraintStart_toEndOf="@+id/attackModLabel"
                         app:layout_constraintTop_toBottomOf="@+id/attackMod" />
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/attackRoll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/roll"
+                        android:textColor="@color/primaryTextColor"
+                        app:layout_constraintTop_toBottomOf="@+id/damageValue"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
 
@@ -322,6 +331,15 @@
                         android:maxLength="6"
                         app:layout_constraintStart_toEndOf="@+id/defModLabel"
                         app:layout_constraintTop_toBottomOf="@+id/defValue" />
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/defenseRoll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/roll"
+                        android:textColor="@color/primaryTextColor"
+                        app:layout_constraintTop_toBottomOf="@+id/defMod"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
 

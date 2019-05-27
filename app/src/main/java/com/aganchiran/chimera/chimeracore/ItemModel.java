@@ -7,4 +7,5 @@ public abstract class ItemModel implements Serializable {
     public abstract int getId();
     public abstract void setId(int Id);
 
+    public abstract boolean contentsTheSame(Object obj);
 }

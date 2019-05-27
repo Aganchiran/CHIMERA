@@ -1,6 +1,5 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -32,11 +31,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class BattleActivity extends ActivityWithUpperBar {
 
     private static final int ADD_CHARACTERS = 1;
     private static final int SEE_CHARACTER = 2;
+    private static final int NONE = 0;
+    private static final int ATTACK = 1;
+    private static final int DAMAGE = 2;
     private View NO_ATTACKER;
 
     private BattleVM battleVM;
@@ -48,8 +51,8 @@ public class BattleActivity extends ActivityWithUpperBar {
     private MutableLiveData<List<CharacterModel>> initiatives = new MutableLiveData<>();
     private DefendersAdapter defendersAdapter;
     private RecyclerView defenderRecycler;
-
     private CharacterModel modifiedCharacter;
+    private int combatPhase = NONE;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -157,6 +160,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                             = initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
                     final int posRemoved = defendersAdapter.getItemPositionById(chaToRemove.getId());
                     if (posRemoved >= 0) {
+                        chaToRemove.endCombat();
                         defenders.remove(chaToRemove);
                         defendersAdapter.submitList(defenders);
                         defendersAdapter.notifyItemRemoved(posRemoved);
@@ -188,6 +192,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                     defendersAdapter.submitList(defenders);
                     initiativeAdapter.setDefenders(defenders);
                     initiativeAdapter.notifyItemChanged(holder.getAdapterPosition());
+                    endAttack();
                 }
             }
         }).attachToRecyclerView(initiativeRecycler);
@@ -231,6 +236,9 @@ public class BattleActivity extends ActivityWithUpperBar {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder holder, int direction) {
 
+                final CharacterModel chaToRemove =
+                        defendersAdapter.getCharacterAt(holder.getAdapterPosition());
+                chaToRemove.endCombat();
                 defenders.remove(holder.getAdapterPosition());
                 defendersAdapter.notifyItemRemoved(holder.getAdapterPosition());
                 defendersAdapter.submitList(defenders);
@@ -242,6 +250,7 @@ public class BattleActivity extends ActivityWithUpperBar {
     }
 
     private void changeAttacker(View characterCell) {
+        endAttack();
         ViewGroup parent = (ViewGroup) attacker.getParent();
         parent.removeView(attacker);
         parent.addView(characterCell);
@@ -301,22 +310,57 @@ public class BattleActivity extends ActivityWithUpperBar {
         }
     }
 
-    public void recalculateCombatSkills(View view) {
+    public void recalculateCombat(View view) {
         final CharacterModel attackerModel = initiativeAdapter.getAttacker();
-        if (attackerModel != null) {
-            attackerModel.rollAttack();
-            final TextView roll = attacker.findViewById(R.id.roll);
-            roll.setText(String.valueOf(attackerModel.getAttackRoll()));
-        }
-        for (CharacterModel defender : defenders) {
-            defender.rollDefense();
-            if (attackerModel != null) {
-                defender.setLastHit(attackerModel.calculateDamage(defender.getDefenseRoll()));
-                defender.hit(defender.getLastHit());
-            }
+        switch (combatPhase) {
+            case NONE:
+                combatPhase = ATTACK;
+                defendersAdapter.setCombatPhase(combatPhase);
+                if (attackerModel != null) {
+                    attackerModel.rollAttack();
+                    final TextView roll = attacker.findViewById(R.id.roll);
+                    roll.setText(String.valueOf(attackerModel.getAttackRoll()));
+                }
+                for (CharacterModel defender : defenders) {
+                    defender.rollDefense();
+                }
+                break;
+            case ATTACK:
+                combatPhase = DAMAGE;
+                defendersAdapter.setCombatPhase(combatPhase);
+                for (CharacterModel defender : defenders) {
+                    if (attackerModel != null) {
+                        defender.setLastHit(attackerModel.calculateDamage(defender.getDefenseRoll()));
+                    }
+                }
+                break;
+            case DAMAGE:
+                for (CharacterModel defender : defenders) {
+                    if (attackerModel != null) {
+                        defender.hit(defender.getLastHit());
+                    }
+                }
+                endAttack();
+                break;
         }
 
         battleVM.updateCharacters(defenders);
+        defendersAdapter.notifyDataSetChanged();
+    }
+
+    public void endAttack() {
+        combatPhase = NONE;
+        defendersAdapter.setCombatPhase(NONE);
+        final List<CharacterModel> allCha = Objects.requireNonNull(initiatives.getValue());
+        allCha.removeAll(Collections.singleton(null));
+        for (final CharacterModel cha : allCha) {
+            cha.endCombat();
+        }
+        if (attacker != NO_ATTACKER) {
+            ((TextView) attacker.findViewById(R.id.roll)).setText("");
+        }
+        battleVM.updateCharacters(allCha);
+        initiatives.setValue(allCha);
         defendersAdapter.notifyDataSetChanged();
     }
 

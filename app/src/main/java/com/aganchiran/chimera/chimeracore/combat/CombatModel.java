@@ -45,4 +45,18 @@ public class CombatModel extends ItemModel {
     public void setDisplayPosition(int displayPosition) {
         this.displayPosition = displayPosition;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof CombatModel
+                && ((CombatModel) obj).getId() == this.getId());
+    }
+
+    @Override
+    public boolean contentsTheSame(Object obj) {
+        return (obj instanceof CombatModel
+                && ((CombatModel) obj).getId() == this.getId()
+                && ((CombatModel) obj).getName().equals(this.getName())
+                && ((CombatModel) obj).getDisplayPosition() == this.getDisplayPosition());
+    }
 }

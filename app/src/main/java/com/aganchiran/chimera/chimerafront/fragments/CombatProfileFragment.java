@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class CombatProfileFragment extends Fragment {
                 final EditText weaponDamage = rootView.findViewById(R.id.damageValue);
                 final EditText defValue = rootView.findViewById(R.id.defValue);
                 final EditText defMod = rootView.findViewById(R.id.defMod);
+                final CheckBox attackRoll = rootView.findViewById(R.id.attackRoll);
+                final CheckBox defenseRoll = rootView.findViewById(R.id.defenseRoll);
 
                 lifeValue.setText(String.valueOf(characterModel.getLife()));
                 iniValue.setText(String.valueOf(characterModel.getInitiative()));
@@ -76,6 +79,8 @@ public class CombatProfileFragment extends Fragment {
                 weaponDamage.setText(String.valueOf(characterModel.getWeaponDamage()));
                 defValue.setText(String.valueOf(characterModel.getDefense()));
                 defMod.setText(String.valueOf(characterModel.getDefenseMod()));
+                attackRoll.setChecked(characterModel.isAttackEnabled());
+                defenseRoll.setChecked(characterModel.isDefenseEnabled());
 
                 Button saveButton = rootView.findViewById(R.id.save_button);
                 saveButton.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +113,8 @@ public class CombatProfileFragment extends Fragment {
                         characterModel.setWeaponDamage(numValues[5]);
                         characterModel.setDefense(numValues[6]);
                         characterModel.setDefenseMod(numValues[7]);
+                        characterModel.setAttackEnabled(attackRoll.isChecked());
+                        characterModel.setDefenseEnabled(defenseRoll.isChecked());
 
                         ((CharacterProfileActivity) getActivity()).setCharacter(characterModel);
                         combatProfileVM.update(characterModel);

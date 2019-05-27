@@ -24,14 +24,12 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
 import com.aganchiran.chimera.chimerafront.utils.CharacterAdapter;
-import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CharacterListVM;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterListActivity extends ActivityWithUpperBar {
@@ -131,10 +129,7 @@ public class CharacterListActivity extends ActivityWithUpperBar {
         data.observe(this, new Observer<List<CharacterModel>>() {
             @Override
             public void onChanged(@Nullable List<CharacterModel> characterModels) {
-                assert characterModels != null;
-                if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), characterModels)) {
-                    adapter.setItemModels(characterModels);
-                }
+                adapter.setItemModels(characterModels);
             }
         });
     }

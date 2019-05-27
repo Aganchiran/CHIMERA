@@ -21,11 +21,15 @@ import java.util.List;
 
 public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.ViewHolder> {
 
-    private CharacterModel empty = null;
-    private OnCharacterClickListener listener;
-
     private static final int CHARACTER_VIEW = 0;
     private static final int EMPTY_VIEW = 1;
+    private static final int NONE = 0;
+    private static final int ATTACK = 1;
+    private static final int DAMAGE = 2;
+
+    private CharacterModel empty = null;
+    private OnCharacterClickListener listener;
+    private int combatPhase = NONE;
 
     public DefendersAdapter() {
         super(DIFF_CALLBACK);
@@ -75,8 +79,18 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         if (getItemViewType(position) == CHARACTER_VIEW) {
             CharacterModel currentCharacter = getCharacterAt(position);
             ((DefenderHolder) holder).textViewName.setText(currentCharacter.getName());
-            ((DefenderHolder) holder).roll.setText(String.valueOf(currentCharacter.getDefenseRoll()));
-            ((DefenderHolder) holder).damage.setText(String.valueOf(currentCharacter.getLastHit()));
+            switch (combatPhase){
+                case NONE:
+                    ((DefenderHolder) holder).roll.setText("");
+                    ((DefenderHolder) holder).damage.setText("");
+                    break;
+                case ATTACK:
+                    ((DefenderHolder) holder).roll.setText(String.valueOf(currentCharacter.getDefenseRoll()));
+                    break;
+                case DAMAGE:
+                    ((DefenderHolder) holder).damage.setText(String.valueOf(currentCharacter.getLastHit()));
+                    break;
+            }
         }
     }
 
@@ -102,6 +116,10 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
 
     public CharacterModel getCharacterAt(int position) {
         return getItem(position);
+    }
+
+    public void setCombatPhase(int combatPhase) {
+        this.combatPhase = combatPhase;
     }
 
     public class DefenderHolder extends RecyclerView.ViewHolder {

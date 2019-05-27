@@ -11,7 +11,7 @@ import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "consumable_table",foreignKeys ={@ForeignKey(onDelete = CASCADE,entity = CharacterModel.class, parentColumns = "id",childColumns = "characterId")},indices = {@Index("characterId")})
+@Entity(tableName = "consumable_table", foreignKeys = {@ForeignKey(onDelete = CASCADE, entity = CharacterModel.class, parentColumns = "id", childColumns = "characterId")}, indices = {@Index("characterId")})
 public class ConsumableModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
@@ -104,7 +104,7 @@ public class ConsumableModel extends ItemModel {
         return currentValue;
     }
 
-    public String getValueFormated(){
+    public String getValueFormated() {
         final long number = Math.abs(currentValue);
         long sign = (number != 0) ? currentValue / number : 0;
         String formattedNumber = String.valueOf(currentValue);
@@ -168,5 +168,25 @@ public class ConsumableModel extends ItemModel {
 
     public void setCharacterId(int characterId) {
         this.characterId = characterId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof ConsumableModel
+                && ((ConsumableModel) obj).getId() == this.getId());
+    }
+
+    @Override
+    public boolean contentsTheSame(Object obj) {
+        return (obj instanceof ConsumableModel
+                && ((ConsumableModel) obj).getId() == this.getId()
+                && ((ConsumableModel) obj).getName().equals(this.getName())
+                && ((ConsumableModel) obj).getMaxValue() == this.getMaxValue()
+                && ((ConsumableModel) obj).getMinValue() == this.getMinValue()
+                && ((ConsumableModel) obj).getIncrement() == this.getIncrement()
+                && ((ConsumableModel) obj).isShowOnIcon() == this.isShowOnIcon()
+                && ((ConsumableModel) obj).getColor().equals(this.getColor())
+                && ((ConsumableModel) obj).getDisplayPosition() == this.getDisplayPosition()
+                && ((ConsumableModel) obj).getCharacterId() == this.getCharacterId());
     }
 }
