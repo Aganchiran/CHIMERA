@@ -104,7 +104,7 @@ public class ConsumableModel extends ItemModel {
         return currentValue;
     }
 
-    public String getCurrentValueFormated(){
+    public String getValueFormated(){
         final long number = Math.abs(currentValue);
         long sign = (number != 0) ? currentValue / number : 0;
         String formattedNumber = String.valueOf(currentValue);

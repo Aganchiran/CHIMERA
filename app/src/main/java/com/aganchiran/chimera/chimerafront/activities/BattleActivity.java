@@ -1,5 +1,6 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,9 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,14 +30,13 @@ import org.apache.commons.collections4.list.SetUniqueList;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 public class BattleActivity extends ActivityWithUpperBar {
 
     private static final int ADD_CHARACTERS = 1;
+    private static final int SEE_CHARACTER = 2;
     private View NO_ATTACKER;
 
     private BattleVM battleVM;
@@ -48,12 +49,25 @@ public class BattleActivity extends ActivityWithUpperBar {
     private DefendersAdapter defendersAdapter;
     private RecyclerView defenderRecycler;
 
+    private CharacterModel modifiedCharacter;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_battle);
         battleVM = ViewModelProviders.of(this).get(BattleVM.class);
         NO_ATTACKER = findViewById(R.id.attacker);
         attacker = NO_ATTACKER;
+        findViewById(R.id.attacker_frame).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN && initiativeAdapter.getAttacker() != null) {
+                    goToCharacterProfile(initiativeAdapter.getAttacker());
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         Intent intent = this.getIntent();
         combat = (CombatModel) intent.getSerializableExtra("COMBAT");
@@ -61,6 +75,10 @@ public class BattleActivity extends ActivityWithUpperBar {
         setupDefendersList();
 
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(combat.getName());
     }
 
     private void setupInitiativeList() {
@@ -77,10 +95,10 @@ public class BattleActivity extends ActivityWithUpperBar {
             public void onCharacterClick(InitiativeAdapter.InitiativeHolder holder) {
                 if (initiativeAdapter.getAttacker() == null ||
                         initiativeAdapter.getCharacterAt(holder.getAdapterPosition()).getId()
-                        != initiativeAdapter.getAttacker().getId()) {
+                                != initiativeAdapter.getAttacker().getId()) {
                     changeAttacker(holder.getCopy());
                     holder.selectAsAttacker();
-                }else {
+                } else {
                     changeAttacker(NO_ATTACKER);
                     holder.disselectAsAttacker();
                 }
@@ -182,6 +200,14 @@ public class BattleActivity extends ActivityWithUpperBar {
         defenderRecycler.setHasFixedSize(true);
 
         defendersAdapter = new DefendersAdapter();
+        defendersAdapter.setListener(new DefendersAdapter.OnCharacterClickListener() {
+            @Override
+            public void onCharacterClick(CharacterModel characterModel) {
+                if (characterModel != null) {
+                    goToCharacterProfile(characterModel);
+                }
+            }
+        });
         defenderRecycler.setAdapter(defendersAdapter);
         defendersAdapter.submitList(new ArrayList<CharacterModel>());
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
@@ -241,6 +267,17 @@ public class BattleActivity extends ActivityWithUpperBar {
             initiatives.setValue(new ArrayList<>(new HashSet<>(newList)));
             initiativeAdapter.notifyDataSetChanged();
             battleVM.linkCharactersToCombat(combat.getId(), charactersIds);
+        } else if (requestCode == SEE_CHARACTER) {
+            CharacterModel cha = (CharacterModel) data.getSerializableExtra("CHARACTER");
+
+            modifiedCharacter.setLife(cha.getLife());
+            modifiedCharacter.setInitiative(cha.getInitiative());
+            modifiedCharacter.setInitiativeMod(cha.getInitiativeMod());
+            modifiedCharacter.setAttack(cha.getAttack());
+            modifiedCharacter.setAttackMod(cha.getAttackMod());
+            modifiedCharacter.setWeaponDamage(cha.getWeaponDamage());
+            modifiedCharacter.setDefense(cha.getDefense());
+            modifiedCharacter.setDefenseMod(cha.getDefenseMod());
         }
     }
 
@@ -262,6 +299,33 @@ public class BattleActivity extends ActivityWithUpperBar {
             initiatives.setValue(sortedList);
             initiativeAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void recalculateCombatSkills(View view) {
+        final CharacterModel attackerModel = initiativeAdapter.getAttacker();
+        if (attackerModel != null) {
+            attackerModel.rollAttack();
+            final TextView roll = attacker.findViewById(R.id.roll);
+            roll.setText(String.valueOf(attackerModel.getAttackRoll()));
+        }
+        for (CharacterModel defender : defenders) {
+            defender.rollDefense();
+            if (attackerModel != null) {
+                defender.setLastHit(attackerModel.calculateDamage(defender.getDefenseRoll()));
+                defender.hit(defender.getLastHit());
+            }
+        }
+
+        battleVM.updateCharacters(defenders);
+        defendersAdapter.notifyDataSetChanged();
+    }
+
+    private void goToCharacterProfile(CharacterModel characterModel) {
+        modifiedCharacter = characterModel;
+        Intent intent = new Intent(this, CharacterProfileActivity.class);
+        intent.putExtra("CHARACTER", characterModel);
+        intent.putExtra("FROMCOMBAT", true);
+        startActivityForResult(intent, 2);
     }
 
 }

@@ -19,7 +19,7 @@ import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 @Database(
         entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class, CombatCharacter.class},
-        version = 12,
+        version = 16,
         exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 
@@ -65,30 +65,6 @@ public abstract class ChimeraDB extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            final CharacterModel pepe = new CharacterModel("Pepe", "");
-            final CharacterModel juan = new CharacterModel("Juan", "");
-            characterDAO.insert(pepe);
-            characterDAO.insert(juan);
-            characterDAO.insert(new CharacterModel("María", ""));
-            characterDAO.insert(new CharacterModel("Gerardo", ""));
-
-            consumableDAO.insert(new ConsumableModel("Life", 150, -40,
-                    "#FFFF00", pepe.getId()));
-            consumableDAO.insert(new ConsumableModel("Zeon", 1000, 0,
-                    "#FFFF00", pepe.getId()));
-            consumableDAO.insert(new ConsumableModel("Arrows", 10, 0,
-                    "#FFFF00", pepe.getId()));
-
-            final CombatModel epic = new CombatModel("Epic Battle");
-            final CombatModel normal = new CombatModel("Normal Battle");
-            combatDAO.insert(epic);
-            combatDAO.insert(normal);
-            combatDAO.insert(new CombatModel("Fun Battle"));
-
-            combatCharacterDAO.insert(new CombatCharacter(epic.getId(), pepe.getId()));
-            combatCharacterDAO.insert(new CombatCharacter(epic.getId(), juan.getId()));
-            combatCharacterDAO.insert(new CombatCharacter(normal.getId(), pepe.getId()));
-
             return null;
         }
     }

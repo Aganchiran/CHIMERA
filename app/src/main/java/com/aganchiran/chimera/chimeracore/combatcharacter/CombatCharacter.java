@@ -2,6 +2,7 @@ package com.aganchiran.chimera.chimeracore.combatcharacter;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
@@ -9,7 +10,7 @@ import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "combat_character",
-        primaryKeys = { "combatId", "characterId" },
+        primaryKeys = {"combatId", "characterId"},
         foreignKeys = {
                 @ForeignKey(onDelete = CASCADE, entity = CombatModel.class,
                         parentColumns = "id",
@@ -17,7 +18,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 @ForeignKey(onDelete = CASCADE, entity = CharacterModel.class,
                         parentColumns = "id",
                         childColumns = "characterId")
-        })
+        },
+        indices = {@Index("combatId"), @Index("characterId")})
 public class CombatCharacter {
 
     public final int combatId;

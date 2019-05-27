@@ -46,7 +46,7 @@ public class ConsumableListFragment extends Fragment {
             LinearLayout.LayoutParams.MATCH_PARENT,
             0);
 
-    private FloatingActionButton addCharacterButton;
+    private FloatingActionButton addConsumableButton;
     private ConsumableListVM consumableListVM;
     private ConsumableAdapter adapter;
 
@@ -174,8 +174,8 @@ public class ConsumableListFragment extends Fragment {
     }
 
     private void setupButtons(final View rootView) {
-        addCharacterButton = rootView.findViewById(R.id.add_consumable_button);
-        addCharacterButton.setOnDragListener(new View.OnDragListener() {
+        addConsumableButton = rootView.findViewById(R.id.add_consumable_button);
+        addConsumableButton.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 switch (event.getAction()) {
@@ -189,7 +189,7 @@ public class ConsumableListFragment extends Fragment {
                 return true;
             }
         });
-        addCharacterButton.setOnClickListener(new View.OnClickListener() {
+        addConsumableButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -234,7 +234,7 @@ public class ConsumableListFragment extends Fragment {
     private void cancelCharacterDeletion(View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
-        addCharacterButton.show();
+        addConsumableButton.show();
     }
 
     private void createConsumable(String name, long max, long min) {
@@ -263,7 +263,7 @@ public class ConsumableListFragment extends Fragment {
                     adapter.enableSelectMode();
                     Objects.requireNonNull(getActivity()).findViewById(R.id.deletion_interface)
                             .setLayoutParams(VISIBLE);
-                    addCharacterButton.hide();
+                    addConsumableButton.hide();
                 }
                 return true;
         }

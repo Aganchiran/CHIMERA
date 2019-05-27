@@ -39,4 +39,7 @@
     <string name="defense_modifier">Defense modifier:</string>
     <string name="save">Save</string>
     <string name="combat">Combat</string>
+    <string name="life">Life</string>
+    <string name="life_value">Life value:</string>
+    <string name="weapon_damage">Weapon damage:</string>
 </resources>

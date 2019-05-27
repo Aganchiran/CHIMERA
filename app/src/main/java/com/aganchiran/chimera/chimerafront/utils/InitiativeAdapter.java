@@ -146,7 +146,7 @@ public class InitiativeAdapter extends ListAdapter<CharacterModel, RecyclerView.
         InitiativeHolder(@NonNull final View characterView) {
             super(characterView);
             textViewName = itemView.findViewById(R.id.name_label);
-            iniRoll = itemView.findViewById(R.id.ini_roll);
+            iniRoll = itemView.findViewById(R.id.roll);
             attackerIcon = itemView.findViewById(R.id.attacker_icon);
             defenderIcon = itemView.findViewById(R.id.defender_icon);
             gestureDetector = new GestureDetector(itemView.getContext(),

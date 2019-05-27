@@ -28,7 +28,7 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
     public void onBindItemHolder(@NonNull ConsumableHolder holder, int position) {
         ConsumableModel currentConsumable = getItemAt(position);
         holder.textViewName.setText(currentConsumable.getName());
-        holder.textViewCurrentValue.setText(currentConsumable.getCurrentValueFormated());
+        holder.textViewCurrentValue.setText(currentConsumable.getValueFormated());
     }
 
     class ConsumableHolder extends ItemAdapter.ItemHolder {

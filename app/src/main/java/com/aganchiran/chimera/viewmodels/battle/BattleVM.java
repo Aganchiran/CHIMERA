@@ -53,4 +53,8 @@ public class BattleVM extends AndroidViewModel {
     public LiveData<CombatCharacter> getCCByIds(int combatId, int characterId){
         return combatCharacterRepo.getCCByIds(combatId, characterId);
     }
+
+    public void updateCharacters(List<CharacterModel> characterModels){
+        characterRepo.updateCharacters(characterModels);
+    }
 }

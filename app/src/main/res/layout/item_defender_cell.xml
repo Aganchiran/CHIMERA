@@ -8,13 +8,30 @@
     <include layout="@layout/item_character_icon" />
 
     <TextView
+        android:id="@+id/damage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:lines="1"
+        android:textAlignment="center"
+        android:layout_margin="@dimen/cell_distance"
+        android:textColor="@color/attackerColor"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="24sp"
+        app:autoSizeMaxTextSize="100sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/name_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lines="2"
+        android:lines="1"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

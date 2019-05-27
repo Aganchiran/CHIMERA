@@ -33,8 +33,25 @@ public class CharacterModel extends ItemModel {
 
     private int defenseMod;
 
+    private boolean attackEnabled;
+
+    private boolean defenseEnabled;
+
+    private int life = 100;
+
+    private int weaponDamage = 100;
+
     @Ignore
     private int iniRoll = 0;
+
+    @Ignore
+    private int attackRoll = 0;
+
+    @Ignore
+    private int defenseRoll = 0;
+
+    @Ignore
+    private int lastHit = 0;
 
     public CharacterModel(String name, String description) {
         this.name = name;
@@ -129,6 +146,38 @@ public class CharacterModel extends ItemModel {
         this.defenseMod = defenseMod;
     }
 
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
+
+    public int getWeaponDamage() {
+        return weaponDamage;
+    }
+
+    public void setWeaponDamage(int weaponDamage) {
+        this.weaponDamage = weaponDamage;
+    }
+
+    public boolean isAttackEnabled() {
+        return attackEnabled;
+    }
+
+    public void setAttackEnabled(boolean attackEnabled) {
+        this.attackEnabled = attackEnabled;
+    }
+
+    public boolean isDefenseEnabled() {
+        return defenseEnabled;
+    }
+
+    public void setDefenseEnabled(boolean defenseEnabled) {
+        this.defenseEnabled = defenseEnabled;
+    }
+
     public int getIniRoll() {
         return iniRoll;
     }
@@ -137,9 +186,37 @@ public class CharacterModel extends ItemModel {
         this.iniRoll = iniRoll;
     }
 
-    public void rollIni(){
-        int roll = AnimaDice.getRoll();
-        switch (roll){
+    public int getAttackRoll() {
+        return attackRoll;
+    }
+
+    public void setAttackRoll(int attackRoll) {
+        this.attackRoll = attackRoll;
+    }
+
+    public int getDefenseRoll() {
+        return defenseRoll;
+    }
+
+    public void setDefenseRoll(int defenseRoll) {
+        this.defenseRoll = defenseRoll;
+    }
+
+    public int getLastHit() {
+        return lastHit;
+    }
+
+    public void setLastHit(int lastHit) {
+        this.lastHit = lastHit;
+    }
+
+    public void hit(int damage) {
+        life -= damage;
+    }
+
+    public void rollIni() {
+        int roll = AnimaDice.getRollOpen();
+        switch (roll) {
             case 1:
                 roll = -125;
                 break;
@@ -153,6 +230,28 @@ public class CharacterModel extends ItemModel {
         iniRoll = roll + getInitiative() + getInitiativeMod();
     }
 
+    public void rollAttack() {
+        int roll = AnimaDice.getRollOpen();
+        if (roll <= 3) {
+            roll -= AnimaDice.getRoll();
+        }
+        attackRoll = roll + getAttack() + getAttackMod();
+    }
+
+    public void rollDefense() {
+        int roll = AnimaDice.getRollOpen();
+        if (roll <= 3) {
+            roll -= AnimaDice.getRoll();
+        }
+        defenseRoll = roll + getDefense() + getDefenseMod();
+    }
+
+    public int calculateDamage(int defenseResult) {
+        int result = (int) (((double) (getAttackRoll() - defenseResult) / 100.0) * weaponDamage);
+        if (result < 0) result = 0;
+        return result;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof CharacterModel
@@ -164,7 +263,7 @@ public class CharacterModel extends ItemModel {
         return Objects.hash(id);
     }
 
-    public boolean contentsTheSame(Object obj){
+    public boolean contentsTheSame(Object obj) {
         return (obj instanceof CharacterModel
                 && ((CharacterModel) obj).getId() == this.getId()
                 && ((CharacterModel) obj).getName().equals(this.getName())

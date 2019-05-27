@@ -1,5 +1,6 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
     public static final int DETAILS_TAB = 0;
     public static final int CONSUMABLES_TAB = 1;
     public static final int COMBAT_TAB = 2;
+
+    private CharacterModel character;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -52,6 +55,10 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        character = (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
+        if (getIntent().getBooleanExtra("FROMCOMBAT", false)) {
+            tabLayout.getTabAt(COMBAT_TAB).select();
+        }
 
         super.onCreate(savedInstanceState);
     }
@@ -62,6 +69,22 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("CHARACTER", character);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+
+    }
+
+    public CharacterModel getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(CharacterModel character) {
+        this.character = character;
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

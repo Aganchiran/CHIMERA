@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/character_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:contentDescription="@string/character_image"
         android:background="@color/backgroundColor"
         android:src="@drawable/ic_character"
@@ -47,7 +47,8 @@
             android:layout_height="16dp"
             android:layout_gravity="center"
             android:progress="70"
-            android:alpha="0.8" />
+            android:alpha="0.8"
+            android:progressTint="@color/defenderColor" />
     </FrameLayout>
 
     <FrameLayout
@@ -64,7 +65,7 @@
             android:layout_height="16dp"
             android:layout_gravity="center"
             android:progress="85"
-            android:alpha="0.8" />
+            android:alpha="0.8"/>
     </FrameLayout>
 
     <FrameLayout
@@ -81,6 +82,16 @@
             android:layout_height="16dp"
             android:layout_gravity="center"
             android:progress="40"
-            android:alpha="0.8" />
+            android:alpha="0.8"
+            android:progressTint="@color/attackerColor" />
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/roll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    
 </android.support.constraint.ConstraintLayout>

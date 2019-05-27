@@ -75,6 +75,8 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         if (getItemViewType(position) == CHARACTER_VIEW) {
             CharacterModel currentCharacter = getCharacterAt(position);
             ((DefenderHolder) holder).textViewName.setText(currentCharacter.getName());
+            ((DefenderHolder) holder).roll.setText(String.valueOf(currentCharacter.getDefenseRoll()));
+            ((DefenderHolder) holder).damage.setText(String.valueOf(currentCharacter.getLastHit()));
         }
     }
 
@@ -105,11 +107,15 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
     public class DefenderHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewName;
+        private TextView roll;
+        private TextView damage;
         private GestureDetector gestureDetector;
 
         DefenderHolder(@NonNull final View characterView) {
             super(characterView);
             textViewName = itemView.findViewById(R.id.name_label);
+            roll = itemView.findViewById(R.id.roll);
+            damage = itemView.findViewById(R.id.damage);
             gestureDetector = new GestureDetector(itemView.getContext(),
                     new ItemGestureListener(this));
 

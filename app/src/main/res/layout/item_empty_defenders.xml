@@ -4,7 +4,8 @@
     android:layout_width="@dimen/cell_size"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    android:padding="@dimen/cell_distance">
+    android:padding="@dimen/cell_distance"
+    android:layout_margin="@dimen/cell_distance">
 
     <TextView
         android:id="@+id/textView2"
