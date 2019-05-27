@@ -1,6 +1,7 @@
 <resources>
     <!--Image descriptions-->
     <string name="character_image">Character image</string>
+    <string name="combat_image">Combat Image</string>
     <string name="settings_icon">Settings icon</string>
     <string name="description">Description</string>
 
@@ -23,4 +24,22 @@
     <string name="minimum">Minimum</string>
     <string name="maximum">Maximum</string>
     <string name="delete_consumables">Delete consumables</string>
+    <string name="edit_consumable">Edit consumable</string>
+    <string name="delete_combats">Delete Combats</string>
+    <string name="edit_combat">Edit combat</string>
+    <string name="empty_defenders_message">Swipe characters to select defenders</string>
+    <string name="attack">Attack</string>
+    <string name="attack_value">Attack value:</string>
+    <string name="attack_modifier">Attack modifier:</string>
+    <string name="initiative">Initiative</string>
+    <string name="initiative_modifier">Initiative modifier:</string>
+    <string name="initiative_value">Initiative value:</string>
+    <string name="defense">Defense</string>
+    <string name="defense_value">Defense value:</string>
+    <string name="defense_modifier">Defense modifier:</string>
+    <string name="save">Save</string>
+    <string name="combat">Combat</string>
+    <string name="life">Life</string>
+    <string name="life_value">Life value:</string>
+    <string name="weapon_damage">Weapon damage:</string>
 </resources>

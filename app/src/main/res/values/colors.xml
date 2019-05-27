@@ -11,4 +11,7 @@
 
     <color name="backgroundLightColor">#404040</color>
     <color name="backgroundColor">#1a1a1a</color>
+
+    <color name="attackerColor">#FF0000</color>
+    <color name="defenderColor">#00DDFF</color>
 </resources>

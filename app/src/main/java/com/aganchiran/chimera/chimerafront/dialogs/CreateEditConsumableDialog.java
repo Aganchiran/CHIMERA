@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
+
+import java.util.Objects;
 
 public class CreateEditConsumableDialog extends AppCompatDialogFragment {
 
@@ -23,11 +25,12 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setRetainInstance(true);
         final AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_create_consumable, null);
+        final LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
+        final View view = inflater.inflate(R.layout.dialog_create_edit_consumable, null);
 
         editTextName = view.findViewById(R.id.name_value);
         editTextMaxValue = view.findViewById(R.id.max_value);
@@ -55,8 +58,8 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(View v) {
                 final String name = editTextName.getText().toString();
-                final String maxText = editTextMaxValue.getText().toString();
-                final String minText = editTextMinValue.getText().toString();
+                String maxText = editTextMaxValue.getText().toString();
+                String minText = editTextMinValue.getText().toString();
 
                 if (name.trim().isEmpty()) {
                     Toast.makeText(getContext(),
@@ -64,14 +67,10 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
                     return;
                 }
                 if (maxText.trim().isEmpty()) {
-                    Toast.makeText(getContext(),
-                            "Maximum value is mandatory", Toast.LENGTH_SHORT).show();
-                    return;
+                    maxText = editTextMaxValue.getHint().toString();
                 }
                 if (minText.trim().isEmpty()) {
-                    Toast.makeText(getContext(),
-                            "Minimum value is mandatory", Toast.LENGTH_SHORT).show();
-                    return;
+                    minText = editTextMinValue.getHint().toString();
                 }
 
                 final long max = Long.parseLong(maxText);

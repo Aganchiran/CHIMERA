@@ -8,18 +8,26 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.aganchiran.chimera.chimeracore.CharacterDAO;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
-import com.aganchiran.chimera.chimeracore.ConsumableDAO;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterDAO;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.combat.CombatDAO;
+import com.aganchiran.chimera.chimeracore.combat.CombatModel;
+import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacter;
+import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacterDAO;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableDAO;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
-@Database(entities = {CharacterModel.class, ConsumableModel.class}, version = 5, exportSchema = false)
+@Database(
+        entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class, CombatCharacter.class},
+        version = 17,
+        exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 
     private static ChimeraDB instance;
-
     public abstract CharacterDAO characterDAO();
     public abstract ConsumableDAO consumableDAO();
+    public abstract CombatDAO combatDAO();
+    public abstract CombatCharacterDAO combatCharacterDAO();
 
     public static synchronized ChimeraDB getInstance(Context context) {
         if (instance == null) {
@@ -45,10 +53,14 @@ public abstract class ChimeraDB extends RoomDatabase {
 
         private CharacterDAO characterDAO;
         private ConsumableDAO consumableDAO;
+        private CombatDAO combatDAO;
+        private CombatCharacterDAO combatCharacterDAO;
 
         public PopulateDbAsyncTask(ChimeraDB db) {
             this.characterDAO = db.characterDAO();
             this.consumableDAO = db.consumableDAO();
+            this.combatDAO = db.combatDAO();
+            this.combatCharacterDAO = db.combatCharacterDAO();
         }
 
         @Override

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/element_upper_bar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/defenderRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/defenderColor"
+        android:orientation="vertical"
+        android:padding="@dimen/cell_distance"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:listitem="@layout/item_empty_defenders" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#00000000"
+        android:onClick="recalculateCombatSkills"
+        android:src="@drawable/ic_resolve_combat"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toTopOf="@+id/space2"
+        app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
+        app:layout_constraintStart_toEndOf="@+id/attacker_frame"
+        app:layout_constraintTop_toBottomOf="@+id/space" />
+
+    <FrameLayout
+        android:id="@+id/attacker_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/attackerColor"
+        android:padding="@dimen/cell_distance"
+        app:layout_constraintBottom_toTopOf="@+id/space2"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
+        app:layout_constraintTop_toBottomOf="@+id/space">
+
+        <include
+            android:id="@+id/attacker"
+            layout="@layout/item_character_icon" />
+    </FrameLayout>
+
+    <Space
+        android:id="@+id/space2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/backgroundLightColor"
+        android:onClick="recalculateIni"
+        android:src="@drawable/ic_loop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/initiativeRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/backgroundLightColor"
+        android:orientation="vertical"
+        android:padding="@dimen/cell_distance"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:listitem="@layout/item_initiative_cell" />
+
+    <include layout="@layout/element_button_home" />
+
+</android.support.constraint.ConstraintLayout>

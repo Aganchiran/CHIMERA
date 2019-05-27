@@ -1,5 +1,6 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,14 +10,18 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.CharacterModel;
+import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimerafront.fragments.CharacterDetailsFragment;
-import com.aganchiran.chimera.chimerafront.fragments.ConsumableManagerFragment;
+import com.aganchiran.chimera.chimerafront.fragments.CombatProfileFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
 
 public class CharacterProfileActivity extends ActivityWithUpperBar {
 
     public static final int DETAILS_TAB = 0;
     public static final int CONSUMABLES_TAB = 1;
+    public static final int COMBAT_TAB = 2;
+
+    private CharacterModel character;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,6 +55,10 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        character = (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
+        if (getIntent().getBooleanExtra("FROMCOMBAT", false)) {
+            tabLayout.getTabAt(COMBAT_TAB).select();
+        }
 
         super.onCreate(savedInstanceState);
     }
@@ -60,6 +69,22 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("CHARACTER", character);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+
+    }
+
+    public CharacterModel getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(CharacterModel character) {
+        this.character = character;
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -81,7 +106,9 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
                 case DETAILS_TAB:
                     return CharacterDetailsFragment.newInstance(characterModel);
                 case CONSUMABLES_TAB:
-                    return ConsumableManagerFragment.newInstance(characterModel);
+                    return ConsumableListFragment.newInstance(characterModel);
+                case COMBAT_TAB:
+                    return CombatProfileFragment.newInstance(characterModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
             }
@@ -89,7 +116,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

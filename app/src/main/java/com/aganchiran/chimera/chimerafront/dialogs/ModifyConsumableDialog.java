@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
-import com.aganchiran.chimera.chimeracore.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 import java.util.Objects;
 
@@ -34,6 +34,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setRetainInstance(true);
         final AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 

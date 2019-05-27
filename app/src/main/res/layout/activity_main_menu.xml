@@ -31,7 +31,7 @@
                     android:text="@string/characters"
                     android:textAlignment="center"
                     android:drawableTop="@drawable/ic_character"
-                    android:onClick="goToCharactersScreen" />
+                    android:onClick="goToCharactersList" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                     android:text="@string/combats"
                     android:textAlignment="center"
                     android:drawableTop="@drawable/ic_combat"
-                    android:onClick="goToCommingSoonScreen"/>
+                    android:onClick="goToCombatList"/>
         </LinearLayout>
     </LinearLayout>
 
