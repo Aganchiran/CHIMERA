@@ -19,7 +19,7 @@ import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 @Database(
         entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class, CombatCharacter.class},
-        version = 16,
+        version = 17,
         exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 
