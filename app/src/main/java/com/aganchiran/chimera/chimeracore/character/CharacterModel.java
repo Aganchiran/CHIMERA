@@ -1,15 +1,20 @@
 package com.aganchiran.chimera.chimeracore.character;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.aganchiran.chimera.chimeracore.ItemModel;
+import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.dice.AnimaDice;
 
 import java.util.Objects;
 
-@Entity(tableName = "character_table")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "character_table", foreignKeys = {@ForeignKey(onDelete = CASCADE, entity = CampaignModel.class, parentColumns = "id", childColumns = "campaignId")}, indices = {@Index("campaignId")})
 public class CharacterModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
@@ -41,6 +46,8 @@ public class CharacterModel extends ItemModel {
 
     private int weaponDamage = 100;
 
+    private int campaignId;
+
     @Ignore
     private int iniRoll = 0;
 
@@ -53,7 +60,7 @@ public class CharacterModel extends ItemModel {
     @Ignore
     private int lastHit = 0;
 
-    public CharacterModel(String name, String description) {
+    public CharacterModel(String name, String description, int campaignId) {
         this.name = name;
         this.description = description;
         this.displayPosition = Integer.MAX_VALUE;
@@ -62,6 +69,7 @@ public class CharacterModel extends ItemModel {
         this.initiativeMod = 0;
         this.attackMod = 0;
         this.defenseMod = 0;
+        this.campaignId = campaignId;
     }
 
     @Override
@@ -178,6 +186,14 @@ public class CharacterModel extends ItemModel {
         this.defenseEnabled = defenseEnabled;
     }
 
+    public int getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(int campaignId) {
+        this.campaignId = campaignId;
+    }
+
     public int getIniRoll() {
         return iniRoll;
     }
@@ -202,11 +218,12 @@ public class CharacterModel extends ItemModel {
         this.lastHit = lastHit;
     }
 
-    public void endCombat(){
+    public void endCombat() {
         attackRoll = 0;
         defenseRoll = 0;
         lastHit = 0;
     }
+
     public void hit(int damage) {
         life -= damage;
     }

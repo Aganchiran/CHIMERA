@@ -43,4 +43,6 @@
     <string name="weapon_damage">Weapon damage:</string>
     <string name="empty_attacker_message">Tap a character to select attacker</string>
     <string name="roll">Roll</string>
+    <string name="edit_campaign">Edit campaign</string>
+    <string name="delete_campaigns">Delete campaigns</string>
 </resources>

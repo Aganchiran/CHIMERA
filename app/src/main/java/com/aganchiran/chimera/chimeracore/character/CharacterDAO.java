@@ -38,4 +38,8 @@ public abstract class CharacterDAO {
     @Query("SELECT * FROM character_table ORDER BY displayPosition ASC")
     public abstract LiveData<List<CharacterModel>> getAllCharacters();
 
+    @Query("SELECT * FROM character_table WHERE campaignId = :campaignId " +
+            "ORDER BY displayPosition ASC")
+    public abstract LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId);
+
 }
