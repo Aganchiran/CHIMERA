@@ -17,7 +17,6 @@
     <string name="cancel">Cancel</string>
     <string name="delete_characters">Delete characters</string>
     <string name="edit_character">Edit character</string>
-    <string name="title_activity_character_management">CharacterManagementActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_details">Details</string>
     <string name="tab_consumables">Consumables</string>
@@ -42,4 +41,8 @@
     <string name="life">Life</string>
     <string name="life_value">Life value:</string>
     <string name="weapon_damage">Weapon damage:</string>
+    <string name="empty_attacker_message">Tap a character to select attacker</string>
+    <string name="roll">Roll</string>
+    <string name="edit_campaign">Edit campaign</string>
+    <string name="delete_campaigns">Delete campaigns</string>
 </resources>

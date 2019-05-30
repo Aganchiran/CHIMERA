@@ -58,6 +58,9 @@ public class CharacterRepo {
         return allCharacters;
     }
 
+    public LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId){
+        return characterDAO.getCampaignCharacters(campaignId);
+    }
 
     /////////////////////////
     //////////TASKS//////////

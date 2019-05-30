@@ -40,7 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00000000"
-        android:onClick="recalculateCombatSkills"
+        android:onClick="recalculateCombat"
         android:src="@drawable/ic_resolve_combat"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintBottom_toTopOf="@+id/space2"
@@ -63,9 +63,16 @@
         app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
         app:layout_constraintTop_toBottomOf="@+id/space">
 
-        <include
+        <TextView
             android:id="@+id/attacker"
-            layout="@layout/item_character_icon" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/backgroundColor"
+            android:text="@string/empty_attacker_message"
+            android:textAlignment="center"
+            android:textSize="19sp"
+            android:gravity="center"
+            android:textColor="@color/lightTextColor" />
     </FrameLayout>
 
     <Space

@@ -1,22 +1,25 @@
-package com.aganchiran.chimera.chimeracore.combat;
+package com.aganchiran.chimera.chimeracore.campaign;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.aganchiran.chimera.chimeracore.ItemModel;
 
-@Entity(tableName = "combat_table")
-public class CombatModel extends ItemModel {
+@Entity(tableName = "campaign_table")
+public class CampaignModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String name;
 
+    private String description;
+
     private int displayPosition;
 
-    public CombatModel(String name) {
+    public CampaignModel(String name, String description) {
         this.name = name;
+        this.description = description;
         this.displayPosition = Integer.MAX_VALUE;
     }
 
@@ -38,6 +41,14 @@ public class CombatModel extends ItemModel {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public int getDisplayPosition() {
         return displayPosition;
     }
@@ -47,16 +58,7 @@ public class CombatModel extends ItemModel {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return (obj instanceof CombatModel
-                && ((CombatModel) obj).getId() == this.getId());
-    }
-
-    @Override
     public boolean contentsTheSame(Object obj) {
-        return (obj instanceof CombatModel
-                && ((CombatModel) obj).getId() == this.getId()
-                && ((CombatModel) obj).getName().equals(this.getName())
-                && ((CombatModel) obj).getDisplayPosition() == this.getDisplayPosition());
+        return false;
     }
 }

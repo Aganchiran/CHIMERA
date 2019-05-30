@@ -23,7 +23,6 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
 import com.aganchiran.chimera.chimerafront.utils.CombatAdapter;
-import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
@@ -114,15 +113,12 @@ public class CombatListActivity extends ActivityWithUpperBar {
         data.observe(this, new Observer<List<CombatModel>>() {
             @Override
             public void onChanged(@Nullable List<CombatModel> combatModels) {
-                assert combatModels != null;
-                if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), combatModels)) {
-                    adapter.setItemModels(combatModels);
-                }
+                adapter.setItemModels(combatModels);
             }
         });
     }
 
-    private void setupButtons(){
+    private void setupButtons() {
         addCombatButton = findViewById(R.id.add_combat_button);
         addCombatButton.setOnDragListener(new View.OnDragListener() {
             @Override

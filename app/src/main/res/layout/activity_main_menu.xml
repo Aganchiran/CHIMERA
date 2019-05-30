@@ -23,7 +23,7 @@
                     android:text="@string/campaigns"
                     android:textAlignment="center"
                     android:drawableTop="@drawable/ic_campaign"
-                    android:onClick="goToCommingSoonScreen"/>
+                    android:onClick="goToCampaignList"/>
 
                 <TextView
                     android:layout_width="wrap_content"

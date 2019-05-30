@@ -27,7 +27,6 @@ import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
-import com.aganchiran.chimera.chimerafront.utils.CompareUtil;
 import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
@@ -165,10 +164,7 @@ public class ConsumableListFragment extends Fragment {
         data.observe(this, new Observer<List<ConsumableModel>>() {
             @Override
             public void onChanged(@Nullable List<ConsumableModel> consumableModels) {
-                assert consumableModels != null;
-                if (!CompareUtil.areItemsTheSame(adapter.getItemModels(), consumableModels)) {
-                    adapter.setItemModels(consumableModels);
-                }
+                adapter.setItemModels(consumableModels);
             }
         });
     }

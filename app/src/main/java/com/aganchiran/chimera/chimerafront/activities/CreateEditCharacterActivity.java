@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aganchiran.chimera.R;
+import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.viewmodels.CreateEditCharacterVM;
 
@@ -17,6 +18,7 @@ public class CreateEditCharacterActivity extends AppCompatActivity {
     private EditText nameEditText;
     private EditText descriptionEditText;
     private CharacterModel characterModel;
+    private int campaignId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,10 @@ public class CreateEditCharacterActivity extends AppCompatActivity {
         if (characterModel != null){
             nameEditText.setText(characterModel.getName());
             descriptionEditText.setText(characterModel.getDescription());
+            campaignId = characterModel.getCampaignId();
+        } else {
+            CampaignModel campaign = (CampaignModel) getIntent().getSerializableExtra("CAMPAIGN");
+            campaignId = campaign.getId();
         }
 
         super.onCreate(savedInstanceState);
@@ -65,7 +71,7 @@ public class CreateEditCharacterActivity extends AppCompatActivity {
             return;
         }
 
-        CharacterModel characterModel = new CharacterModel(name, description);
+        CharacterModel characterModel = new CharacterModel(name, description, campaignId);
         createEditCharacterVM.insert(characterModel);
         finish();
     }

@@ -16,8 +16,8 @@ public class MainMenuActivity extends ActivityWithUpperBar {
     }
 
     public void goToCharactersList(final View view) {
-        Intent intent = new Intent(this, CharacterListActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, CharacterListActivity.class);
+//        startActivity(intent);
     }
 
     public void goToCombatList(final View view) {
@@ -25,8 +25,8 @@ public class MainMenuActivity extends ActivityWithUpperBar {
         startActivity(intent);
     }
 
-    public void goToCommingSoonScreen(final View view) {
-        Intent intent = new Intent(this, CommingSoonActivity.class);
+    public void goToCampaignList(final View view) {
+        Intent intent = new Intent(this, CampaignListActivity.class);
         startActivity(intent);
     }
 

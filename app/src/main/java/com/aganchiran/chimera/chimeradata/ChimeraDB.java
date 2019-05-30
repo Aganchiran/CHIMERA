@@ -8,6 +8,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.aganchiran.chimera.chimeracore.campaign.CampaignDAO;
+import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.character.CharacterDAO;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatDAO;
@@ -18,8 +20,9 @@ import com.aganchiran.chimera.chimeracore.consumable.ConsumableDAO;
 import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 @Database(
-        entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class, CombatCharacter.class},
-        version = 17,
+        entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class,
+                CombatCharacter.class, CampaignModel.class},
+        version = 19,
         exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 
@@ -28,6 +31,7 @@ public abstract class ChimeraDB extends RoomDatabase {
     public abstract ConsumableDAO consumableDAO();
     public abstract CombatDAO combatDAO();
     public abstract CombatCharacterDAO combatCharacterDAO();
+    public abstract CampaignDAO campaignDAO();
 
     public static synchronized ChimeraDB getInstance(Context context) {
         if (instance == null) {
@@ -55,12 +59,14 @@ public abstract class ChimeraDB extends RoomDatabase {
         private ConsumableDAO consumableDAO;
         private CombatDAO combatDAO;
         private CombatCharacterDAO combatCharacterDAO;
+        private CampaignDAO campaignDAO;
 
         public PopulateDbAsyncTask(ChimeraDB db) {
             this.characterDAO = db.characterDAO();
             this.consumableDAO = db.consumableDAO();
             this.combatDAO = db.combatDAO();
             this.combatCharacterDAO = db.combatCharacterDAO();
+            this.campaignDAO = db.campaignDAO();
         }
 
         @Override
