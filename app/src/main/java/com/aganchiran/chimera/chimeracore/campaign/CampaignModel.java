@@ -58,7 +58,17 @@ public class CampaignModel extends ItemModel {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof CampaignModel
+                && ((CampaignModel) obj).getId() == this.getId());
+    }
+
+    @Override
     public boolean contentsTheSame(Object obj) {
-        return false;
+        return (obj instanceof CampaignModel
+                && ((CampaignModel) obj).getId() == this.getId()
+                && ((CampaignModel) obj).getName().equals(this.getName())
+                && ((CampaignModel) obj).getDescription().equals(this.getDescription())
+                && ((CampaignModel) obj).getDisplayPosition() == this.getDisplayPosition());
     }
 }
