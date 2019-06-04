@@ -25,20 +25,19 @@ import android.widget.LinearLayout;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
-import com.aganchiran.chimera.chimeracore.character.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.CharacterListActivity;
-import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
-import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
-import com.aganchiran.chimera.chimerafront.utils.CharacterAdapter;
+import com.aganchiran.chimera.chimeracore.combat.CombatModel;
+import com.aganchiran.chimera.chimerafront.activities.BattleActivity;
+import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
+import com.aganchiran.chimera.chimerafront.utils.CombatAdapter;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
-import com.aganchiran.chimera.viewmodels.CampaignCharactersListVM;
+import com.aganchiran.chimera.viewmodels.CampaignCombatsListVM;
 
 import java.util.List;
 import java.util.Objects;
 
-public class CharacterListFragment extends Fragment {
+public class CamCombatsFragment extends Fragment {
 
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -47,18 +46,18 @@ public class CharacterListFragment extends Fragment {
             LinearLayout.LayoutParams.MATCH_PARENT,
             0);
 
-    private FloatingActionButton addCharacterButton;
-    private CampaignCharactersListVM camChaListVM;
-    private CharacterAdapter adapter;
+    private FloatingActionButton addCombatButton;
+    private CampaignCombatsListVM camChaListVM;
+    private CombatAdapter adapter;
 
     private static final String ARG_CAMPAIGN_MODEL = "campaign_model";
 
 
-    public CharacterListFragment() {
+    public CamCombatsFragment() {
     }
 
-    public static CharacterListFragment newInstance(CampaignModel campaignModel) {
-        CharacterListFragment fragment = new CharacterListFragment();
+    public static CamCombatsFragment newInstance(CampaignModel campaignModel) {
+        CamCombatsFragment fragment = new CamCombatsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CAMPAIGN_MODEL, campaignModel);
         fragment.setArguments(args);
@@ -75,20 +74,20 @@ public class CharacterListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater
-                .inflate(R.layout.fragment_character_list, container, false);
-        camChaListVM = ViewModelProviders.of(this).get(CampaignCharactersListVM.class);
+                .inflate(R.layout.fragment_combat_list, container, false);
+        camChaListVM = ViewModelProviders.of(this).get(CampaignCombatsListVM.class);
 
         assert getArguments() != null;
         CampaignModel campaignModel = (CampaignModel) getArguments()
                 .getSerializable(ARG_CAMPAIGN_MODEL);
 
         if (campaignModel != null) {
-            LiveData<List<CharacterModel>> characterListLiveData =
-                    camChaListVM.getCampaignCharacters(campaignModel.getId());
+            LiveData<List<CombatModel>> combatListLiveData =
+                    camChaListVM.getCampaignCombats(campaignModel.getId());
             final RecyclerView recyclerView =
-                    rootView.findViewById(R.id.character_recycler_view);
+                    rootView.findViewById(R.id.combat_recycler_view);
 
-            setupGrid(characterListLiveData, recyclerView);
+            setupGrid(combatListLiveData, recyclerView);
         }
 
         setupButtons(rootView);
@@ -99,45 +98,44 @@ public class CharacterListFragment extends Fragment {
         return rootView;
     }
 
-    private void setupGrid(LiveData<List<CharacterModel>> data, RecyclerView recyclerView) {
-        final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
-        final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
-        int characterWidth = SizeUtil.getViewWidth(characterLayout);
+    private void setupGrid(LiveData<List<CombatModel>> data, RecyclerView recyclerView) {
+        final View combatCard = getLayoutInflater().inflate(R.layout.item_combat, null);
+        final View combatLayout = combatCard.findViewById(R.id.combat_item_layout);
+        int combatWidth = SizeUtil.getViewWidth(combatLayout);
         int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / characterWidth;
+        int columnNumber = screenWidth / combatWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
 
-        adapter = new CharacterAdapter();
-        adapter.setListener(new CharacterAdapter.OnItemClickListener<CharacterModel>() {
+        adapter = new CombatAdapter();
+        adapter.setListener(new CombatAdapter.OnItemClickListener<CombatModel>() {
             @Override
-            public void onItemClick(final CharacterModel characterModel) {
-                Intent intent = new Intent(getActivity(), CharacterProfileActivity.class);
-                intent.putExtra("CHARACTER", characterModel);
+            public void onItemClick(final CombatModel combatModel) {
+                Intent intent = new Intent(getActivity(), BattleActivity.class);
+                intent.putExtra("COMBAT", combatModel);
                 startActivity(intent);
             }
         });
-        adapter.setEditCharacter(new CharacterAdapter.EditCharacter() {
+        adapter.setEditCombat(new CombatAdapter.EditCombat() {
             @Override
-            public void perform(final CharacterModel character) {
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
-                dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
-                    @Override
-                    public void saveCharacter(String newName, String newDescription) {
-                        character.setName(newName);
-                        character.setDescription(newDescription);
+            public void perform(final CombatModel combat) {
+                CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+                dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
 
-                        camChaListVM.update(character);
+                    @Override
+                    public void saveCombat(String name) {
+                        combat.setName(name);
+                        camChaListVM.update(combat);
                     }
 
                     @Override
-                    public CharacterModel getCharacter() {
-                        return character;
+                    public CombatModel getCombat() {
+                        return combat;
                     }
                 });
                 assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "edit character");
+                dialog.show(getFragmentManager(), "edit combat");
             }
         });
 
@@ -146,21 +144,21 @@ public class CharacterListFragment extends Fragment {
             @Override
             protected void onDrop(View hiddenView) {
                 super.onDrop(hiddenView);
-                new ReorderCharacterAsyncTask(adapter, camChaListVM).execute();
+                new ReorderCombatAsyncTask(adapter, camChaListVM).execute();
             }
         });
 
-        data.observe(this, new Observer<List<CharacterModel>>() {
+        data.observe(this, new Observer<List<CombatModel>>() {
             @Override
-            public void onChanged(@Nullable List<CharacterModel> characterModels) {
-                adapter.setItemModels(characterModels);
+            public void onChanged(@Nullable List<CombatModel> combatModels) {
+                adapter.setItemModels(combatModels);
             }
         });
     }
 
     private void setupButtons(final View rootView) {
-        addCharacterButton = rootView.findViewById(R.id.add_character_button);
-        addCharacterButton.setOnDragListener(new View.OnDragListener() {
+        addCombatButton = rootView.findViewById(R.id.add_combat_button);
+        addCombatButton.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 switch (event.getAction()) {
@@ -174,24 +172,25 @@ public class CharacterListFragment extends Fragment {
                 return true;
             }
         });
-        addCharacterButton.setOnClickListener(new View.OnClickListener() {
+        addCombatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
-                dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
+                CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+                dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
+
                     @Override
-                    public void saveCharacter(String name, String description) {
-                        createCharacter(name, description);
+                    public void saveCombat(String name) {
+                        createCombat(name);
                     }
 
                     @Override
-                    public CharacterModel getCharacter() {
+                    public CombatModel getCombat() {
                         return null;
                     }
                 });
                 assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create character");
+                dialog.show(getFragmentManager(), "create combat");
 
             }
         });
@@ -200,10 +199,10 @@ public class CharacterListFragment extends Fragment {
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (CharacterModel characterModel : adapter.getCheckedItemModels()) {
-                    camChaListVM.delete(characterModel);
+                for (CombatModel combatModel : adapter.getCheckedItemModels()) {
+                    camChaListVM.delete(combatModel);
                 }
-                cancelCharacterDeletion(rootView);
+                cancelCombatDeletion(rootView);
             }
         });
 
@@ -211,30 +210,30 @@ public class CharacterListFragment extends Fragment {
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancelCharacterDeletion(rootView);
+                cancelCombatDeletion(rootView);
             }
         });
     }
 
-    private void cancelCharacterDeletion(View rootView) {
+    private void cancelCombatDeletion(View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
-        addCharacterButton.show();
+        addCombatButton.show();
     }
 
-    private void createCharacter(String name, String description) {
+    private void createCombat(String name) {
         assert getArguments() != null;
         CampaignModel campaignModel =
                 (CampaignModel) getArguments().getSerializable(ARG_CAMPAIGN_MODEL);
 
         assert campaignModel != null;
-        CharacterModel characterModel = new CharacterModel(name, description, campaignModel.getId());
-        camChaListVM.insert(characterModel);
+        CombatModel combatModel = new CombatModel(name, campaignModel.getId());
+        camChaListVM.insert(combatModel);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_character_management, menu);
+        inflater.inflate(R.menu.menu_combat_management, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -242,23 +241,23 @@ public class CharacterListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.delete_characters:
+            case R.id.delete_combats:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     Objects.requireNonNull(getActivity()).findViewById(R.id.deletion_interface)
                             .setLayoutParams(VISIBLE);
-                    addCharacterButton.hide();
+                    addCombatButton.hide();
                 }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private static class ReorderCharacterAsyncTask extends AsyncTask<Void, Void, Void> {
-        private CharacterAdapter adapter;
-        private CampaignCharactersListVM camChaListVM;
+    private static class ReorderCombatAsyncTask extends AsyncTask<Void, Void, Void> {
+        private CombatAdapter adapter;
+        private CampaignCombatsListVM camChaListVM;
 
-        private ReorderCharacterAsyncTask(CharacterAdapter adapter, CampaignCharactersListVM camChaListVM) {
+        private ReorderCombatAsyncTask(CombatAdapter adapter, CampaignCombatsListVM camChaListVM) {
             this.adapter = adapter;
             this.camChaListVM = camChaListVM;
         }
@@ -266,10 +265,10 @@ public class CharacterListFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                CharacterModel characterModel = adapter.getItemAt(i);
-                characterModel.setDisplayPosition(i);
+                CombatModel combatModel = adapter.getItemAt(i);
+                combatModel.setDisplayPosition(i);
             }
-            camChaListVM.updateCharacters(adapter.getItemModels());
+            camChaListVM.updateCombats(adapter.getItemModels());
             return null;
         }
     }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/combat_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            tools:listitem="@layout/item_combat" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_combat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add" />
+
+        <ImageView
+            android:id="@+id/delete_area"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_delete"
+            android:alpha="0"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/deletion_interface"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="60dp"
+        android:orientation="horizontal"
+        android:background="@color/backgroundColor"
+        android:gravity="center|end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="#00000000"
+            android:text="@string/cancel"
+            android:textColor="@color/contrastColor" />
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/contrastColor"
+            android:text="@string/accept"
+            android:textColor="@color/backgroundColor" />
+    </LinearLayout>
+
+</LinearLayout>

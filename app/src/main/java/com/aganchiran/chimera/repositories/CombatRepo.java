@@ -55,6 +55,14 @@ public class CombatRepo {
         return allCombats;
     }
 
+    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId){
+        return combatDAO.getCampaignCombats(campaignId);
+    }
+
+    /////////////////////////
+    //////////TASKS//////////
+    /////////////////////////
+
     private static class InsertCombatAsyncTask extends AsyncTask<CombatModel, Void, Void> {
 
         private CombatDAO combatDAO;

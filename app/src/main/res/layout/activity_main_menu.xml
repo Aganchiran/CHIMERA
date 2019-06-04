@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center">
 
     <LinearLayout
@@ -17,29 +18,45 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:padding="32dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="32dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:onClick="goToCampaignList">
+                <ImageView
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:src="@drawable/ic_campaign"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/campaigns"
+                    android:text="@string/master_zone"
+                    android:textSize="30sp"
                     android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_campaign"
-                    android:onClick="goToCampaignList"/>
-
+                    app:autoSizeTextType="uniform"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="32dp"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:src="@drawable/ic_character"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/characters"
+                    android:text="@string/player_zone"
+                    android:textSize="30sp"
                     android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_character"
-                    android:onClick="goToCharactersList" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/combats"
-                    android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_combat"
-                    android:onClick="goToCombatList"/>
+                    app:autoSizeTextType="uniform"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

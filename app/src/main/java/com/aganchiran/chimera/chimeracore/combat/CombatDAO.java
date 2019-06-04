@@ -38,4 +38,8 @@ public abstract class CombatDAO {
     @Query("SELECT * FROM combat_table ORDER BY displayPosition ASC")
     public abstract LiveData<List<CombatModel>> getAllCombats();
 
+    @Query("SELECT * FROM combat_table WHERE campaignId = :campaignId " +
+            "ORDER BY displayPosition ASC")
+    public abstract LiveData<List<CombatModel>> getCampaignCombats(int campaignId);
+
 }

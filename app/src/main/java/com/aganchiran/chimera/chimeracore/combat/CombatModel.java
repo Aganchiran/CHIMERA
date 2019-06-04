@@ -1,11 +1,16 @@
 package com.aganchiran.chimera.chimeracore.combat;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.aganchiran.chimera.chimeracore.ItemModel;
+import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 
-@Entity(tableName = "combat_table")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "combat_table", foreignKeys = {@ForeignKey(onDelete = CASCADE, entity = CampaignModel.class, parentColumns = "id", childColumns = "campaignId")}, indices = {@Index("campaignId")})
 public class CombatModel extends ItemModel {
 
     @PrimaryKey(autoGenerate = true)
@@ -15,9 +20,12 @@ public class CombatModel extends ItemModel {
 
     private int displayPosition;
 
-    public CombatModel(String name) {
+    private int campaignId;
+
+    public CombatModel(String name, int campaignId) {
         this.name = name;
         this.displayPosition = Integer.MAX_VALUE;
+        this.campaignId = campaignId;
     }
 
     @Override
@@ -44,6 +52,14 @@ public class CombatModel extends ItemModel {
 
     public void setDisplayPosition(int displayPosition) {
         this.displayPosition = displayPosition;
+    }
+
+    public int getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(int campaignId) {
+        this.campaignId = campaignId;
     }
 
     @Override

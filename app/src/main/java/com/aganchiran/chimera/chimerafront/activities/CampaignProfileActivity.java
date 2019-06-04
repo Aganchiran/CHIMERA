@@ -11,10 +11,9 @@ import android.view.Menu;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
-import com.aganchiran.chimera.chimerafront.fragments.CampaignDetailsFragment;
-import com.aganchiran.chimera.chimerafront.fragments.CharacterListFragment;
-import com.aganchiran.chimera.chimerafront.fragments.CombatProfileFragment;
-import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
+import com.aganchiran.chimera.chimerafront.fragments.CamCombatsFragment;
+import com.aganchiran.chimera.chimerafront.fragments.CamDetailsFragment;
+import com.aganchiran.chimera.chimerafront.fragments.CamCharactersFragment;
 
 public class CampaignProfileActivity extends ActivityWithUpperBar {
 
@@ -105,11 +104,11 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
                     (CampaignModel) getIntent().getSerializableExtra("CAMPAIGN");
             switch (position) {
                 case DETAILS_TAB:
-                    return CampaignDetailsFragment.newInstance(campaignModel);
+                    return CamDetailsFragment.newInstance(campaignModel);
                 case CHARACTER_TAB:
-                    return CharacterListFragment.newInstance(campaignModel);
-//                case COMBAT_TAB:
-//                    return CombatListFragment.newInstance(campaignModel);
+                    return CamCharactersFragment.newInstance(campaignModel);
+                case COMBAT_TAB:
+                    return CamCombatsFragment.newInstance(campaignModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
             }
@@ -117,7 +116,7 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

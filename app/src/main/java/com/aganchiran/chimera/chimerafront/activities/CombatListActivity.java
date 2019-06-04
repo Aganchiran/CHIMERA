@@ -141,8 +141,8 @@ public class CombatListActivity extends ActivityWithUpperBar {
                 dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
                     @Override
                     public void saveCombat(String name) {
-                        CombatModel combatModel = new CombatModel(name);
-                        combatListVM.insert(combatModel);
+//                        CombatModel combatModel = new CombatModel(name);
+//                        combatListVM.insert(combatModel);
                     }
 
                     @Override

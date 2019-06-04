@@ -3,7 +3,6 @@ package com.aganchiran.chimera.chimerafront.fragments;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,7 +18,7 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.viewmodels.CharacterDetailsVM;
 
-public class CharacterDetailsFragment extends Fragment {
+public class ChaDetailsFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -28,15 +26,15 @@ public class CharacterDetailsFragment extends Fragment {
     private static final String ARG_CHARACTER_MODEL = "character_model";
 
 
-    public CharacterDetailsFragment() {
+    public ChaDetailsFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static CharacterDetailsFragment newInstance(CharacterModel characterModel) {
-        CharacterDetailsFragment fragment = new CharacterDetailsFragment();
+    public static ChaDetailsFragment newInstance(CharacterModel characterModel) {
+        ChaDetailsFragment fragment = new ChaDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CHARACTER_MODEL, characterModel);
         fragment.setArguments(args);
