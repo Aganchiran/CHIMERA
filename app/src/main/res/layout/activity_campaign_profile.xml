@@ -10,11 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -28,7 +30,7 @@
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"/>
+                    android:layout_height="0dp" />
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
@@ -41,19 +43,19 @@
                         android:id="@+id/tabItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tab_details" />
+                        android:icon="@drawable/ic_campaign_small" />
 
                     <android.support.design.widget.TabItem
                         android:id="@+id/tabItem2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/characters" />
+                        android:icon="@drawable/ic_character_small" />
 
-                    <!--<android.support.design.widget.TabItem-->
-                        <!--android:id="@+id/tabItem3"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/combats" />-->
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/ic_combat_small" />
 
                 </android.support.design.widget.TabLayout>
 
@@ -67,6 +69,6 @@
     </LinearLayout>
 
 
-    <include layout="@layout/element_button_home"/>
+    <include layout="@layout/element_button_home" />
 
 </android.support.constraint.ConstraintLayout>

@@ -34,11 +34,13 @@ public class DropToDeleteListener implements View.OnDragListener {
                 ((ImageView) v).setImageResource(R.drawable.ic_delete);
                 break;
             case DragEvent.ACTION_DROP:
-                Object item = adapter.getItemAt(adapter.getFlyingItemPos());
-                try {
-                    itemVM.delete(item);
-                }catch (ClassCastException e){
-                    throw new ClassCastException("Adapter and ViewModel doesn't have the same type");
+                if (adapter.getFlyingItemPos() != -1) {
+                    Object item = adapter.getItemAt(adapter.getFlyingItemPos());
+                    try {
+                        itemVM.delete(item);
+                    } catch (ClassCastException e) {
+                        throw new ClassCastException("Adapter and ViewModel doesn't have the same type");
+                    }
                 }
                 break;
             case DragEvent.ACTION_DRAG_ENDED:

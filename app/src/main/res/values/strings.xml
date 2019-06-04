@@ -45,4 +45,6 @@
     <string name="roll">Roll</string>
     <string name="edit_campaign">Edit campaign</string>
     <string name="delete_campaigns">Delete campaigns</string>
+    <string name="master_zone">Master Zone</string>
+    <string name="player_zone">Player Zone</string>
 </resources>

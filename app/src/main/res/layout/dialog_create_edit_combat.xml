@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/name"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:maxWidth="50dp"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
         android:textColor="@color/primaryTextColor"

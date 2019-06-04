@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/campaign_image"
             android:src="@drawable/ic_campaign"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/campaign_name"

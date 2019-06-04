@@ -36,7 +36,7 @@ import com.aganchiran.chimera.viewmodels.ConsumableListVM;
 import java.util.List;
 import java.util.Objects;
 
-public class ConsumableListFragment extends Fragment {
+public class ChaConsumablesFragment extends Fragment {
 
     private static final LinearLayout.LayoutParams VISIBLE = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -52,11 +52,11 @@ public class ConsumableListFragment extends Fragment {
     private static final String ARG_CHARACTER_MODEL = "character_model";
 
 
-    public ConsumableListFragment() {
+    public ChaConsumablesFragment() {
     }
 
-    public static ConsumableListFragment newInstance(CharacterModel characterModel) {
-        ConsumableListFragment fragment = new ConsumableListFragment();
+    public static ChaConsumablesFragment newInstance(CharacterModel characterModel) {
+        ChaConsumablesFragment fragment = new ChaConsumablesFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CHARACTER_MODEL, characterModel);
         fragment.setArguments(args);
@@ -193,7 +193,7 @@ public class ConsumableListFragment extends Fragment {
                 dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
                     @Override
                     public void saveConsumable(String name, long max, long min) {
-                        ConsumableListFragment.this.createConsumable(name, max, min);
+                        ChaConsumablesFragment.this.createConsumable(name, max, min);
                     }
 
                     @Override

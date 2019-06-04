@@ -18,7 +18,7 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.viewmodels.CampaignDetailsVM;
 
-public class CampaignDetailsFragment extends Fragment {
+public class CamDetailsFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -26,15 +26,15 @@ public class CampaignDetailsFragment extends Fragment {
     private static final String ARG_CAMPAIGN_MODEL = "campaign_model";
 
 
-    public CampaignDetailsFragment() {
+    public CamDetailsFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static CampaignDetailsFragment newInstance(CampaignModel campaignModel) {
-        CampaignDetailsFragment fragment = new CampaignDetailsFragment();
+    public static CamDetailsFragment newInstance(CampaignModel campaignModel) {
+        CamDetailsFragment fragment = new CamDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CAMPAIGN_MODEL, campaignModel);
         fragment.setArguments(args);

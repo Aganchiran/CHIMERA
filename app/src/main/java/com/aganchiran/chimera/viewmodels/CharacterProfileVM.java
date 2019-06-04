@@ -10,12 +10,12 @@ import com.aganchiran.chimera.repositories.CharacterRepo;
 
 import java.util.List;
 
-public class CharacterListVM extends AndroidViewModel implements ItemVM<CharacterModel> {
+public class CharacterProfileVM extends AndroidViewModel implements ItemVM<CharacterModel> {
 
     private CharacterRepo characterRepo;
     private LiveData<List<CharacterModel>> allCharacters;
 
-    public CharacterListVM(@NonNull Application application) {
+    public CharacterProfileVM(@NonNull Application application) {
         super(application);
         characterRepo = new CharacterRepo(application);
         allCharacters = characterRepo.getAllCharacters();
@@ -50,9 +50,5 @@ public class CharacterListVM extends AndroidViewModel implements ItemVM<Characte
 
     public LiveData<List<CharacterModel>> getAllCharacters() {
         return allCharacters;
-    }
-
-    public LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId){
-        return characterRepo.getCampaignCharacters(campaignId);
     }
 }

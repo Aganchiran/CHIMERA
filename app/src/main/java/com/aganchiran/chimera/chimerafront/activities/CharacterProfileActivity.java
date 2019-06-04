@@ -1,7 +1,10 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +14,10 @@ import android.view.Menu;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
-import com.aganchiran.chimera.chimerafront.fragments.CharacterDetailsFragment;
-import com.aganchiran.chimera.chimerafront.fragments.CombatProfileFragment;
-import com.aganchiran.chimera.chimerafront.fragments.ConsumableListFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ChaDetailsFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ChaCombatFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ChaConsumablesFragment;
+import com.aganchiran.chimera.viewmodels.CharacterProfileVM;
 
 public class CharacterProfileActivity extends ActivityWithUpperBar {
 
@@ -21,6 +25,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
     public static final int CONSUMABLES_TAB = 1;
     public static final int COMBAT_TAB = 2;
 
+    private CharacterProfileVM characterProfileVM;
     private CharacterModel character;
 
     /**
@@ -38,9 +43,11 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
      */
     private ViewPager mViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_character_profile);
+        characterProfileVM = ViewModelProviders.of(this).get(CharacterProfileVM.class);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -56,6 +63,14 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         character = (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
+        characterProfileVM.getCharacterById(character.getId()).observe(this, new Observer<CharacterModel>() {
+            @Override
+            public void onChanged(@Nullable CharacterModel characterModel) {
+                character = characterModel;
+            }
+        });
+
+
         if (getIntent().getBooleanExtra("FROMCOMBAT", false)) {
             tabLayout.getTabAt(COMBAT_TAB).select();
         }
@@ -82,10 +97,6 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         return character;
     }
 
-    public void setCharacter(CharacterModel character) {
-        this.character = character;
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -104,11 +115,11 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
                     (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
             switch (position) {
                 case DETAILS_TAB:
-                    return CharacterDetailsFragment.newInstance(characterModel);
+                    return ChaDetailsFragment.newInstance(characterModel);
                 case CONSUMABLES_TAB:
-                    return ConsumableListFragment.newInstance(characterModel);
+                    return ChaConsumablesFragment.newInstance(characterModel);
                 case COMBAT_TAB:
-                    return CombatProfileFragment.newInstance(characterModel);
+                    return ChaCombatFragment.newInstance(characterModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
             }

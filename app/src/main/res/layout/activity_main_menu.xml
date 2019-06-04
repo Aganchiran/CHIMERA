@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
 
@@ -9,41 +10,62 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/element_upper_bar"/>
+        <include layout="@layout/element_upper_bar" />
 
         <LinearLayout
+            android:id="@+id/orientation_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             android:padding="32dp">
-                <TextView
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:gravity="center"
+                android:onClick="goToCampaignList"
+                android:orientation="vertical">
+
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/campaigns"
-                    android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_campaign"
-                    android:onClick="goToCampaignList"/>
+                    android:src="@drawable/ic_campaign" />
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/master_zone"
+                    android:textAlignment="center"
+                    android:textSize="30sp"
+                    app:autoSizeTextType="uniform" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/characters"
-                    android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_character"
-                    android:onClick="goToCharactersList" />
+                    android:src="@drawable/ic_character" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/combats"
+                    android:text="@string/player_zone"
                     android:textAlignment="center"
-                    android:drawableTop="@drawable/ic_combat"
-                    android:onClick="goToCombatList"/>
+                    android:textSize="30sp"
+                    app:autoSizeTextType="uniform" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
 
-    <include layout="@layout/element_button_home"/>
+    <include layout="@layout/element_button_home" />
 
 </android.support.constraint.ConstraintLayout>

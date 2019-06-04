@@ -111,6 +111,7 @@ public class BattleActivity extends ActivityWithUpperBar {
             public void addCharacter() {
                 Intent intent = new Intent(BattleActivity.this, CharacterListActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
+                intent.putExtra("CAMPAIGN", combat.getCampaignId());
                 startActivityForResult(intent, ADD_CHARACTERS);
             }
         });
