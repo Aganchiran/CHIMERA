@@ -20,8 +20,8 @@ import android.widget.TextView;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
-import com.aganchiran.chimera.chimerafront.utils.DefendersAdapter;
-import com.aganchiran.chimera.chimerafront.utils.InitiativeAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.DefendersAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.InitiativeAdapter;
 import com.aganchiran.chimera.chimerafront.utils.Quicksort;
 import com.aganchiran.chimera.viewmodels.BattleVM;
 

@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCampaignDialog;
-import com.aganchiran.chimera.chimerafront.utils.CampaignAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.CampaignAdapter;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;

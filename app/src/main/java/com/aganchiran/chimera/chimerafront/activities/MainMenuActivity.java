@@ -38,13 +38,13 @@ public class MainMenuActivity extends ActivityWithUpperBar {
         }
     }
 
-    public void goToCharactersList(final View view) {
-//        Intent intent = new Intent(this, CharacterListActivity.class);
-//        startActivity(intent);
+    public void goToEventMap(final View view) {
+        Intent intent = new Intent(this, EventMapActivity.class);
+        startActivity(intent);
     }
 
-    public void goToCombatList(final View view) {
-        Intent intent = new Intent(this, CombatListActivity.class);
+    public void goToCommingSoonList(final View view) {
+        Intent intent = new Intent(this, CommingSoonActivity.class);
         startActivity(intent);
     }
 

@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
-import com.aganchiran.chimera.chimerafront.utils.CombatAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.CombatAdapter;
 import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
 import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;

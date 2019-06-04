@@ -1,10 +1,11 @@
 package com.aganchiran.chimera.chimerafront.utils;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.aganchiran.chimera.chimerafront.utils.adapters.ItemAdapter;
 
 import java.util.Collections;
 

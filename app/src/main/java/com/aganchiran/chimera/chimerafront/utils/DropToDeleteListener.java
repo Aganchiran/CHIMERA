@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.aganchiran.chimera.R;
+import com.aganchiran.chimera.chimerafront.utils.adapters.ItemAdapter;
 import com.aganchiran.chimera.viewmodels.ItemVM;
 
 public class DropToDeleteListener implements View.OnDragListener {

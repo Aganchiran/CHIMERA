@@ -32,6 +32,7 @@
         <activity android:name=".chimerafront.activities.CampaignListActivity"
             android:label="@string/campaigns"/>
         <activity android:name=".chimerafront.activities.CampaignProfileActivity" />
+        <activity android:name=".chimerafront.activities.EventMapActivity" />
     </application>
 
 </manifest>
