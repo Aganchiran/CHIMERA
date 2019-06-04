@@ -1,4 +1,4 @@
-package com.aganchiran.chimera.chimerafront.utils;
+package com.aganchiran.chimera.chimerafront.utils.adapters;
 
 import android.content.ClipData;
 import android.databinding.Observable;
@@ -214,7 +214,7 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
             checkedItemModels.clear();
         }
 
-        void setVisibility(int visibility) {
+        public void setVisibility(int visibility) {
             itemView.setVisibility(visibility);
         }
 
