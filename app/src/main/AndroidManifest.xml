@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.MainMenuActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -28,7 +29,8 @@
             android:launchMode="singleTop"/>
         <activity android:name=".chimerafront.activities.BattleActivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".chimerafront.activities.CampaignListActivity" />
+        <activity android:name=".chimerafront.activities.CampaignListActivity"
+            android:label="@string/campaigns"/>
         <activity android:name=".chimerafront.activities.CampaignProfileActivity" />
     </application>
 
