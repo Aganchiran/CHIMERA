@@ -235,6 +235,16 @@ public class BattleActivity extends ActivityWithUpperBar {
             }
 
             @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof DefendersAdapter.EmptyHolder) {
+                    return 0;
+                } else {
+                    return super.getSwipeDirs(recyclerView, viewHolder);
+                }
+            }
+
+            @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder holder, int direction) {
 
                 final CharacterModel chaToRemove =
