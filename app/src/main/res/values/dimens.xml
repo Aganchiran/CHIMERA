@@ -7,4 +7,5 @@
 
     <dimen name="cell_size">100dp</dimen>
     <dimen name="cell_distance">4dp</dimen>
+    <dimen name="event_size">40dp</dimen>
 </resources>

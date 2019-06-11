@@ -1,0 +1,17 @@
+<vector xmlns:ns0="http://schemas.android.com/apk/res/android"
+    ns0:name="svg8"
+    ns0:width="100.0dp"
+    ns0:height="100.0dp"
+    ns0:viewportWidth="999.999924409"
+    ns0:viewportHeight="1000.0">
+    <group ns0:name="layer1">
+        <path
+            ns0:name="path4747"
+            ns0:fillAlpha="1.0"
+            ns0:pathData="M198.515225979 799.527813468C76.5759302988 677.588476353 40.0980404404 494.201615441 106.091137298 334.880226626C172.084241185 175.558847872 327.552113354 71.678556828 500.000341784 71.6785616394C672.448570214 71.678556828 827.916442383 175.558847872 893.90954627 334.880226626C959.902643104 494.201615384 923.424753297 677.588476228 801.485457709 799.527813348"
+            ns0:strokeWidth="100"
+            ns0:strokeAlpha="1.0"
+            ns0:strokeColor="@color/primaryColor"
+            ns0:strokeMiterLimit="4" />
+    </group>
+</vector>

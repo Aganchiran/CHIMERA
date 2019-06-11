@@ -47,4 +47,9 @@
     <string name="delete_campaigns">Delete campaigns</string>
     <string name="master_zone">Master Zone</string>
     <string name="player_zone">Player Zone</string>
+    <string name="event_map">Event Map</string>
+    <string name="edit_event">Edit event</string>
+    <string name="add_characters">Add characters</string>
+    <string name="add_combats">Add combats</string>
+    <string name="change_map">Change map</string>
 </resources>

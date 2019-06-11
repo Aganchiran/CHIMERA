@@ -1,22 +1,14 @@
-package com.aganchiran.chimera.chimerafront.utils;
+package com.aganchiran.chimera.chimerafront.utils.listeners;
 
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.aganchiran.chimera.R;
+import com.aganchiran.chimera.chimerafront.utils.adapters.ItemAdapter;
 import com.aganchiran.chimera.viewmodels.ItemVM;
 
-public class DropToDeleteListener implements View.OnDragListener {
-
-    private ItemAdapter adapter;
-    private ItemVM itemVM;
-
-    public DropToDeleteListener(ItemAdapter adapter,
-                                ItemVM itemVM) {
-        this.adapter = adapter;
-        this.itemVM = itemVM;
-    }
+public abstract class AbstractDropToListener implements View.OnDragListener {
 
     @Override
     public boolean onDrag(View v, DragEvent event) {
@@ -34,14 +26,7 @@ public class DropToDeleteListener implements View.OnDragListener {
                 ((ImageView) v).setImageResource(R.drawable.ic_delete);
                 break;
             case DragEvent.ACTION_DROP:
-                if (adapter.getFlyingItemPos() != -1) {
-                    Object item = adapter.getItemAt(adapter.getFlyingItemPos());
-                    try {
-                        itemVM.delete(item);
-                    } catch (ClassCastException e) {
-                        throw new ClassCastException("Adapter and ViewModel doesn't have the same type");
-                    }
-                }
+                onDrop();
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 ((ImageView) v).setImageResource(R.drawable.ic_delete);
@@ -50,5 +35,7 @@ public class DropToDeleteListener implements View.OnDragListener {
         }
         return true;
     }
+
+    protected abstract void onDrop();
 
 }

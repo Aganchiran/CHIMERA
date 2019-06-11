@@ -28,9 +28,9 @@ import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import com.aganchiran.chimera.chimerafront.activities.BattleActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
-import com.aganchiran.chimera.chimerafront.utils.CombatAdapter;
-import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
+import com.aganchiran.chimera.chimerafront.utils.adapters.CombatAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CampaignCombatsListVM;
 
@@ -51,6 +51,7 @@ public class CamCombatsFragment extends Fragment {
     private CombatAdapter adapter;
 
     private static final String ARG_CAMPAIGN_MODEL = "campaign_model";
+    private View rootView;
 
 
     public CamCombatsFragment() {
@@ -73,8 +74,7 @@ public class CamCombatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater
-                .inflate(R.layout.fragment_combat_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_combat_list, container, false);
         camChaListVM = ViewModelProviders.of(this).get(CampaignCombatsListVM.class);
 
         assert getArguments() != null;
@@ -93,7 +93,7 @@ public class CamCombatsFragment extends Fragment {
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, camChaListVM));
+        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, camChaListVM));
 
         return rootView;
     }
@@ -244,8 +244,7 @@ public class CamCombatsFragment extends Fragment {
             case R.id.delete_combats:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
-                    Objects.requireNonNull(getActivity()).findViewById(R.id.deletion_interface)
-                            .setLayoutParams(VISIBLE);
+                    rootView.findViewById(R.id.deletion_interface).setLayoutParams(VISIBLE);
                     addCombatButton.hide();
                 }
                 return true;

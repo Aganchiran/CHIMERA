@@ -20,8 +20,8 @@ import android.widget.TextView;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
-import com.aganchiran.chimera.chimerafront.utils.DefendersAdapter;
-import com.aganchiran.chimera.chimerafront.utils.InitiativeAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.DefendersAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.InitiativeAdapter;
 import com.aganchiran.chimera.chimerafront.utils.Quicksort;
 import com.aganchiran.chimera.viewmodels.BattleVM;
 
@@ -109,7 +109,7 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             @Override
             public void addCharacter() {
-                Intent intent = new Intent(BattleActivity.this, CharacterListActivity.class);
+                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
                 intent.putExtra("CAMPAIGN", combat.getCampaignId());
                 startActivityForResult(intent, ADD_CHARACTERS);
@@ -232,6 +232,16 @@ public class BattleActivity extends ActivityWithUpperBar {
                 initiativeAdapter.setDefenders(defenders);
                 defendersAdapter.notifyItemMoved(source.getAdapterPosition(), target.getAdapterPosition());
                 return true;
+            }
+
+            @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof DefendersAdapter.EmptyHolder) {
+                    return 0;
+                } else {
+                    return super.getSwipeDirs(recyclerView, viewHolder);
+                }
             }
 
             @Override

@@ -27,9 +27,9 @@ import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
-import com.aganchiran.chimera.chimerafront.utils.ConsumableAdapter;
-import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
+import com.aganchiran.chimera.chimerafront.utils.adapters.ConsumableAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.ConsumableListVM;
 
@@ -92,7 +92,7 @@ public class ChaConsumablesFragment extends Fragment {
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, consumableListVM));
+        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, consumableListVM));
 
         return rootView;
     }

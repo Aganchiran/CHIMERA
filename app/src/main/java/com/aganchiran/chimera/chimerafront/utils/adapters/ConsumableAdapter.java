@@ -1,4 +1,4 @@
-package com.aganchiran.chimera.chimerafront.utils;
+package com.aganchiran.chimera.chimerafront.utils.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;

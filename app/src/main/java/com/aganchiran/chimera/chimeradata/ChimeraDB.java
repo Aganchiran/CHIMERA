@@ -18,20 +18,31 @@ import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacter;
 import com.aganchiran.chimera.chimeracore.combatcharacter.CombatCharacterDAO;
 import com.aganchiran.chimera.chimeracore.consumable.ConsumableDAO;
 import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
+import com.aganchiran.chimera.chimeracore.event.EventDAO;
+import com.aganchiran.chimera.chimeracore.event.EventModel;
+import com.aganchiran.chimera.chimeracore.eventcharacter.EventCharacter;
+import com.aganchiran.chimera.chimeracore.eventcharacter.EventCharacterDAO;
+import com.aganchiran.chimera.chimeracore.eventcombat.EventCombat;
+import com.aganchiran.chimera.chimeracore.eventcombat.EventCombatDAO;
 
 @Database(
         entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class,
-                CombatCharacter.class, CampaignModel.class},
-        version = 20,
+                CombatCharacter.class, CampaignModel.class, EventModel.class, EventCharacter.class,
+                EventCombat.class},
+        version = 27,
         exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 
     private static ChimeraDB instance;
+
     public abstract CharacterDAO characterDAO();
     public abstract ConsumableDAO consumableDAO();
     public abstract CombatDAO combatDAO();
     public abstract CombatCharacterDAO combatCharacterDAO();
     public abstract CampaignDAO campaignDAO();
+    public abstract EventDAO eventDAO();
+    public abstract EventCharacterDAO eventCharacterDAO();
+    public abstract EventCombatDAO eventCombatDAO();
 
     public static synchronized ChimeraDB getInstance(Context context) {
         if (instance == null) {
@@ -60,6 +71,9 @@ public abstract class ChimeraDB extends RoomDatabase {
         private CombatDAO combatDAO;
         private CombatCharacterDAO combatCharacterDAO;
         private CampaignDAO campaignDAO;
+        private EventDAO eventDAO;
+        private EventCharacterDAO eventCharacterDAO;
+        private EventCombatDAO eventCombatDAO;
 
         public PopulateDbAsyncTask(ChimeraDB db) {
             this.characterDAO = db.characterDAO();
@@ -67,6 +81,9 @@ public abstract class ChimeraDB extends RoomDatabase {
             this.combatDAO = db.combatDAO();
             this.combatCharacterDAO = db.combatCharacterDAO();
             this.campaignDAO = db.campaignDAO();
+            this.eventDAO = db.eventDAO();
+            this.eventCharacterDAO = db.eventCharacterDAO();
+            this.eventCombatDAO = db.eventCombatDAO();
         }
 
         @Override

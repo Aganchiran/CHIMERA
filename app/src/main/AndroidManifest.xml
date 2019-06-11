@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aganchiran.chimera">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -20,11 +25,11 @@
         </activity>
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity"/>
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CommingSoonActivity" />
-        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterListActivity"
+        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterSelectionActivity"
             android:label="@string/characters"
             android:launchMode="singleTop" />
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity" />
-        <activity android:name=".chimerafront.activities.CombatListActivity"
+        <activity android:name=".chimerafront.activities.CombatSelectionActivity"
             android:label="@string/combats"
             android:launchMode="singleTop"/>
         <activity android:name=".chimerafront.activities.BattleActivity"
@@ -32,6 +37,8 @@
         <activity android:name=".chimerafront.activities.CampaignListActivity"
             android:label="@string/campaigns"/>
         <activity android:name=".chimerafront.activities.CampaignProfileActivity" />
+        <activity android:name=".chimerafront.activities.EventMapActivity" />
+        <activity android:name=".chimerafront.activities.EventProfileActivity" />
     </application>
 
 </manifest>

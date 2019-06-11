@@ -28,9 +28,9 @@ import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
-import com.aganchiran.chimera.chimerafront.utils.CharacterAdapter;
-import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
+import com.aganchiran.chimera.chimerafront.utils.adapters.CharacterAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CampaignCharactersListVM;
 
@@ -51,6 +51,7 @@ public class CamCharactersFragment extends Fragment {
     private CharacterAdapter adapter;
 
     private static final String ARG_CAMPAIGN_MODEL = "campaign_model";
+    private View rootView;
 
 
     public CamCharactersFragment() {
@@ -73,8 +74,7 @@ public class CamCharactersFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater
-                .inflate(R.layout.fragment_character_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_character_list, container, false);
         camChaListVM = ViewModelProviders.of(this).get(CampaignCharactersListVM.class);
 
         assert getArguments() != null;
@@ -93,7 +93,7 @@ public class CamCharactersFragment extends Fragment {
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, camChaListVM));
+        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, camChaListVM));
 
         return rootView;
     }
@@ -244,8 +244,7 @@ public class CamCharactersFragment extends Fragment {
             case R.id.delete_characters:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
-                    Objects.requireNonNull(getActivity()).findViewById(R.id.deletion_interface)
-                            .setLayoutParams(VISIBLE);
+                    rootView.findViewById(R.id.deletion_interface).setLayoutParams(VISIBLE);
                     addCharacterButton.hide();
                 }
                 return true;
