@@ -337,12 +337,15 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
 //            backgroundImage.setImageBitmap(getBitmapFromUri(newImage));
 //        } catch (IOException e) {
 //            e.printStackTrace();
-//        }
+
         Picasso.with(getContext())
                 .load(newImage)
-                .fit()
+                .resize(4000, 4000)
+                .onlyScaleDown()
                 .centerInside()
                 .into(backgroundImage);
+
+
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
