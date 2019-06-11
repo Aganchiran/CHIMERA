@@ -23,8 +23,8 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCampaignDialog;
 import com.aganchiran.chimera.chimerafront.utils.adapters.CampaignAdapter;
-import com.aganchiran.chimera.chimerafront.utils.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.DropToDeleteListener;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
+import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.viewmodels.CampaignListVM;
 
@@ -54,7 +54,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         setupButtons();
 
         final ImageView deleteArea = findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteListener(adapter, campaignListVM));
+        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, campaignListVM));
 
         super.onCreate(savedInstanceState);
     }

@@ -15,6 +15,7 @@ public class CombatRepo {
 
     private CombatDAO combatDAO;
     private LiveData<List<CombatModel>> allCombats;
+    private OnInsertListener onInsertListener;
 
     public CombatRepo(Application application){
         ChimeraDB database = ChimeraDB.getInstance(application);
@@ -23,7 +24,7 @@ public class CombatRepo {
     }
 
     public void insert(CombatModel combatModel){
-        new InsertCombatAsyncTask(combatDAO).execute(combatModel);
+        new InsertCombatAsyncTask(combatDAO, onInsertListener).execute(combatModel);
     }
 
     public void update(CombatModel combatModel){
@@ -63,18 +64,26 @@ public class CombatRepo {
     //////////TASKS//////////
     /////////////////////////
 
-    private static class InsertCombatAsyncTask extends AsyncTask<CombatModel, Void, Void> {
+    private static class InsertCombatAsyncTask extends AsyncTask<CombatModel, Void, Long> {
 
         private CombatDAO combatDAO;
+        private OnInsertListener onInsertListener;
 
-        private InsertCombatAsyncTask(CombatDAO combatDAO){
+        private InsertCombatAsyncTask(CombatDAO combatDAO, OnInsertListener onInsertListener){
             this.combatDAO = combatDAO;
+            this.onInsertListener = onInsertListener;
         }
 
         @Override
-        protected Void doInBackground(CombatModel... combatModels) {
-            combatDAO.insert(combatModels[0]);
-            return null;
+        protected Long doInBackground(CombatModel... combatModels) {
+            return combatDAO.insert(combatModels[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long characterId) {
+            if (onInsertListener != null){
+                onInsertListener.onInsert(characterId);
+            }
         }
     }
 
@@ -151,5 +160,13 @@ public class CombatRepo {
         protected LiveData<CombatModel> doInBackground(CombatModel... combatModels) {
             return combatDAO.getCombatById(combatModels[0].getId());
         }
+    }
+
+    public void setListener(OnInsertListener onInsertListener) {
+        this.onInsertListener = onInsertListener;
+    }
+
+    public interface OnInsertListener {
+        void onInsert(Long characterId);
     }
 }

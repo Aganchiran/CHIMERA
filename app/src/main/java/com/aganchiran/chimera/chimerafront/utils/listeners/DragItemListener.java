@@ -1,4 +1,4 @@
-package com.aganchiran.chimera.chimerafront.utils;
+package com.aganchiran.chimera.chimerafront.utils.listeners;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;

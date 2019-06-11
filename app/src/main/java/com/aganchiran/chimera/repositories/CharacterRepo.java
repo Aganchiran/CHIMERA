@@ -3,6 +3,7 @@ package com.aganchiran.chimera.repositories;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.aganchiran.chimera.chimeracore.character.CharacterDAO;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
@@ -18,6 +19,7 @@ public class CharacterRepo {
 
     private CharacterDAO characterDAO;
     private LiveData<List<CharacterModel>> allCharacters;
+    private OnInsertListener onInsertListener;
 
     public CharacterRepo(Application application){
         ChimeraDB database = ChimeraDB.getInstance(application);
@@ -26,7 +28,7 @@ public class CharacterRepo {
     }
 
     public void insert(CharacterModel characterModel){
-        new InsertCharacterAsyncTask(characterDAO).execute(characterModel);
+        new InsertCharacterAsyncTask(characterDAO, onInsertListener).execute(characterModel);
     }
 
     public void update(CharacterModel characterModel){
@@ -66,18 +68,26 @@ public class CharacterRepo {
     //////////TASKS//////////
     /////////////////////////
 
-    private static class InsertCharacterAsyncTask extends AsyncTask<CharacterModel, Void, Void> {
+    private static class InsertCharacterAsyncTask extends AsyncTask<CharacterModel, Void, Long> {
 
         private CharacterDAO characterDAO;
+        private OnInsertListener onInsertListener;
 
-        private InsertCharacterAsyncTask(CharacterDAO characterDAO){
+        private InsertCharacterAsyncTask(CharacterDAO characterDAO, OnInsertListener onInsertListener){
             this.characterDAO = characterDAO;
+            this.onInsertListener = onInsertListener;
         }
 
         @Override
-        protected Void doInBackground(CharacterModel... characterModels) {
-            characterDAO.insert(characterModels[0]);
-            return null;
+        protected Long doInBackground(CharacterModel... characterModels) {
+            return characterDAO.insert(characterModels[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long characterId) {
+            if (onInsertListener != null){
+                onInsertListener.onInsert(characterId);
+            }
         }
     }
 
@@ -142,18 +152,11 @@ public class CharacterRepo {
         }
     }
 
-//    private static class GetCharacterAsyncTask extends AsyncTask<CharacterModel, Void, LiveData<CharacterModel>> {
-//
-//        private CharacterDAO characterDAO;
-//
-//        private GetCharacterAsyncTask(CharacterDAO characterDAO){
-//            this.characterDAO = characterDAO;
-//        }
-//
-//        @Override
-//        protected LiveData<CharacterModel> doInBackground(CharacterModel... characterModels) {
-//            return characterDAO.getCharacterById(characterModels[0].getId());
-//        }
-//    }
+    public void setListener(OnInsertListener onInsertListener) {
+        this.onInsertListener = onInsertListener;
+    }
 
+    public interface OnInsertListener {
+        void onInsert(Long characterId);
+    }
 }

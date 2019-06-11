@@ -15,6 +15,8 @@ public class CampaignModel extends ItemModel {
 
     private String description;
 
+    private String backgroundImage;
+
     private int displayPosition;
 
     public CampaignModel(String name, String description) {
@@ -49,6 +51,14 @@ public class CampaignModel extends ItemModel {
         this.description = description;
     }
 
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
     public int getDisplayPosition() {
         return displayPosition;
     }
@@ -71,4 +81,6 @@ public class CampaignModel extends ItemModel {
                 && ((CampaignModel) obj).getDescription().equals(this.getDescription())
                 && ((CampaignModel) obj).getDisplayPosition() == this.getDisplayPosition());
     }
+
+
 }

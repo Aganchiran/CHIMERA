@@ -10,12 +10,12 @@ import com.aganchiran.chimera.repositories.CombatRepo;
 
 import java.util.List;
 
-public class CombatListVM extends AndroidViewModel implements ItemVM<CombatModel> {
+public class CombatSelectionVM extends AndroidViewModel implements ItemVM<CombatModel> {
 
     private CombatRepo combatRepo;
     private LiveData<List<CombatModel>> allCombats;
 
-    public CombatListVM(@NonNull Application application) {
+    public CombatSelectionVM(@NonNull Application application) {
         super(application);
         combatRepo = new CombatRepo(application);
         allCombats = combatRepo.getAllCombats();
@@ -50,5 +50,9 @@ public class CombatListVM extends AndroidViewModel implements ItemVM<CombatModel
 
     public LiveData<List<CombatModel>> getAllCombats() {
         return allCombats;
+    }
+
+    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId){
+        return combatRepo.getCampaignCombats(campaignId);
     }
 }

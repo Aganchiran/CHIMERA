@@ -41,19 +41,19 @@
                         android:id="@+id/tabItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tab_details" />
+                        android:icon="@drawable/ic_details"  />
 
                     <android.support.design.widget.TabItem
                         android:id="@+id/tabItem2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tab_consumables" />
+                        android:icon="@drawable/ic_consumable_small" />
 
                     <android.support.design.widget.TabItem
                         android:id="@+id/tabItem3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/combat" />
+                        android:icon="@drawable/ic_combat_small" />
 
                 </android.support.design.widget.TabLayout>
 

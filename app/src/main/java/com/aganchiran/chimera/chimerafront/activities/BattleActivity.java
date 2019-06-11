@@ -109,7 +109,7 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             @Override
             public void addCharacter() {
-                Intent intent = new Intent(BattleActivity.this, CharacterListActivity.class);
+                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
                 intent.putExtra("CAMPAIGN", combat.getCampaignId());
                 startActivityForResult(intent, ADD_CHARACTERS);

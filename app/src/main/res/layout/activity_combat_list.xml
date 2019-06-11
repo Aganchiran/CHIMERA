@@ -26,28 +26,12 @@
                 android:padding="4dp"
                 tools:listitem="@layout/item_combat" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/add_combat_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_add"/>
-
-            <ImageView
-                android:id="@+id/delete_area"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="end|bottom"
-                android:src="@drawable/ic_delete"
-                android:alpha="0"/>
-
         </android.support.design.widget.CoordinatorLayout>
 
         <LinearLayout
             android:id="@+id/combat_deletion_interface"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:minHeight="60dp"
             android:background="@color/backgroundColor"
             android:gravity="center|end"

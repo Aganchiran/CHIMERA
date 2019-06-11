@@ -27,6 +27,14 @@ public class BattleVM extends AndroidViewModel {
         allCharacters = characterRepo.getAllCharacters();
     }
 
+    public void linkCharacterToCombat(int combatId, int characterId){
+        combatCharacterRepo.linkCharacterToCombat(combatId, characterId);
+    }
+
+    public void linkCharactersToCombat(int combatId, List<Integer> charactersIds){
+        combatCharacterRepo.linkCharactersToCombat(combatId, charactersIds);
+    }
+
     public void unlinkCharacterFromCombat(int combatId, int characterId){
         combatCharacterRepo.unlinkCharacterToCombat(combatId, characterId);
     }
@@ -40,14 +48,6 @@ public class BattleVM extends AndroidViewModel {
 
     public LiveData<List<CharacterModel>> getAllCharacters() {
         return allCharacters;
-    }
-
-    public void linkCharacterToCombat(int combatId, int characterId){
-        combatCharacterRepo.linkCharacterToCombat(combatId, characterId);
-    }
-
-    public void linkCharactersToCombat(int combatId, List<Integer> charactersIds){
-        combatCharacterRepo.linkCharactersToCombat(combatId, charactersIds);
     }
 
     public LiveData<CombatCharacter> getCCByIds(int combatId, int characterId){

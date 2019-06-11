@@ -3,9 +3,8 @@ package com.aganchiran.chimera.chimerafront.utils.views;
 import android.content.ClipData;
 import android.content.Context;
 import android.os.Build;
-import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatImageView;
-import android.view.DragEvent;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,17 +13,17 @@ import com.aganchiran.chimera.R;
 
 public class EventPoint extends AppCompatImageView {
 
-    private final ZoomLayout eventMap;
+    private OnEventClickListener listener;
 
-    public EventPoint(Context context, ZoomLayout eventMap) {
+    public EventPoint(Context context, OnEventClickListener listener) {
         super(context);
-        this.eventMap = eventMap;
+        this.listener = listener;
         setup();
     }
 
-    public EventPoint(Context context, AttributeSet attrs, ZoomLayout eventMap) {
+    public EventPoint(Context context, AttributeSet attrs, OnEventClickListener listener) {
         super(context, attrs);
-        this.eventMap = eventMap;
+        this.listener = listener;
         setup();
     }
 
@@ -64,12 +63,15 @@ public class EventPoint extends AppCompatImageView {
                             } else {
                                 v.startDrag(clipData, shadowBuilder, v, 0);
                             }
-                          v.setVisibility(View.INVISIBLE);
+                            v.setVisibility(View.INVISIBLE);
 
                             return true;
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        if (motionEvent.getEventTime() - startTime < 200) {
+                            listener.onEventClick(EventPoint.this);
+                        }
                         break;
                 }
                 return true;
@@ -83,4 +85,19 @@ public class EventPoint extends AppCompatImageView {
         params.setMargins(xCoord, yCoord, 0, 0);
         setLayoutParams(params);
     }
+
+    public int getXCoord() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
+        return params.leftMargin;
+    }
+
+    public int getYCoord() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
+        return params.topMargin;
+    }
+
+    public interface OnEventClickListener {
+        void onEventClick(EventPoint eventPoint);
+    }
+
 }
