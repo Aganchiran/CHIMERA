@@ -138,7 +138,10 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
                 selectedImage = Uri.fromFile(f);
             }
 
-            imageView.setImageURI(selectedImage);
+            Glide.with(this)
+                    .load(selectedImage)
+                    .centerCrop()
+                    .into(imageView);
             imageUri = selectedImage.toString();
         }
     }
