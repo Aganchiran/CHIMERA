@@ -24,6 +24,8 @@ public class CharacterModel extends ItemModel {
 
     private String description;
 
+    private String image;
+
     private int displayPosition;
 
     private int initiative;
@@ -96,6 +98,14 @@ public class CharacterModel extends ItemModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getDisplayPosition() {

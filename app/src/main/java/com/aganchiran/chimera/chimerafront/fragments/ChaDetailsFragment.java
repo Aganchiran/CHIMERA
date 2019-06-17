@@ -3,7 +3,7 @@ package com.aganchiran.chimera.chimerafront.fragments;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,13 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
 import com.aganchiran.chimera.viewmodels.CharacterDetailsVM;
+import com.bumptech.glide.Glide;
 
 public class ChaDetailsFragment extends Fragment {
     /**
@@ -68,10 +69,19 @@ public class ChaDetailsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable CharacterModel characterModel) {
                 assert characterModel != null;
-                ((TextView) rootView.findViewById(R.id.character_portrait))
+                ((TextView) rootView.findViewById(R.id.name))
                         .setText(characterModel.getName());
                 ((TextView) rootView.findViewById(R.id.description_text_view))
                         .setText(characterModel.getDescription());
+                final ImageView image = rootView.findViewById(R.id.image);
+                if (characterModel.getImage() != null) {
+                    Glide.with(ChaDetailsFragment.this)
+                            .load(Uri.parse(characterModel.getImage()))
+                            .centerCrop()
+                            .into(image);
+                } else {
+                    image.setImageResource(R.drawable.ic_character);
+                }
             }
         });
 
@@ -93,11 +103,12 @@ public class ChaDetailsFragment extends Fragment {
                 CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(String newName, String newDescription) {
+                    public void saveCharacter(String newName, String newDescription, String image) {
                         final CharacterModel character = (CharacterModel) getArguments()
                                 .getSerializable(ARG_CHARACTER_MODEL);
                         character.setName(newName);
                         character.setDescription(newDescription);
+                        character.setImage(image);
 
                         characterDetailsVM.update(character);
                     }
@@ -112,7 +123,9 @@ public class ChaDetailsFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit character");
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 }

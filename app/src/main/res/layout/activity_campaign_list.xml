@@ -68,18 +68,18 @@
                 android:textColor="@color/contrastColor" />
 
             <Button
-                android:id="@+id/accept_button"
+                android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/contrastColor"
                 android:onClick="deleteSelectedCampaigns"
-                android:text="@string/accept"
+                android:text="@string/delete"
                 android:textColor="@color/backgroundColor" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/element_button_home" />
+    <!--<include layout="@layout/element_button_home" />-->
 
 </android.support.constraint.ConstraintLayout>

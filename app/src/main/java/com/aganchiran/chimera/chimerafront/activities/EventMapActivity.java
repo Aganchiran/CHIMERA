@@ -1,6 +1,5 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +36,7 @@ import java.util.List;
 public class EventMapActivity extends ActivityWithUpperBar {
 
     private static final int REQUEST_STORAGE = 112;
+    private static final int REQUEST_EVENT_PROFILE = 113;
     private static final int PICK_IMAGE = 1;
     private EventMapVM eventMapVM;
     private CampaignModel campaign;
@@ -56,10 +55,10 @@ public class EventMapActivity extends ActivityWithUpperBar {
                 eventMapVM.insert(new EventModel(
                         "New Event",
                         "",
-                        eventPoint.getXCoord(),
-                        eventPoint.getYCoord(),
+                        zoomLayout.getPercenageXFromPX(eventPoint.getCoords().x),
+                        zoomLayout.getPercenageYFromPX(eventPoint.getCoords().y),
                         campaign.getId()));
-                eventMapVM.getEventByCoordsAndCampaign(eventPoint.getXCoord(), eventPoint.getYCoord(),
+                eventMapVM.getEventByCoordsAndCampaign(zoomLayout.getPercenageXFromPX(eventPoint.getCoords().x), zoomLayout.getPercenageYFromPX(eventPoint.getCoords().y),
                         campaign.getId()).observe(EventMapActivity.this, new Observer<EventModel>() {
                     @Override
                     public void onChanged(@Nullable EventModel eventModel) {
@@ -75,8 +74,8 @@ public class EventMapActivity extends ActivityWithUpperBar {
                 final EventModel eventModel = new EventModel(
                         "",
                         "",
-                        eventPoint.getXCoord(),
-                        eventPoint.getYCoord(),
+                        zoomLayout.getPercenageXFromPX(eventPoint.getCoords().x),
+                        zoomLayout.getPercenageYFromPX(eventPoint.getCoords().y),
                         campaign.getId());
                 eventModel.setId(eventPoint.getId());
                 eventMapVM.delete(eventModel);
@@ -88,8 +87,8 @@ public class EventMapActivity extends ActivityWithUpperBar {
                     @Override
                     public void onChanged(@Nullable EventModel eventModel) {
                         if (eventModel != null) {
-                            eventModel.setXCoord(eventPoint.getXCoord());
-                            eventModel.setYCoord(eventPoint.getYCoord());
+                            eventModel.setXCoord(zoomLayout.getPercenageXFromPX(eventPoint.getCoords().x));
+                            eventModel.setYCoord(zoomLayout.getPercenageYFromPX(eventPoint.getCoords().y));
                             eventMapVM.update(eventModel);
                         }
                     }
@@ -107,7 +106,7 @@ public class EventMapActivity extends ActivityWithUpperBar {
                         Intent intent = new Intent(EventMapActivity.this,
                                 EventProfileActivity.class);
                         intent.putExtra("EVENT", eventModel);
-                        startActivity(intent);
+                        startActivityForResult(intent, REQUEST_EVENT_PROFILE);
                     }
                 });
             }
@@ -116,11 +115,13 @@ public class EventMapActivity extends ActivityWithUpperBar {
         campaign = (CampaignModel) getIntent().getSerializableExtra("CAMPAIGN");
         if (campaign.getBackgroundImage() != null) {
             zoomLayout.setBackgroundImage(Uri.parse(campaign.getBackgroundImage()));
+        }else {
+            zoomLayout.setDefaultImage();
         }
         eventMapVM.getCampaignEvents(campaign.getId()).observe(this, new Observer<List<EventModel>>() {
             @Override
             public void onChanged(@Nullable List<EventModel> eventModels) {
-                if (zoomLayout.isEmpty()) {
+                if (zoomLayout.isFirstTime()) {
                     zoomLayout.setEvents(eventModels);
                 }
             }
@@ -184,6 +185,8 @@ public class EventMapActivity extends ActivityWithUpperBar {
             zoomLayout.setBackgroundImage(selectedImage);
             campaign.setBackgroundImage(selectedImage.toString());
             eventMapVM.updateCampaign(campaign);
+        } else if (requestCode == REQUEST_EVENT_PROFILE){
+            zoomLayout.updateEventName((EventModel) data.getSerializableExtra("EVENT"));
         }
     }
 

@@ -14,7 +14,7 @@ import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 
 public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.CombatHolder> {
 
-    private EditCombat editCombat;
+    private MenuActions menuActions;
 
     @NonNull
     @Override
@@ -50,7 +50,7 @@ public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.Combat
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.edit_combat:
-                            editCombat.perform(CombatAdapter.this.getItemAt(
+                            menuActions.editCombat(CombatAdapter.this.getItemAt(
                                     CombatHolder.this.getAdapterPosition()));
                             return true;
                         default:
@@ -61,11 +61,11 @@ public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.Combat
         }
     }
 
-    public void setEditCombat(EditCombat editCombat) {
-        this.editCombat = editCombat;
+    public void setMenuActions(MenuActions menuActions) {
+        this.menuActions = menuActions;
     }
 
-    public interface EditCombat {
-        void perform(CombatModel combatModel);
+    public interface MenuActions {
+        void editCombat(CombatModel combatModel);
     }
 }

@@ -2,13 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/add_combats"
+        android:id="@+id/new_combat"
         android:orderInCategory="100"
-        android:title="@string/add_combats"
+        android:title="@string/new_combat"
         app:showAsAction="never" />
     <item
-        android:id="@+id/delete_combats"
+        android:id="@+id/link_combats"
         android:orderInCategory="100"
-        android:title="@string/delete_combats"
+        android:title="@string/link_combats"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/select_combats"
+        android:orderInCategory="100"
+        android:title="@string/select_combats"
         app:showAsAction="never" />
 </menu>

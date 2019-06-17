@@ -80,9 +80,9 @@ public class CampaignListActivity extends ActivityWithUpperBar {
                 startActivity(intent);
             }
         });
-        adapter.setEditCampaign(new CampaignAdapter.EditCampaign() {
+        adapter.setMenuActions(new CampaignAdapter.MenuActions() {
             @Override
-            public void perform(final CampaignModel campaign) {
+            public void editCampaign(final CampaignModel campaign) {
                 CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
                 dialog.setListener(new CreateEditCampaignDialog.CreateCampaignDialogListener() {
                     @Override
@@ -99,6 +99,13 @@ public class CampaignListActivity extends ActivityWithUpperBar {
                 });
                 assert getFragmentManager() != null;
                 dialog.show(getSupportFragmentManager(), "edit campaign");
+            }
+
+            @Override
+            public void openMap(CampaignModel campaignModel) {
+                Intent intent = new Intent(CampaignListActivity.this, EventMapActivity.class);
+                intent.putExtra("CAMPAIGN", campaignModel);
+                startActivity(intent);
             }
         });
 
@@ -138,21 +145,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         addCampaignButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
-                dialog.setListener(new CreateEditCampaignDialog.CreateCampaignDialogListener() {
-                    @Override
-                    public void saveCampaign(String name, String description) {
-                        CampaignModel campaignModel = new CampaignModel(name, description);
-                        campaignListVM.insert(campaignModel);
-                    }
-
-                    @Override
-                    public CampaignModel getCampaign() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getSupportFragmentManager(), "create campaign");
+                createCampaign();
             }
         });
 
@@ -171,6 +164,24 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         cancelCampaignDeletion(view);
     }
 
+    private void createCampaign() {
+        CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
+        dialog.setListener(new CreateEditCampaignDialog.CreateCampaignDialogListener() {
+            @Override
+            public void saveCampaign(String name, String description) {
+                CampaignModel campaignModel = new CampaignModel(name, description);
+                campaignListVM.insert(campaignModel);
+            }
+
+            @Override
+            public CampaignModel getCampaign() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getSupportFragmentManager(), "create campaign");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -181,12 +192,15 @@ public class CampaignListActivity extends ActivityWithUpperBar {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete_campaigns:
+            case R.id.select_campaigns:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     findViewById(R.id.campaign_deletion_interface).setLayoutParams(VISIBLE);
                     addCampaignButton.hide();
                 }
+                return true;
+            case R.id.create_campaign:
+                createCampaign();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

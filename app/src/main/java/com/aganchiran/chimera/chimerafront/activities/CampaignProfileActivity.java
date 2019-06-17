@@ -1,19 +1,25 @@
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimerafront.fragments.CamCombatsFragment;
 import com.aganchiran.chimera.chimerafront.fragments.CamDetailsFragment;
 import com.aganchiran.chimera.chimerafront.fragments.CamCharactersFragment;
+import com.aganchiran.chimera.viewmodels.CampaignProfileVM;
 
 public class CampaignProfileActivity extends ActivityWithUpperBar {
 
@@ -37,10 +43,12 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private CampaignProfileVM campaignProfileVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_campaign_profile);
+        campaignProfileVM = ViewModelProviders.of(this).get(CampaignProfileVM.class);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -61,6 +69,19 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
         }
 
         super.onCreate(savedInstanceState);
+
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(campaign.getName());
+
+        campaignProfileVM.getCampaignById(campaign.getId()).observe(this, new Observer<CampaignModel>() {
+            @Override
+            public void onChanged(@Nullable CampaignModel campaignModel) {
+                if (campaignModel != null) {
+                    toolbarTitle.setText(campaignModel.getName());
+                }
+            }
+        });
     }
 
 

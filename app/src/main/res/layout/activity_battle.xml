@@ -34,14 +34,14 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/battle_button"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00000000"
         android:onClick="recalculateCombat"
-        android:src="@drawable/ic_resolve_combat"
+        android:src="@drawable/bttn_fight"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintBottom_toTopOf="@+id/space2"
         app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
@@ -60,7 +60,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/defenderRecycler"
         app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
+        app:layout_constraintStart_toEndOf="@+id/ini_recycler_layout"
         app:layout_constraintTop_toBottomOf="@+id/space">
 
         <TextView
@@ -94,22 +94,44 @@
         android:onClick="recalculateIni"
         android:src="@drawable/ic_loop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/initiativeRecycler"
+        app:layout_constraintStart_toEndOf="@+id/ini_recycler_layout"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/initiativeRecycler"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ini_recycler_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@color/backgroundLightColor"
-        android:orientation="vertical"
-        android:padding="@dimen/cell_distance"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/item_initiative_cell" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/initiative_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/cell_distance"
+            android:textSize="20sp"
+            android:text="@string/initiative"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    <include layout="@layout/element_button_home" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/initiativeRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/backgroundLightColor"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            android:padding="@dimen/cell_distance"
+            tools:listitem="@layout/item_initiative_cell"
+            app:layout_constraintTop_toBottomOf="@+id/initiative_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+
+
+    <!--<include layout="@layout/element_button_home" />-->
 
 </android.support.constraint.ConstraintLayout>

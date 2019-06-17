@@ -14,7 +14,7 @@ import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 
 public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.CampaignHolder> {
 
-    private EditCampaign editCampaign;
+    private MenuActions menuActions;
 
     @NonNull
     @Override
@@ -50,7 +50,11 @@ public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.edit_campaign:
-                            editCampaign.perform(CampaignAdapter.this.getItemAt(
+                            menuActions.editCampaign(CampaignAdapter.this.getItemAt(
+                                    CampaignHolder.this.getAdapterPosition()));
+                            return true;
+                        case R.id.open_map:
+                            menuActions.openMap(CampaignAdapter.this.getItemAt(
                                     CampaignHolder.this.getAdapterPosition()));
                             return true;
                         default:
@@ -61,11 +65,12 @@ public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.
         }
     }
 
-    public void setEditCampaign(EditCampaign editCampaign) {
-        this.editCampaign = editCampaign;
+    public void setMenuActions(MenuActions menuActions) {
+        this.menuActions = menuActions;
     }
 
-    public interface EditCampaign {
-        void perform(CampaignModel campaignModel);
+    public interface MenuActions {
+        void editCampaign(CampaignModel campaignModel);
+        void openMap(CampaignModel campaignModel);
     }
 }

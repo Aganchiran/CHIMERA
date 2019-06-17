@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/new_consumable"
+        android:orderInCategory="100"
+        android:title="New consumable"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/delete_consumables"
         android:orderInCategory="100"
-        android:title="@string/delete_consumables"
+        android:title="@string/select_consumables"
         app:showAsAction="never" />
 </menu>

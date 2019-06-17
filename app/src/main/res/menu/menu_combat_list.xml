@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/delete_combats"
-        android:title="@string/delete_combats"
-        app:showAsAction="never"/>
+    <item
+        android:id="@+id/select_combats"
+        android:title="@string/select_combats"
+        app:showAsAction="never" />
 </menu>

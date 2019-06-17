@@ -1,5 +1,6 @@
 package com.aganchiran.chimera.chimerafront.utils.adapters;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.extensions.ListAdapter;
@@ -10,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +82,15 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         if (getItemViewType(position) == CHARACTER_VIEW) {
             CharacterModel currentCharacter = getCharacterAt(position);
             ((DefenderHolder) holder).textViewName.setText(currentCharacter.getName());
-            switch (combatPhase){
+            if (currentCharacter.getImage() != null) {
+                Glide.with(holder.itemView)
+                        .load(Uri.parse(currentCharacter.getImage()))
+                        .centerCrop()
+                        .into(((DefenderHolder) holder).portrait);
+            } else {
+                ((DefenderHolder) holder).portrait.setImageResource(R.drawable.ic_character);
+            }
+            switch (combatPhase) {
                 case NONE:
                     ((DefenderHolder) holder).roll.setText("");
                     ((DefenderHolder) holder).damage.setText("");
@@ -103,10 +114,10 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         }
     }
 
-    public int getItemPositionById(int id){
+    public int getItemPositionById(int id) {
 
-        for (int i = 0 ; i < getItemCount() ; i++){
-            if (getCharacterAt(i) != null && getCharacterAt(i).getId() == id){
+        for (int i = 0; i < getItemCount(); i++) {
+            if (getCharacterAt(i) != null && getCharacterAt(i).getId() == id) {
                 return i;
             }
         }
@@ -127,6 +138,7 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         private TextView textViewName;
         private TextView roll;
         private TextView damage;
+        private ImageView portrait;
         private GestureDetector gestureDetector;
 
         DefenderHolder(@NonNull final View characterView) {
@@ -134,6 +146,7 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
             textViewName = itemView.findViewById(R.id.name_label);
             roll = itemView.findViewById(R.id.roll);
             damage = itemView.findViewById(R.id.damage);
+            portrait = itemView.findViewById(R.id.character_image);
             gestureDetector = new GestureDetector(itemView.getContext(),
                     new ItemGestureListener(this));
 
@@ -161,7 +174,7 @@ public class DefendersAdapter extends ListAdapter<CharacterModel, RecyclerView.V
         this.listener = listener;
     }
 
-    public interface OnCharacterClickListener{
+    public interface OnCharacterClickListener {
         void onCharacterClick(CharacterModel characterModel);
     }
 

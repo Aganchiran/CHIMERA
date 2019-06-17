@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/character_portrait">
+        app:layout_constraintTop_toBottomOf="@+id/portrait">
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,16 +48,26 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/character_portrait"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:id="@+id/portrait"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:drawableTop="@drawable/ic_character"
-        android:lines="2"
-        android:textAlignment="center"
+        android:padding="16dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_character"/>
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:lines="2"
+            android:textAlignment="center" />
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

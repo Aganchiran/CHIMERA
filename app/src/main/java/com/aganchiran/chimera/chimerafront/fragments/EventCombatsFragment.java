@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -135,9 +134,9 @@ public class EventCombatsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        adapter.setEditCombat(new CombatAdapter.EditCombat() {
+        adapter.setMenuActions(new CombatAdapter.MenuActions() {
             @Override
-            public void perform(final CombatModel combat) {
+            public void editCombat(final CombatModel combat) {
                 CreateEditCombatDialog dialog = new CreateEditCombatDialog();
                 dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
                     @Override
@@ -168,7 +167,8 @@ public class EventCombatsFragment extends Fragment {
                         reorderCombats(eventCharacters);
                         ecs.removeObserver(this);
                     }
-                });            }
+                });
+            }
         });
 
         data.observe(this, new Observer<List<CombatModel>>() {
@@ -198,26 +198,11 @@ public class EventCombatsFragment extends Fragment {
         addCombatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CreateEditCombatDialog dialog = new CreateEditCombatDialog();
-                dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
-                    @Override
-                    public void saveCombat(String name) {
-                        createCombat(name);
-                    }
-
-                    @Override
-                    public CombatModel getCombat() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create combat");
-
+                createCombatDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.accept_button);
+        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -258,9 +243,27 @@ public class EventCombatsFragment extends Fragment {
         eventCombatsListVM.insert(combatModel);
     }
 
-    private void reorderCombats(List<EventCombat> eventCharacters){
+    private void createCombatDialog() {
+        CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+        dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
+
+            @Override
+            public void saveCombat(String name) {
+                createCombat(name);
+            }
+
+            @Override
+            public CombatModel getCombat() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getFragmentManager(), "create combat");
+    }
+
+    private void reorderCombats(List<EventCombat> eventCharacters) {
         Map<Integer, EventCombat> ecMap = new HashMap<>();
-        for (final EventCombat ec : eventCharacters){
+        for (final EventCombat ec : eventCharacters) {
             ecMap.put(ec.getCombatId(), ec);
         }
 
@@ -281,21 +284,25 @@ public class EventCombatsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.delete_combats:
+            case R.id.select_combats:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     rootView.findViewById(R.id.deletion_interface).setLayoutParams(VISIBLE);
                     addCombatButton.hide();
                 }
                 return true;
-            case R.id.add_combats:
+            case R.id.link_combats:
                 Intent intent = new Intent(getActivity(), CombatSelectionActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
                 intent.putExtra("CAMPAIGN", eventCombatsListVM.getEventModel().getCampaignId());
                 startActivityForResult(intent, ADD_COMBATS);
                 return true;
+            case R.id.new_combat:
+                createCombatDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -312,24 +319,4 @@ public class EventCombatsFragment extends Fragment {
             eventCombatsListVM.linkCombats(combatsIds);
         }
     }
-
-//    private static class ReorderCombatAsyncTask extends AsyncTask<Void, Void, Void> {
-//        private CombatAdapter adapter;
-//        private EventCombatsListVM eventCombatsListVM;
-//
-//        private ReorderCombatAsyncTask(CombatAdapter adapter, EventCombatsListVM eventCombatsListVM) {
-//            this.adapter = adapter;
-//            this.eventCombatsListVM = eventCombatsListVM;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            for (int i = 0; i < adapter.getItemCount(); i++) {
-//                CombatModel combatModel = adapter.getItemAt(i);
-//                combatModel.setDisplayPosition(i);
-//            }
-//            eventCombatsListVM.updateCombats(adapter.getItemModels());
-//            return null;
-//        }
-//    }
 }
