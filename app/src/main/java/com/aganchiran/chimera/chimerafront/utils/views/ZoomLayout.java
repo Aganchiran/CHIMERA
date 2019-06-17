@@ -22,7 +22,10 @@ import android.widget.RelativeLayout;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -371,6 +374,10 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
 
         Glide.with(getContext())
                 .load(newImage)
+                .apply(new RequestOptions()
+                        .fitCenter()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .override(4000, 4000))
                 .centerInside()
                 .into(backgroundImage)
                 .getSize(new SizeReadyCallback() {
@@ -394,7 +401,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     public void setDefaultImage() {
         BitmapFactory.Options dimensions = new BitmapFactory.Options();
         dimensions.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getResources(), R.drawable.img_city_map, dimensions);
+        BitmapFactory.decodeResource(getResources(), R.drawable.no_map, dimensions);
         final int height = dimensions.outHeight;
         final int width =  dimensions.outWidth;
 
@@ -409,7 +416,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 }
             });
         }
-        backgroundImage.setImageResource(R.drawable.img_city_map);
+        backgroundImage.setImageResource(R.drawable.no_map);
     }
 
     private void recalculateOffsets(int imageWidth, int imageHeight) {
