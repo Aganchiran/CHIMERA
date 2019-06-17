@@ -12,14 +12,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
+import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
 import com.aganchiran.chimera.chimerafront.utils.adapters.DefendersAdapter;
 import com.aganchiran.chimera.chimerafront.utils.adapters.InitiativeAdapter;
 import com.aganchiran.chimera.chimerafront.utils.Quicksort;
@@ -53,10 +58,12 @@ public class BattleActivity extends ActivityWithUpperBar {
     private RecyclerView defenderRecycler;
     private CharacterModel modifiedCharacter;
     private int combatPhase = NONE;
+    private ImageView battleButton;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_battle);
+        battleButton = findViewById(R.id.battle_button);
         battleVM = ViewModelProviders.of(this).get(BattleVM.class);
         NO_ATTACKER = findViewById(R.id.attacker);
         attacker = NO_ATTACKER;
@@ -79,9 +86,18 @@ public class BattleActivity extends ActivityWithUpperBar {
 
         super.onCreate(savedInstanceState);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(combat.getName());
+
+        battleVM.getCombatById(combat.getId()).observe(this, new Observer<CombatModel>() {
+            @Override
+            public void onChanged(@Nullable CombatModel combatModel) {
+                if (combatModel != null) {
+                    toolbarTitle.setText(combatModel.getName());
+                }
+            }
+        });
     }
 
     private void setupInitiativeList() {
@@ -178,17 +194,6 @@ public class BattleActivity extends ActivityWithUpperBar {
                 } else {
                     final CharacterModel characterToAdd =
                             initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
-                    if (initiativeAdapter.getAttacker() == null) {
-                        changeAttacker(NO_ATTACKER);
-                    } else {
-
-                        LayoutInflater inflater = getLayoutInflater();
-                        View newView = inflater.inflate(R.layout.item_initiative_cell, null);
-
-                        TextView newName = newView.findViewById(R.id.name_label);
-                        newName.setText(initiativeAdapter.getAttacker().getName());
-                        changeAttacker(newView);
-                    }
                     defenders.add(characterToAdd);
                     defendersAdapter.submitList(defenders);
                     initiativeAdapter.setDefenders(defenders);
@@ -335,6 +340,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                 for (CharacterModel defender : defenders) {
                     defender.rollDefense();
                 }
+                battleButton.setImageResource(R.drawable.bttn_damage);
                 break;
             case ATTACK:
                 combatPhase = DAMAGE;
@@ -344,6 +350,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                         defender.setLastHit(attackerModel.calculateDamage(defender.getDefenseRoll()));
                     }
                 }
+                battleButton.setImageResource(R.drawable.bttn_apply);
                 break;
             case DAMAGE:
                 for (CharacterModel defender : defenders) {
@@ -352,6 +359,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                     }
                 }
                 endAttack();
+                battleButton.setImageResource(R.drawable.bttn_fight);
                 break;
         }
 
@@ -383,4 +391,42 @@ public class BattleActivity extends ActivityWithUpperBar {
         startActivityForResult(intent, 2);
     }
 
+    private void editCombat(){
+        CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+        dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
+
+            @Override
+            public void saveCombat(String name) {
+                combat.setName(name);
+                battleVM.updateCombat(combat);
+            }
+
+            @Override
+            public CombatModel getCombat() {
+                return combat;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getSupportFragmentManager(), "edit combat");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_battle, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.edit_combat:
+                editCombat();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 }

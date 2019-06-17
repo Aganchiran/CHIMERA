@@ -51,7 +51,7 @@ public class EventRepo {
         return eventDAO.getEventById(id);
     }
 
-    public LiveData<EventModel> getEventByCoordsAndCampaign(int xCoord, int yCoord, int campaignId) {
+    public LiveData<EventModel> getEventByCoordsAndCampaign(float xCoord, float yCoord, int campaignId) {
         return eventDAO.getEventByCoordsAndCampaign(xCoord, yCoord, campaignId);
     }
 

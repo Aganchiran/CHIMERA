@@ -27,7 +27,7 @@ public class CharacterSelectionActivity extends ActivityWithUpperBar {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_character_list);
+        setContentView(R.layout.activity_character_selection);
         characterSelectionVM = ViewModelProviders.of(this).get(CharacterSelectionVM.class);
 
         final RecyclerView recyclerView = findViewById(R.id.character_recycler_view);
@@ -67,16 +67,16 @@ public class CharacterSelectionActivity extends ActivityWithUpperBar {
 
     private void setupButtons() {
 
-        Button acceptDeletion = findViewById(R.id.accept_button);
-        acceptDeletion.setOnClickListener(new View.OnClickListener() {
+        Button acceptSelection = findViewById(R.id.select_button);
+        acceptSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                         sendSelectedCharacters();
             }
         });
 
-        Button cancelDeletion = findViewById(R.id.cancel_button);
-        cancelDeletion.setOnClickListener(new View.OnClickListener() {
+        Button cancelSelection = findViewById(R.id.cancel_button);
+        cancelSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                         setResult(RESULT_CANCELED);

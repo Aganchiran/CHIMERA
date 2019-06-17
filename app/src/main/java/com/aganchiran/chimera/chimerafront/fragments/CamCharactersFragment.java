@@ -117,15 +117,16 @@ public class CamCharactersFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        adapter.setEditCharacter(new CharacterAdapter.EditCharacter() {
+        adapter.setMenuActions(new CharacterAdapter.MenuActions() {
             @Override
-            public void perform(final CharacterModel character) {
+            public void editCharacter(final CharacterModel character) {
                 CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(String newName, String newDescription) {
+                    public void saveCharacter(String newName, String newDescription, String image) {
                         character.setName(newName);
                         character.setDescription(newDescription);
+                        character.setImage(image);
 
                         camChaListVM.update(character);
                     }
@@ -176,26 +177,11 @@ public class CamCharactersFragment extends Fragment {
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
-                dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
-                    @Override
-                    public void saveCharacter(String name, String description) {
-                        createCharacter(name, description);
-                    }
-
-                    @Override
-                    public CharacterModel getCharacter() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create character");
-
+                createCharacterDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.accept_button);
+        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -221,14 +207,32 @@ public class CamCharactersFragment extends Fragment {
         addCharacterButton.show();
     }
 
-    private void createCharacter(String name, String description) {
+    private void createCharacter(String name, String description, String image) {
         assert getArguments() != null;
         CampaignModel campaignModel =
                 (CampaignModel) getArguments().getSerializable(ARG_CAMPAIGN_MODEL);
 
         assert campaignModel != null;
         CharacterModel characterModel = new CharacterModel(name, description, campaignModel.getId());
+        characterModel.setImage(image);
         camChaListVM.insert(characterModel);
+    }
+
+    private void createCharacterDialog(){
+        CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+        dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
+            @Override
+            public void saveCharacter(String name, String description, String image) {
+                createCharacter(name, description, image);
+            }
+
+            @Override
+            public CharacterModel getCharacter() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getFragmentManager(), "create character");
     }
 
     @Override
@@ -241,15 +245,20 @@ public class CamCharactersFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.delete_characters:
+            case R.id.select_characters:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     rootView.findViewById(R.id.deletion_interface).setLayoutParams(VISIBLE);
                     addCharacterButton.hide();
                 }
                 return true;
+            case R.id.new_character:
+                createCharacterDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     private static class ReorderCharacterAsyncTask extends AsyncTask<Void, Void, Void> {

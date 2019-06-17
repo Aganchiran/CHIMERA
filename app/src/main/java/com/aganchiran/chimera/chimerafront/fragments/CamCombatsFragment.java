@@ -117,9 +117,9 @@ public class CamCombatsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        adapter.setEditCombat(new CombatAdapter.EditCombat() {
+        adapter.setMenuActions(new CombatAdapter.MenuActions() {
             @Override
-            public void perform(final CombatModel combat) {
+            public void editCombat(final CombatModel combat) {
                 CreateEditCombatDialog dialog = new CreateEditCombatDialog();
                 dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
 
@@ -175,27 +175,11 @@ public class CamCombatsFragment extends Fragment {
         addCombatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CreateEditCombatDialog dialog = new CreateEditCombatDialog();
-                dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
-
-                    @Override
-                    public void saveCombat(String name) {
-                        createCombat(name);
-                    }
-
-                    @Override
-                    public CombatModel getCombat() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create combat");
-
+                createCombatDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.accept_button);
+        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,6 +215,24 @@ public class CamCombatsFragment extends Fragment {
         camChaListVM.insert(combatModel);
     }
 
+    private void createCombatDialog(){
+        CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+        dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
+
+            @Override
+            public void saveCombat(String name) {
+                createCombat(name);
+            }
+
+            @Override
+            public CombatModel getCombat() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getFragmentManager(), "create combat");
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_combat_management, menu);
@@ -241,15 +243,20 @@ public class CamCombatsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.delete_combats:
+            case R.id.select_combats:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     rootView.findViewById(R.id.deletion_interface).setLayoutParams(VISIBLE);
                     addCombatButton.hide();
                 }
                 return true;
+            case R.id.new_combat:
+                createCombatDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     private static class ReorderCombatAsyncTask extends AsyncTask<Void, Void, Void> {

@@ -2,18 +2,33 @@ package com.aganchiran.chimera.chimerafront.utils.views;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.widget.AppCompatImageView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
+import com.aganchiran.chimera.chimerafront.utils.Coordinates;
 
 public class EventPoint extends AppCompatImageView {
 
     private OnEventClickListener listener;
+
+    private final int eventSize = (int) getResources().getDimension(R.dimen.event_size);
+    private float scale;
+    private TextView nameText;
+    private RelativeLayout nameTag;
+    private Coordinates coords = new Coordinates(0, 0, 0 , 0);
+    public float xPercentage = 0;
+    public float yPercentage = 0;
 
     public EventPoint(Context context, OnEventClickListener listener) {
         super(context);
@@ -29,9 +44,16 @@ public class EventPoint extends AppCompatImageView {
 
     private void setup() {
         setImageResource(R.drawable.ic_event_point);
-        final int eventSize = (int) getResources().getDimension(R.dimen.event_size);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(eventSize, eventSize);
         setLayoutParams(params);
+
+        nameTag = new RelativeLayout(getContext());
+        RelativeLayout.inflate(getContext(), R.layout.item_name_tag, nameTag);
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(eventSize * 3, eventSize);
+        nameTag.setLayoutParams(params2);
+        nameTag.setElevation(-2);
+
+        nameText = nameTag.findViewById(R.id.nameText);
 
         setOnTouchListener(new OnTouchListener() {
             private long startTime;
@@ -64,7 +86,6 @@ public class EventPoint extends AppCompatImageView {
                                 v.startDrag(clipData, shadowBuilder, v, 0);
                             }
                             v.setVisibility(View.INVISIBLE);
-
                             return true;
                         }
                         break;
@@ -80,20 +101,55 @@ public class EventPoint extends AppCompatImageView {
         });
     }
 
-    public void setCoord(int xCoord, int yCoord) {
+    public void setCoord(final int xCoord, final int yCoord, final int xOffset, final int yOffset) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
-        params.setMargins(xCoord, yCoord, 0, 0);
+        params.setMargins(xCoord + xOffset, yCoord + yOffset, 0, 0);
         setLayoutParams(params);
+
+        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) nameTag.getLayoutParams();
+        params2.setMargins((int) (xCoord + xOffset + (eventSize * (scale - 1))), yCoord + yOffset , 0, 0);
+        nameTag.setLayoutParams(params2);
+
+        coords.set(xCoord, yCoord);
+        coords.setOffsets(xOffset, yOffset);
     }
 
-    public int getXCoord() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
-        return params.leftMargin;
+    public Coordinates getCoords() {
+        return coords;
     }
 
-    public int getYCoord() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
-        return params.topMargin;
+    public void resize(float scale){
+        this.scale = scale;
+        setScaleX(scale);
+        setScaleY(scale);
+        nameTag.setScaleX(scale);
+        nameTag.setScaleY(scale);
+        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) nameTag.getLayoutParams();
+        params2.setMargins(
+                (int) (getCoords().x + getCoords().xOffset + (eventSize * (scale - 1))),
+                  getCoords().y + getCoords().yOffset , 0, 0);
+        nameTag.setLayoutParams(params2);
+    }
+
+    public RelativeLayout getNameTag() {
+        return nameTag;
+    }
+
+    public void setName(String name){
+        nameText.setText(name);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        ((ViewGroup) getParent()).addView(nameTag);
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        nameTag.setVisibility(visibility);
     }
 
     public interface OnEventClickListener {

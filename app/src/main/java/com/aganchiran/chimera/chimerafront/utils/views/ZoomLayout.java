@@ -3,8 +3,10 @@ package com.aganchiran.chimera.chimerafront.utils.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -12,17 +14,16 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SizeReadyCallback;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,14 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     private EventPoint fliyingEvent;
     private OnItemClickListener listener;
     private RelativeLayout eventMap;
+    private final int eventSize = (int) getResources().getDimension(R.dimen.event_size);
+
     private ImageView backgroundImage;
+    private Point imageBoundaries;
+    private int backgroundOffsetX = 0;
+    private int backgroundOffsetY = 0;
+
+    private boolean firstTime = true;
 
     public ZoomLayout(Context context) {
         super(context);
@@ -199,8 +207,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         offsetY = scaleOffsetY - (dy / scale);
 
         for (EventPoint event : events) {
-            event.setScaleX(1 / scale);
-            event.setScaleY(1 / scale);
+            event.resize(1 / scale);
         }
     }
 
@@ -208,7 +215,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         return getChildAt(0);
     }
 
-    private void setupMap(Context context){
+    private void setupMap(Context context) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -216,7 +223,6 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         eventMap.setLayoutParams(params);
         backgroundImage = new ImageView(context);
         backgroundImage.setLayoutParams(params);
-        backgroundImage.setImageResource(R.drawable.img_city_map);
 
         final RelativeLayout child = new RelativeLayout(context);
         child.addView(backgroundImage);
@@ -235,9 +241,13 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                     listener.onEventClick(eventPoint);
                 }
             });
-            eventPoint.setCoord(getMapXCoord(e.getX()), getMapYCoord(e.getY()));
-            eventPoint.setScaleX(1 / scale);
-            eventPoint.setScaleY(1 / scale);
+            eventPoint.setCoord(
+                    getMapXCoord(e.getX()) - backgroundOffsetX,
+                    getMapYCoord(e.getY()) - backgroundOffsetY,
+                    backgroundOffsetX,
+                    backgroundOffsetY);
+            eventPoint.resize(1 / scale);
+            eventPoint.setName("New Event");
             eventMap.addView(eventPoint);
             events.add(eventPoint);
 
@@ -248,12 +258,10 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     }
 
     public int getMapXCoord(float xScreenPoint) {
-        final int eventSize = (int) getResources().getDimension(R.dimen.event_size);
         return (int) (offsetX + (xScreenPoint / scale) - (eventSize / 2));
     }
 
     public int getMapYCoord(float yScreenPoint) {
-        final int eventSize = (int) getResources().getDimension(R.dimen.event_size);
         return (int) (offsetY + (yScreenPoint / scale) - (eventSize / 2));
     }
 
@@ -268,7 +276,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 case DragEvent.ACTION_DRAG_LOCATION:
                     break;
                 case DragEvent.ACTION_DROP:
-                    fliyingEvent.setCoord(getMapXCoord(event.getX()), getMapYCoord(event.getY()));
+                    fliyingEvent.setCoord(
+                            getMapXCoord(event.getX()) - backgroundOffsetX,
+                            getMapYCoord(event.getY()) - backgroundOffsetY,
+                            backgroundOffsetX,
+                            backgroundOffsetY);
                     listener.onMoveEvent(fliyingEvent);
                     fliyingEvent.setVisibility(View.VISIBLE);
                     break;
@@ -284,7 +296,8 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         return fliyingEvent;
     }
 
-    public void deleteEvent(EventPoint eventPoint){
+    public void deleteEvent(EventPoint eventPoint) {
+        eventMap.removeView(eventPoint.getNameTag());
         eventMap.removeView(eventPoint);
         events.remove(eventPoint);
 
@@ -294,10 +307,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     }
 
     public void setEvents(List<EventModel> eventModels) {
+        firstTime = false;
         eventMap.removeAllViews();
         events.clear();
 
-        for(final EventModel eventModel : eventModels){
+        for (final EventModel eventModel : eventModels) {
             final EventPoint eventPoint = new EventPoint(getContext(), new EventPoint.OnEventClickListener() {
                 @Override
                 public void onEventClick(EventPoint eventPoint) {
@@ -305,53 +319,128 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 }
             });
             eventPoint.setId(eventModel.getId());
-            eventPoint.setCoord(eventModel.getXCoord(), eventModel.getYCoord());
-            eventPoint.setScaleX(1 / scale);
-            eventPoint.setScaleY(1 / scale);
+
+            eventPoint.xPercentage = eventModel.getXCoord();
+            eventPoint.yPercentage = eventModel.getYCoord();
+
+            eventPoint.resize(1 / scale);
+            eventPoint.setName(eventModel.getName());
             events.add(eventPoint);
             eventMap.addView(eventPoint);
         }
+
+        if (imageBoundaries != null) {
+            recalculateOffsets(imageBoundaries.x, imageBoundaries.y);
+        }
     }
 
-    public boolean isEmpty(){
-        return events.isEmpty();
-    }
-
-    public int size(){
-        return events.size();
-    }
-
-    public EventPoint getEPFromCoord(int xCoord, int yCoord){
-        EventPoint result = null;
-        for (EventPoint eventPoint : events){
-            if (eventPoint.getXCoord() == xCoord && eventPoint.getYCoord() == yCoord){
-                result = eventPoint;
+    public void updateEventName(EventModel eventModel) {
+        for (final EventPoint eventPoint : events) {
+            if (eventPoint.getId() == eventModel.getId()) {
+                eventPoint.setName(eventModel.getName());
                 break;
             }
         }
-        return result;
     }
 
-    public void setBackgroundImage(Uri newImage) {
-//        try {
-//            backgroundImage.setImageBitmap(getBitmapFromUri(newImage));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        Picasso.with(getContext())
+    public int getPXFromPercentageX(float percentageX) {
+        return (int) (imageBoundaries.x * percentageX);
+    }
+
+    public int getPXFromPercentageY(float percentageY) {
+        return (int) (imageBoundaries.y * percentageY);
+    }
+
+    public float getPercenageXFromPX(int px) {
+        return (float) px / imageBoundaries.x;
+    }
+
+    public float getPercenageYFromPX(int px) {
+        return (float) px / imageBoundaries.y;
+    }
+
+    public boolean isFirstTime() {
+        return firstTime;
+    }
+
+    public int size() {
+        return events.size();
+    }
+
+    public void setBackgroundImage(final Uri newImage) {
+
+        Glide.with(getContext())
                 .load(newImage)
-                .fit()
                 .centerInside()
-                .into(backgroundImage);
+                .into(backgroundImage)
+                .getSize(new SizeReadyCallback() {
+                    @Override
+                    public void onSizeReady(final int width, final int height) {
+                        if (eventMap.getWidth() != 0 && eventMap.getHeight() != 0) {
+                            recalculateOffsets(width, height);
+                        } else {
+                            eventMap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    eventMap.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                    recalculateOffsets(width, height);
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
-    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContext().getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
+    public void setDefaultImage() {
+        BitmapFactory.Options dimensions = new BitmapFactory.Options();
+        dimensions.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(getResources(), R.drawable.img_city_map, dimensions);
+        final int height = dimensions.outHeight;
+        final int width =  dimensions.outWidth;
+
+        if (eventMap.getWidth() != 0 && eventMap.getHeight() != 0) {
+            recalculateOffsets(width, height);
+        } else {
+            eventMap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    eventMap.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    recalculateOffsets(width, height);
+                }
+            });
+        }
+        backgroundImage.setImageResource(R.drawable.img_city_map);
+    }
+
+    private void recalculateOffsets(int imageWidth, int imageHeight) {
+        float imageAspect = imageWidth / (float) imageHeight;
+        float mapAspect = eventMap.getWidth() / (float) eventMap.getHeight();
+        imageBoundaries = new Point(0, 0);
+
+        if (imageAspect > mapAspect) {
+            imageBoundaries.x = eventMap.getWidth();
+            imageBoundaries.y = (int) (eventMap.getWidth() / imageAspect);
+
+            backgroundOffsetX = 0;
+            final float scaleRatio = eventMap.getWidth() / (float) imageBoundaries.x;
+            backgroundOffsetY = ((int) (eventMap.getHeight() - (imageBoundaries.y * scaleRatio)) / 2);
+        } else {
+            imageBoundaries.y = eventMap.getHeight();
+            imageBoundaries.x = (int) (eventMap.getHeight() * imageAspect);
+
+            backgroundOffsetY = 0;
+            final float scaleRatio = eventMap.getHeight() / (float) imageBoundaries.y;
+            backgroundOffsetX = (int) ((eventMap.getWidth() - (imageBoundaries.x * scaleRatio)) / 2);
+        }
+
+        for (final EventPoint eventPoint : events) {
+            eventPoint.setCoord(
+                    getPXFromPercentageX(eventPoint.xPercentage),
+                    getPXFromPercentageY(eventPoint.yPercentage),
+                    backgroundOffsetX,
+                    backgroundOffsetY);
+            eventPoint.resize(1 / scale);
+        }
     }
 
     public void setListener(OnItemClickListener listener) {
@@ -360,8 +449,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
 
     public interface OnItemClickListener {
         void onCreateEvent(EventPoint eventPoint);
+
         void onDeleteEvent(EventPoint eventPoint);
+
         void onMoveEvent(EventPoint eventPoint);
+
         void onEventClick(EventPoint eventPoint);
     }
 }

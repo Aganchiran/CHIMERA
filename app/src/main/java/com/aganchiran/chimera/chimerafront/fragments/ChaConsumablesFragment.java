@@ -188,26 +188,11 @@ public class ChaConsumablesFragment extends Fragment {
         addConsumableButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
-                dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
-                    @Override
-                    public void saveConsumable(String name, long max, long min) {
-                        ChaConsumablesFragment.this.createConsumable(name, max, min);
-                    }
-
-                    @Override
-                    public ConsumableModel getConsumable() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create consumable");
-
+                createConsumableDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.accept_button);
+        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -244,6 +229,23 @@ public class ChaConsumablesFragment extends Fragment {
         consumableListVM.insert(consumableModel);
     }
 
+    public void createConsumableDialog(){
+        CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
+        dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
+            @Override
+            public void saveConsumable(String name, long max, long min) {
+                ChaConsumablesFragment.this.createConsumable(name, max, min);
+            }
+
+            @Override
+            public ConsumableModel getConsumable() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getFragmentManager(), "create consumable");
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_consumable_management, menu);
@@ -262,8 +264,12 @@ public class ChaConsumablesFragment extends Fragment {
                     addConsumableButton.hide();
                 }
                 return true;
+            case R.id.new_consumable:
+                createConsumableDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private static class ReorderConsumableAsyncTask extends AsyncTask<Void, Void, Void> {

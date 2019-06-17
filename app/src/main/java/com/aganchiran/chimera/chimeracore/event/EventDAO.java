@@ -36,7 +36,7 @@ public abstract class EventDAO {
     public abstract LiveData<EventModel> getEventById(int id);
 
     @Query("SELECT * FROM event_table WHERE xCoord = :xCoord AND yCoord = :yCoord AND campaignId = :campaignId")
-    public abstract LiveData<EventModel> getEventByCoordsAndCampaign(int xCoord, int yCoord, int campaignId);
+    public abstract LiveData<EventModel> getEventByCoordsAndCampaign(float xCoord, float yCoord, int campaignId);
 
     @Query("SELECT * FROM event_table")
     public abstract LiveData<List<EventModel>> getAllEvents();

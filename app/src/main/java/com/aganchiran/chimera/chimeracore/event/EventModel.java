@@ -21,13 +21,13 @@ public class EventModel implements Serializable {
 
     private String description;
 
-    private int xCoord;
+    private float xCoord;
 
-    private int yCoord;
+    private float yCoord;
 
     private int campaignId;
 
-    public EventModel(String name, String description, int xCoord, int yCoord, int campaignId) {
+    public EventModel(String name, String description, float xCoord, float yCoord, int campaignId) {
         this.name = name;
         this.description = description;
         this.xCoord = xCoord;
@@ -67,19 +67,19 @@ public class EventModel implements Serializable {
         this.campaignId = campaignId;
     }
 
-    public int getXCoord() {
+    public float getXCoord() {
         return xCoord;
     }
 
-    public void setXCoord(int xCoord) {
+    public void setXCoord(float xCoord) {
         this.xCoord = xCoord;
     }
 
-    public int getYCoord() {
+    public float getYCoord() {
         return yCoord;
     }
 
-    public void setYCoord(int yCoord) {
+    public void setYCoord(float yCoord) {
         this.yCoord = yCoord;
     }
 }

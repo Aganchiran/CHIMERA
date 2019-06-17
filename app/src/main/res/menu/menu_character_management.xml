@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/delete_characters"
+        android:id="@+id/new_character"
+        android:title="@string/new_character"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/select_characters"
         android:orderInCategory="100"
-        android:title="@string/delete_characters"
+        android:title="@string/select_characters"
         app:showAsAction="never" />
 </menu>

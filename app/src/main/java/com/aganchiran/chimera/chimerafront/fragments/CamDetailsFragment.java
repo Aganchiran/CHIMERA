@@ -82,15 +82,19 @@ public class CamDetailsFragment extends Fragment {
                 eventMapButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), EventMapActivity.class);
-                        intent.putExtra("CAMPAIGN", campaign.getValue());
-                        startActivity(intent);
+                        openEventMap();
                     }
                 });
             }
         }
 
         return rootView;
+    }
+
+    private void openEventMap(){
+        Intent intent = new Intent(getActivity(), EventMapActivity.class);
+        intent.putExtra("CAMPAIGN", campaign.getValue());
+        startActivity(intent);
     }
 
     @Override
@@ -124,8 +128,13 @@ public class CamDetailsFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit campaign");
                 return true;
+            case R.id.open_map:
+                openEventMap();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
 }

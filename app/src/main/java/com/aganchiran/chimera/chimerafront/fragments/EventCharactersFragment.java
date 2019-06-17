@@ -135,15 +135,16 @@ public class EventCharactersFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        adapter.setEditCharacter(new CharacterAdapter.EditCharacter() {
+        adapter.setMenuActions(new CharacterAdapter.MenuActions() {
             @Override
-            public void perform(final CharacterModel character) {
+            public void editCharacter(final CharacterModel character) {
                 CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(String newName, String newDescription) {
+                    public void saveCharacter(String newName, String newDescription, String image) {
                         character.setName(newName);
                         character.setDescription(newDescription);
+                        character.setImage(image);
 
                         eventChaListVM.update(character);
                     }
@@ -202,26 +203,11 @@ public class EventCharactersFragment extends Fragment {
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
-                dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
-                    @Override
-                    public void saveCharacter(String name, String description) {
-                        createCharacter(name, description);
-                    }
-
-                    @Override
-                    public CharacterModel getCharacter() {
-                        return null;
-                    }
-                });
-                assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), "create character");
-
+                createCharacterDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.accept_button);
+        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -252,19 +238,37 @@ public class EventCharactersFragment extends Fragment {
         addCharacterButton.show();
     }
 
-    private void createCharacter(String name, String description) {
+    private void createCharacter(String name, String description, String image) {
         assert getArguments() != null;
         EventModel eventModel =
                 (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
 
         assert eventModel != null;
         CharacterModel characterModel = new CharacterModel(name, description, eventModel.getCampaignId());
+        characterModel.setImage(image);
         eventChaListVM.insert(characterModel);
     }
 
-    private void reorderCharacters(List<EventCharacter> eventCharacters){
+    private void createCharacterDialog(){
+        CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+        dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
+            @Override
+            public void saveCharacter(String name, String description, String image) {
+                createCharacter(name, description, image);
+            }
+
+            @Override
+            public CharacterModel getCharacter() {
+                return null;
+            }
+        });
+        assert getFragmentManager() != null;
+        dialog.show(getFragmentManager(), "create character");
+    }
+
+    private void reorderCharacters(List<EventCharacter> eventCharacters) {
         Map<Integer, EventCharacter> ecMap = new HashMap<>();
-        for (final EventCharacter ec : eventCharacters){
+        for (final EventCharacter ec : eventCharacters) {
             ecMap.put(ec.getCharacterId(), ec);
         }
 
@@ -285,7 +289,7 @@ public class EventCharactersFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.delete_characters:
+            case R.id.select_characters:
                 if (!adapter.getSelectModeEnabled()) {
                     adapter.enableSelectMode();
                     rootView.findViewById(R.id.deletion_interface)
@@ -293,14 +297,18 @@ public class EventCharactersFragment extends Fragment {
                     addCharacterButton.hide();
                 }
                 return true;
-            case R.id.add_characters:
+            case R.id.link_characters:
                 Intent intent = new Intent(getActivity(), CharacterSelectionActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
                 intent.putExtra("CAMPAIGN", eventChaListVM.getEventModel().getCampaignId());
                 startActivityForResult(intent, ADD_CHARACTERS);
                 return true;
+            case R.id.new_character:
+                createCharacterDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

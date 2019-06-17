@@ -67,6 +67,6 @@
     </LinearLayout>
 
 
-    <include layout="@layout/element_button_home" />
+    <!--<include layout="@layout/element_button_home" />-->
 
 </android.support.constraint.ConstraintLayout>

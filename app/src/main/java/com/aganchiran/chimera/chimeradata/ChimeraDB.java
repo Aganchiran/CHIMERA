@@ -29,7 +29,7 @@ import com.aganchiran.chimera.chimeracore.eventcombat.EventCombatDAO;
         entities = {CharacterModel.class, ConsumableModel.class, CombatModel.class,
                 CombatCharacter.class, CampaignModel.class, EventModel.class, EventCharacter.class,
                 EventCombat.class},
-        version = 27,
+        version = 29,
         exportSchema = false)
 public abstract class ChimeraDB extends RoomDatabase {
 

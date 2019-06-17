@@ -57,7 +57,6 @@ public class CreateEditCampaignDialog extends AppCompatDialogFragment {
                 final String name = editTextName.getText().toString();
                 final String description = editTextDescription.getText().toString();
 
-
                 if (name.trim().isEmpty()) {
                     Toast.makeText(getContext(),
                             "Name is mandatory", Toast.LENGTH_SHORT).show();

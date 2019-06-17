@@ -5,24 +5,19 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
-import com.aganchiran.chimera.repositories.CampaignRepo;
 import com.aganchiran.chimera.repositories.EventRepo;
 
 import java.util.List;
 
-public class EventMapVM extends AndroidViewModel implements ItemVM<EventModel> {
+public class EventProfileVM extends AndroidViewModel implements ItemVM<EventModel> {
 
     private EventRepo eventRepo;
-    private CampaignRepo campaignRepo;
     private LiveData<List<EventModel>> allEvents;
-    private CampaignModel campaignModel;
 
-    public EventMapVM(@NonNull Application application) {
+    public EventProfileVM(@NonNull Application application) {
         super(application);
         eventRepo = new EventRepo(application);
-        campaignRepo = new CampaignRepo(application);
         allEvents = eventRepo.getAllEvents();
     }
 
@@ -34,10 +29,6 @@ public class EventMapVM extends AndroidViewModel implements ItemVM<EventModel> {
     @Override
     public void update(EventModel eventModel){
         eventRepo.update(eventModel);
-    }
-
-    public void updateCampaign(CampaignModel campaignModel) {
-        campaignRepo.update(campaignModel);
     }
 
     public void updateEvents(List<EventModel> eventModelList){
@@ -57,23 +48,7 @@ public class EventMapVM extends AndroidViewModel implements ItemVM<EventModel> {
         return eventRepo.getEventById(id);
     }
 
-    public LiveData<List<EventModel>> getCampaignEvents(int campaignId){
-        return eventRepo.getCampaignEvents(campaignId);
-    }
-
-    public LiveData<EventModel> getEventByCoordsAndCampaign(float xCoord, float yCoord, int campaignId) {
-        return eventRepo.getEventByCoordsAndCampaign(xCoord, yCoord, campaignId);
-    }
-
     public LiveData<List<EventModel>> getAllEvents() {
         return allEvents;
-    }
-
-    public CampaignModel getCampaignModel() {
-        return campaignModel;
-    }
-
-    public void setCampaignModel(CampaignModel campaignModel) {
-        this.campaignModel = campaignModel;
     }
 }

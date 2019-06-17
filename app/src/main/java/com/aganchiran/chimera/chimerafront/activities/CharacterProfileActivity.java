@@ -10,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
@@ -63,12 +65,6 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         character = (CharacterModel) getIntent().getSerializableExtra("CHARACTER");
-        characterProfileVM.getCharacterById(character.getId()).observe(this, new Observer<CharacterModel>() {
-            @Override
-            public void onChanged(@Nullable CharacterModel characterModel) {
-                character = characterModel;
-            }
-        });
 
 
         if (getIntent().getBooleanExtra("FROMCOMBAT", false)) {
@@ -76,6 +72,20 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
         }
 
         super.onCreate(savedInstanceState);
+
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(character.getName());
+
+        characterProfileVM.getCharacterById(character.getId()).observe(this, new Observer<CharacterModel>() {
+            @Override
+            public void onChanged(@Nullable CharacterModel characterModel) {
+                character = characterModel;
+                if (characterModel != null){
+                    toolbarTitle.setText(characterModel.getName());
+                }
+            }
+        });
     }
 
 
