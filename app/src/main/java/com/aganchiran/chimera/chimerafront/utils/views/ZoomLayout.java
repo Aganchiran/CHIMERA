@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,9 +25,13 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -380,16 +386,20 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     public void setBackgroundImage(final Uri newImage) {
 
         Glide.with(getContext())
+                .asBitmap()
                 .load(newImage)
                 .apply(new RequestOptions()
                         .fitCenter()
                         .format(DecodeFormat.PREFER_ARGB_8888)
                         .override(4000, 4000))
                 .centerInside()
-                .into(backgroundImage)
-                .getSize(new SizeReadyCallback() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onSizeReady(final int width, final int height) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        final int width = resource.getWidth();
+                        final int height = resource.getHeight();
+                        backgroundImage.setImageBitmap(resource);
+
                         if (eventMap.getWidth() != 0 && eventMap.getHeight() != 0) {
                             recalculateOffsets(width, height);
                         } else {
@@ -401,6 +411,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                                 }
                             });
                         }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
                     }
                 });
     }

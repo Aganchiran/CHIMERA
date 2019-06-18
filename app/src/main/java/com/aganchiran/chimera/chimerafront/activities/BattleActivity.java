@@ -122,10 +122,7 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             @Override
             public void addCharacter() {
-                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
-                intent.putExtra("SELECTION_SCREEN", true);
-                intent.putExtra("CAMPAIGN", battleVM.getCombat().getValue().getCampaignId());
-                startActivityForResult(intent, ADD_CHARACTERS);
+                linkCharacter();
             }
         });
         initiativeAdapter.submitList(new ArrayList<CharacterModel>());
@@ -167,7 +164,7 @@ public class BattleActivity extends ActivityWithUpperBar {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder holder, int direction) {
                 if (direction == ItemTouchHelper.LEFT) {
-                    if(initiativeAdapter.getCharacterAt(holder.getAdapterPosition()).equals(initiativeAdapter.getAttacker())){
+                    if (initiativeAdapter.getCharacterAt(holder.getAdapterPosition()).equals(initiativeAdapter.getAttacker())) {
                         ((InitiativeAdapter.InitiativeHolder) holder).disselectAsAttacker();
                         changeAttacker(NO_ATTACKER);
                     }
@@ -262,6 +259,13 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             }
         }).attachToRecyclerView(defenderRecycler);
+    }
+
+    public void linkCharacter() {
+        Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
+        intent.putExtra("SELECTION_SCREEN", true);
+        intent.putExtra("CAMPAIGN", battleVM.getCombat().getValue().getCampaignId());
+        startActivityForResult(intent, ADD_CHARACTERS);
     }
 
     private void changeAttacker(View characterCell) {
@@ -391,7 +395,7 @@ public class BattleActivity extends ActivityWithUpperBar {
         startActivityForResult(intent, 2);
     }
 
-    private void editCombat(){
+    private void editCombat() {
         CreateEditCombatDialog dialog = new CreateEditCombatDialog();
         dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
 
@@ -424,6 +428,12 @@ public class BattleActivity extends ActivityWithUpperBar {
         switch (item.getItemId()) {
             case R.id.edit_combat:
                 editCombat();
+                return true;
+            case R.id.link_characters:
+                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
+                intent.putExtra("SELECTION_SCREEN", true);
+                intent.putExtra("CAMPAIGN", battleVM.getCombat().getValue().getCampaignId());
+                startActivityForResult(intent, ADD_CHARACTERS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

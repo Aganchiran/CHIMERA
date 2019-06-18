@@ -24,8 +24,8 @@ import com.aganchiran.chimera.viewmodels.CampaignProfileVM;
 public class CampaignProfileActivity extends ActivityWithUpperBar {
 
     public static final int DETAILS_TAB = 0;
-    public static final int CHARACTER_TAB = 1;
-    public static final int COMBAT_TAB = 2;
+    public static final int CHARACTERS_TAB = 1;
+    public static final int COMBATS_TAB = 2;
 
     private CampaignModel campaign;
 
@@ -65,7 +65,7 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
 
         campaign = (CampaignModel) getIntent().getSerializableExtra("CAMPAIGN");
         if (getIntent().getBooleanExtra("FROMCOMBAT", false)) {
-            tabLayout.getTabAt(COMBAT_TAB).select();
+            tabLayout.getTabAt(COMBATS_TAB).select();
         }
 
         super.onCreate(savedInstanceState);
@@ -126,9 +126,9 @@ public class CampaignProfileActivity extends ActivityWithUpperBar {
             switch (position) {
                 case DETAILS_TAB:
                     return CamDetailsFragment.newInstance(campaignModel);
-                case CHARACTER_TAB:
+                case CHARACTERS_TAB:
                     return CamCharactersFragment.newInstance(campaignModel);
-                case COMBAT_TAB:
+                case COMBATS_TAB:
                     return CamCombatsFragment.newInstance(campaignModel);
                 default:
                     throw new RuntimeException("This tab does not exist");
