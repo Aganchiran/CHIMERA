@@ -243,6 +243,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 public void onEventClick(EventPoint eventPoint) {
                     listener.onEventClick(eventPoint);
                 }
+
+                @Override
+                public void onDragStart(EventPoint eventPoint) {
+                    fliyingEvent = eventPoint;
+                }
             });
             eventPoint.setCoord(
                     getMapXCoord(e.getX()) - backgroundOffsetX,
@@ -273,9 +278,6 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         @Override
         public boolean onDrag(View v, DragEvent event) {
             switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    fliyingEvent = ((EventPoint) event.getLocalState());
-                    break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     break;
                 case DragEvent.ACTION_DROP:
@@ -319,6 +321,11 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 @Override
                 public void onEventClick(EventPoint eventPoint) {
                     listener.onEventClick(eventPoint);
+                }
+
+                @Override
+                public void onDragStart(EventPoint eventPoint) {
+                    fliyingEvent = eventPoint;
                 }
             });
             eventPoint.setId(eventModel.getId());

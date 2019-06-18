@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
@@ -22,6 +24,7 @@ import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimerafront.activities.EventMapActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCampaignDialog;
 import com.aganchiran.chimera.viewmodels.CampaignDetailsVM;
+import com.bumptech.glide.Glide;
 
 public class CamDetailsFragment extends Fragment {
     /**
@@ -66,23 +69,30 @@ public class CamDetailsFragment extends Fragment {
                     .getSerializable(ARG_CAMPAIGN_MODEL);
 
             if (campaignModel != null) {
+                final ImageView eventMapButton = rootView.findViewById(R.id.event_map_button);
+
                 campaign = campaignDetailsVM.getCampaignById(campaignModel.getId());
                 campaign.observe(this, new Observer<CampaignModel>() {
                     @Override
                     public void onChanged(@Nullable CampaignModel campaignModel) {
                         assert campaignModel != null;
-                        ((TextView) rootView.findViewById(R.id.campaign_image))
-                                .setText(campaignModel.getName());
                         ((TextView) rootView.findViewById(R.id.description_text_view))
                                 .setText(campaignModel.getDescription());
-                    }
-                });
 
-                final Button eventMapButton = rootView.findViewById(R.id.event_map_button);
-                eventMapButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        openEventMap();
+                        if (campaignModel.getBackgroundImage() != null) {
+                            Glide.with(CamDetailsFragment.this)
+                                    .load(Uri.parse(campaignModel.getBackgroundImage()))
+                                    .centerCrop()
+                                    .into(eventMapButton);
+                        } else {
+                            eventMapButton.setImageResource(R.drawable.no_map);
+                        }
+                        eventMapButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openEventMap();
+                            }
+                        });
                     }
                 });
             }
