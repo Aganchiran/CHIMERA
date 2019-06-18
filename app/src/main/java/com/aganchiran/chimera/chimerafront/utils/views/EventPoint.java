@@ -85,6 +85,7 @@ public class EventPoint extends AppCompatImageView {
                             } else {
                                 v.startDrag(clipData, shadowBuilder, v, 0);
                             }
+                            listener.onDragStart(EventPoint.this);
                             v.setVisibility(View.INVISIBLE);
                             return true;
                         }
@@ -154,6 +155,7 @@ public class EventPoint extends AppCompatImageView {
 
     public interface OnEventClickListener {
         void onEventClick(EventPoint eventPoint);
+        void onDragStart(EventPoint eventPoint);
     }
 
 }

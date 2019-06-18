@@ -5,4 +5,8 @@
         android:id="@+id/edit_combat"
         android:title="@string/edit_combat"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/link_characters"
+        android:title="@string/link_characters"
+        app:showAsAction="never" />
 </menu>

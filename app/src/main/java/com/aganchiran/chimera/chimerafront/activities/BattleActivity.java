@@ -48,17 +48,15 @@ public class BattleActivity extends ActivityWithUpperBar {
     private View NO_ATTACKER;
 
     private BattleVM battleVM;
-    private CombatModel combat;
+    private MutableLiveData<List<CharacterModel>> initiatives = new MutableLiveData<>();
     private InitiativeAdapter initiativeAdapter;
     private RecyclerView initiativeRecycler;
-    private View attacker;
-    private List<CharacterModel> defenders = SetUniqueList.setUniqueList(new ArrayList<CharacterModel>());
-    private MutableLiveData<List<CharacterModel>> initiatives = new MutableLiveData<>();
     private DefendersAdapter defendersAdapter;
     private RecyclerView defenderRecycler;
-    private CharacterModel modifiedCharacter;
+    private View attacker;
     private int combatPhase = NONE;
     private ImageView battleButton;
+    private CharacterModel modifiedCharacter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -80,7 +78,7 @@ public class BattleActivity extends ActivityWithUpperBar {
 
 
         Intent intent = this.getIntent();
-        combat = (CombatModel) intent.getSerializableExtra("COMBAT");
+        battleVM.setCombat(((CombatModel) intent.getSerializableExtra("COMBAT")).getId());
         setupInitiativeList();
         setupDefendersList();
 
@@ -88,9 +86,8 @@ public class BattleActivity extends ActivityWithUpperBar {
 
         final Toolbar toolbar = findViewById(R.id.toolbar);
         final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(combat.getName());
 
-        battleVM.getCombatById(combat.getId()).observe(this, new Observer<CombatModel>() {
+        battleVM.getCombat().observe(this, new Observer<CombatModel>() {
             @Override
             public void onChanged(@Nullable CombatModel combatModel) {
                 if (combatModel != null) {
@@ -125,14 +122,11 @@ public class BattleActivity extends ActivityWithUpperBar {
 
             @Override
             public void addCharacter() {
-                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
-                intent.putExtra("SELECTION_SCREEN", true);
-                intent.putExtra("CAMPAIGN", combat.getCampaignId());
-                startActivityForResult(intent, ADD_CHARACTERS);
+                linkCharacter();
             }
         });
         initiativeAdapter.submitList(new ArrayList<CharacterModel>());
-        battleVM.getCharactersForCombat(combat.getId()).observe(this, new Observer<List<CharacterModel>>() {
+        battleVM.getCharactersForCombat().observe(this, new Observer<List<CharacterModel>>() {
             @Override
             public void onChanged(@Nullable List<CharacterModel> characterModels) {
                 if (initiatives.getValue() == null) {
@@ -170,21 +164,23 @@ public class BattleActivity extends ActivityWithUpperBar {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder holder, int direction) {
                 if (direction == ItemTouchHelper.LEFT) {
-                    ((InitiativeAdapter.InitiativeHolder) holder).disselectAsAttacker();
-                    changeAttacker(NO_ATTACKER);
+                    if (initiativeAdapter.getCharacterAt(holder.getAdapterPosition()).equals(initiativeAdapter.getAttacker())) {
+                        ((InitiativeAdapter.InitiativeHolder) holder).disselectAsAttacker();
+                        changeAttacker(NO_ATTACKER);
+                    }
 
                     final CharacterModel chaToRemove
                             = initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
                     final int posRemoved = defendersAdapter.getItemPositionById(chaToRemove.getId());
                     if (posRemoved >= 0) {
                         chaToRemove.endCombat();
-                        defenders.remove(chaToRemove);
-                        defendersAdapter.submitList(defenders);
+                        battleVM.getDefenders().remove(chaToRemove);
+                        defendersAdapter.submitList(battleVM.getDefenders());
                         defendersAdapter.notifyItemRemoved(posRemoved);
-                        initiativeAdapter.setDefenders(defenders);
+                        initiativeAdapter.setDefenders(battleVM.getDefenders());
                     }
 
-                    battleVM.unlinkCharacterFromCombat(combat.getId(), chaToRemove.getId());
+                    battleVM.unlinkCharacterFromCombat(chaToRemove.getId());
 
 
                     List<CharacterModel> charactersIni = initiatives.getValue();
@@ -194,9 +190,9 @@ public class BattleActivity extends ActivityWithUpperBar {
                 } else {
                     final CharacterModel characterToAdd =
                             initiativeAdapter.getCharacterAt(holder.getAdapterPosition());
-                    defenders.add(characterToAdd);
-                    defendersAdapter.submitList(defenders);
-                    initiativeAdapter.setDefenders(defenders);
+                    battleVM.getDefenders().add(characterToAdd);
+                    defendersAdapter.submitList(battleVM.getDefenders());
+                    initiativeAdapter.setDefenders(battleVM.getDefenders());
                     initiativeAdapter.notifyItemChanged(holder.getAdapterPosition());
                     endAttack();
                 }
@@ -227,14 +223,14 @@ public class BattleActivity extends ActivityWithUpperBar {
             public boolean onMove(@NonNull RecyclerView recyclerView,
                                   @NonNull RecyclerView.ViewHolder source,
                                   @NonNull RecyclerView.ViewHolder target) {
-                CharacterModel onAir = defenders.remove(source.getAdapterPosition());
-                if (defenders.size() > target.getAdapterPosition()) {
-                    defenders.add(target.getAdapterPosition(), onAir);
+                CharacterModel onAir = battleVM.getDefenders().remove(source.getAdapterPosition());
+                if (battleVM.getDefenders().size() > target.getAdapterPosition()) {
+                    battleVM.getDefenders().add(target.getAdapterPosition(), onAir);
                 } else {
-                    defenders.add(onAir);
+                    battleVM.getDefenders().add(onAir);
                 }
-                defendersAdapter.submitList(defenders);
-                initiativeAdapter.setDefenders(defenders);
+                defendersAdapter.submitList(battleVM.getDefenders());
+                initiativeAdapter.setDefenders(battleVM.getDefenders());
                 defendersAdapter.notifyItemMoved(source.getAdapterPosition(), target.getAdapterPosition());
                 return true;
             }
@@ -255,14 +251,21 @@ public class BattleActivity extends ActivityWithUpperBar {
                 final CharacterModel chaToRemove =
                         defendersAdapter.getCharacterAt(holder.getAdapterPosition());
                 chaToRemove.endCombat();
-                defenders.remove(holder.getAdapterPosition());
+                battleVM.getDefenders().remove(holder.getAdapterPosition());
                 defendersAdapter.notifyItemRemoved(holder.getAdapterPosition());
-                defendersAdapter.submitList(defenders);
-                initiativeAdapter.setDefenders(defenders);
+                defendersAdapter.submitList(battleVM.getDefenders());
+                initiativeAdapter.setDefenders(battleVM.getDefenders());
                 initiativeAdapter.notifyDataSetChanged();
 
             }
         }).attachToRecyclerView(defenderRecycler);
+    }
+
+    public void linkCharacter() {
+        Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
+        intent.putExtra("SELECTION_SCREEN", true);
+        intent.putExtra("CAMPAIGN", battleVM.getCombat().getValue().getCampaignId());
+        startActivityForResult(intent, ADD_CHARACTERS);
     }
 
     private void changeAttacker(View characterCell) {
@@ -291,7 +294,7 @@ public class BattleActivity extends ActivityWithUpperBar {
             newList.removeAll(Collections.singleton(null));
             initiatives.setValue(new ArrayList<>(new HashSet<>(newList)));
             initiativeAdapter.notifyDataSetChanged();
-            battleVM.linkCharactersToCombat(combat.getId(), charactersIds);
+            battleVM.linkCharactersToCombat(charactersIds);
         } else if (requestCode == SEE_CHARACTER) {
             CharacterModel cha = (CharacterModel) data.getSerializableExtra("CHARACTER");
 
@@ -337,7 +340,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                     final TextView roll = attacker.findViewById(R.id.roll);
                     roll.setText(String.valueOf(attackerModel.getAttackRoll()));
                 }
-                for (CharacterModel defender : defenders) {
+                for (CharacterModel defender : battleVM.getDefenders()) {
                     defender.rollDefense();
                 }
                 battleButton.setImageResource(R.drawable.bttn_damage);
@@ -345,7 +348,7 @@ public class BattleActivity extends ActivityWithUpperBar {
             case ATTACK:
                 combatPhase = DAMAGE;
                 defendersAdapter.setCombatPhase(combatPhase);
-                for (CharacterModel defender : defenders) {
+                for (CharacterModel defender : battleVM.getDefenders()) {
                     if (attackerModel != null) {
                         defender.setLastHit(attackerModel.calculateDamage(defender.getDefenseRoll()));
                     }
@@ -353,7 +356,7 @@ public class BattleActivity extends ActivityWithUpperBar {
                 battleButton.setImageResource(R.drawable.bttn_apply);
                 break;
             case DAMAGE:
-                for (CharacterModel defender : defenders) {
+                for (CharacterModel defender : battleVM.getDefenders()) {
                     if (attackerModel != null) {
                         defender.hit(defender.getLastHit());
                     }
@@ -363,13 +366,14 @@ public class BattleActivity extends ActivityWithUpperBar {
                 break;
         }
 
-        battleVM.updateCharacters(defenders);
+        battleVM.updateCharacters(battleVM.getDefenders());
         defendersAdapter.notifyDataSetChanged();
     }
 
     public void endAttack() {
         combatPhase = NONE;
         defendersAdapter.setCombatPhase(NONE);
+        battleButton.setImageResource(R.drawable.bttn_fight);
         final List<CharacterModel> allCha = Objects.requireNonNull(initiatives.getValue());
         allCha.removeAll(Collections.singleton(null));
         for (final CharacterModel cha : allCha) {
@@ -391,19 +395,20 @@ public class BattleActivity extends ActivityWithUpperBar {
         startActivityForResult(intent, 2);
     }
 
-    private void editCombat(){
+    private void editCombat() {
         CreateEditCombatDialog dialog = new CreateEditCombatDialog();
         dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
 
             @Override
             public void saveCombat(String name) {
+                final CombatModel combat = battleVM.getCombat().getValue();
                 combat.setName(name);
                 battleVM.updateCombat(combat);
             }
 
             @Override
             public CombatModel getCombat() {
-                return combat;
+                return battleVM.getCombat().getValue();
             }
         });
         assert getFragmentManager() != null;
@@ -423,6 +428,12 @@ public class BattleActivity extends ActivityWithUpperBar {
         switch (item.getItemId()) {
             case R.id.edit_combat:
                 editCombat();
+                return true;
+            case R.id.link_characters:
+                Intent intent = new Intent(BattleActivity.this, CharacterSelectionActivity.class);
+                intent.putExtra("SELECTION_SCREEN", true);
+                intent.putExtra("CAMPAIGN", battleVM.getCombat().getValue().getCampaignId());
+                startActivityForResult(intent, ADD_CHARACTERS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

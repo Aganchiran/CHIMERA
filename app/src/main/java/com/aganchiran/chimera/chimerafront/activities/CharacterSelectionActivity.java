@@ -71,7 +71,7 @@ public class CharacterSelectionActivity extends ActivityWithUpperBar {
         acceptSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                        sendSelectedCharacters();
+                sendSelectedCharacters();
             }
         });
 
@@ -79,17 +79,21 @@ public class CharacterSelectionActivity extends ActivityWithUpperBar {
         cancelSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                        setResult(RESULT_CANCELED);
-                        finish();
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
     }
 
     private void sendSelectedCharacters() {
-        Intent intent = new Intent();
         List<CharacterModel> characters = adapter.getCheckedItemModels();
-        intent.putExtra("CHARACTERS", (Serializable) characters);
-        setResult(RESULT_OK, intent);
+        if (!characters.isEmpty()) {
+            Intent intent = new Intent();
+            intent.putExtra("CHARACTERS", (Serializable) characters);
+            setResult(RESULT_OK, intent);
+        }else {
+            setResult(RESULT_CANCELED);
+        }
         finish();
     }
 
