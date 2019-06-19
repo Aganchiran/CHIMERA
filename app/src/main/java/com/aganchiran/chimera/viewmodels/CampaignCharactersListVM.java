@@ -52,6 +52,10 @@ public class CampaignCharactersListVM extends AndroidViewModel implements ItemVM
         return characterRepo.getCampaignCharacters(campaignId);
     }
 
+    public LiveData<List<CharacterModel>> getCharactersWithoutCampaign(){
+        return characterRepo.getCharactersWithoutCampaign();
+    }
+
     public LiveData<List<CharacterModel>> getAllCharacters() {
         return allCharacters;
     }

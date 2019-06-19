@@ -81,15 +81,18 @@ public class CamCharactersFragment extends Fragment {
         CampaignModel campaignModel = (CampaignModel) getArguments()
                 .getSerializable(ARG_CAMPAIGN_MODEL);
 
+        final LiveData<List<CharacterModel>> characterListLiveData;
         if (campaignModel != null) {
-            LiveData<List<CharacterModel>> characterListLiveData =
-                    camChaListVM.getCampaignCharacters(campaignModel.getId());
-            final RecyclerView recyclerView =
-                    rootView.findViewById(R.id.character_recycler_view);
+            characterListLiveData = camChaListVM.getCampaignCharacters(campaignModel.getId());
 
-            setupGrid(characterListLiveData, recyclerView);
+        } else {
+            characterListLiveData = camChaListVM.getCharactersWithoutCampaign();
         }
 
+        final RecyclerView recyclerView =
+                rootView.findViewById(R.id.character_recycler_view);
+
+        setupGrid(characterListLiveData, recyclerView);
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
@@ -212,8 +215,11 @@ public class CamCharactersFragment extends Fragment {
         CampaignModel campaignModel =
                 (CampaignModel) getArguments().getSerializable(ARG_CAMPAIGN_MODEL);
 
-        assert campaignModel != null;
-        CharacterModel characterModel = new CharacterModel(name, description, campaignModel.getId());
+        Integer campaignId = null;
+        if (campaignModel != null){
+            campaignId = campaignModel.getId();
+        }
+        CharacterModel characterModel = new CharacterModel(name, description, campaignId);
         characterModel.setImage(image);
         camChaListVM.insert(characterModel);
     }

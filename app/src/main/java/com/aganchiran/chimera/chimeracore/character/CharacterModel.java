@@ -48,7 +48,7 @@ public class CharacterModel extends ItemModel {
 
     private int weaponDamage = 100;
 
-    private int campaignId;
+    private Integer campaignId;
 
     @Ignore
     private int iniRoll = 0;
@@ -62,7 +62,7 @@ public class CharacterModel extends ItemModel {
     @Ignore
     private int lastHit = 0;
 
-    public CharacterModel(String name, String description, int campaignId) {
+    public CharacterModel(String name, String description, Integer campaignId) {
         this.name = name;
         this.description = description;
         this.displayPosition = Integer.MAX_VALUE;
@@ -196,11 +196,11 @@ public class CharacterModel extends ItemModel {
         this.defenseEnabled = defenseEnabled;
     }
 
-    public int getCampaignId() {
+    public Integer getCampaignId() {
         return campaignId;
     }
 
-    public void setCampaignId(int campaignId) {
+    public void setCampaignId(Integer campaignId) {
         this.campaignId = campaignId;
     }
 
