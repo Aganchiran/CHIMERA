@@ -25,7 +25,7 @@ public class EventModel implements Serializable {
 
     private float yCoord;
 
-    private int campaignId;
+    private Integer campaignId;
 
     public EventModel(String name, String description, float xCoord, float yCoord, int campaignId) {
         this.name = name;
@@ -59,11 +59,11 @@ public class EventModel implements Serializable {
         this.description = description;
     }
 
-    public int getCampaignId() {
+    public Integer getCampaignId() {
         return campaignId;
     }
 
-    public void setCampaignId(int campaignId) {
+    public void setCampaignId(Integer campaignId) {
         this.campaignId = campaignId;
     }
 

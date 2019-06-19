@@ -42,4 +42,7 @@ public abstract class CharacterDAO {
             "ORDER BY displayPosition ASC")
     public abstract LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId);
 
+    @Query("SELECT * FROM character_table WHERE campaignId IS NULL " +
+            "ORDER BY displayPosition ASC")
+    public abstract LiveData<List<CharacterModel>> getCharactersWithoutCampaign();
 }

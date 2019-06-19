@@ -38,7 +38,7 @@ public class MainMenuActivity extends ActivityWithUpperBar {
     }
 
     public void goToCommingSoonList(final View view) {
-        Intent intent = new Intent(this, CommingSoonActivity.class);
+        Intent intent = new Intent(this, PlayerCharactersActivity.class);
         startActivity(intent);
     }
 
