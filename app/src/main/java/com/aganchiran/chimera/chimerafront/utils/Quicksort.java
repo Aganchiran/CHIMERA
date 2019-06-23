@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.utils;
 
 import java.util.Collections;
@@ -10,16 +28,13 @@ public abstract class Quicksort<T> {
        smaller (smaller than pivot) to left of
        pivot and all greater elements to right
        of pivot */
-    private int partition(T arr[], int low, int high)
-    {
+    private int partition(T arr[], int low, int high) {
         T pivot = arr[high];
-        int i = (low-1); // index of smaller element
-        for (int j=low; j<high; j++)
-        {
+        int i = (low - 1); // index of smaller element
+        for (int j = low; j < high; j++) {
             // If current element is smaller than or
             // equal to pivot
-            if (!(compare(arr[j], pivot) == 1))
-            {
+            if (!(compare(arr[j], pivot) == 1)) {
                 i++;
 
                 // swap arr[i] and arr[j]
@@ -30,11 +45,11 @@ public abstract class Quicksort<T> {
         }
 
         // swap arr[i+1] and arr[high] (or pivot)
-        T temp = arr[i+1];
-        arr[i+1] = arr[high];
+        T temp = arr[i + 1];
+        arr[i + 1] = arr[high];
         arr[high] = temp;
 
-        return i+1;
+        return i + 1;
     }
 
 
@@ -42,22 +57,20 @@ public abstract class Quicksort<T> {
       arr[] --> Array to be sorted,
       low  --> Starting index,
       high  --> Ending index */
-    private void sort(T arr[], int low, int high)
-    {
-        if (low < high)
-        {
+    private void sort(T arr[], int low, int high) {
+        if (low < high) {
             /* pi is partitioning index, arr[pi] is
               now at right place */
             int pi = partition(arr, low, high);
 
             // Recursively sort elements before
             // partition and after partition
-            sort(arr, low, pi-1);
-            sort(arr, pi+1, high);
+            sort(arr, low, pi - 1);
+            sort(arr, pi + 1, high);
         }
     }
 
-    public void sort(T arr[]){
+    public void sort(T arr[]) {
         sort(arr, 0, arr.length - 1);
     }
 
@@ -79,7 +92,7 @@ public abstract class Quicksort<T> {
         T P = list.get(left);
         int i = left;
         int j = right + 1;
-        for (;;) { // infinite for-loop, break to exit
+        for (; ; ) { // infinite for-loop, break to exit
             while (compare(list.get(++i), P) < 0)
                 if (i >= right)
                     break;
@@ -101,7 +114,7 @@ public abstract class Quicksort<T> {
         return j;
     }
 
-    public void sort(List<T> list){
+    public void sort(List<T> list) {
         sort(list, 0, list.size() - 1);
     }
 }

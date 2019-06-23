@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of CHIMERA: Companion for Humans Intending to
+    Master Extreme Role Adventures ("CHIMERA").
+
+    CHIMERA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CHIMERA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,61 +27,67 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/name"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:text="@string/name" />
+
         <EditText
             android:id="@+id/name_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
             android:lines="1"
-            android:maxLength="25"/>
+            android:maxLength="25" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/max_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/maximum"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:text="@string/maximum" />
+
         <EditText
             android:id="@+id/max_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="1"
+            android:inputType="numberSigned"
             android:lines="1"
             android:maxLength="9"
-            android:inputType="numberSigned"
-            android:hint="1"
-            android:textColorHint="@color/lightTextColor"/>
+            android:textColorHint="@color/lightTextColor" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/min_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/minimum"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:text="@string/minimum" />
+
         <EditText
             android:id="@+id/min_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="0"
+            android:inputType="numberSigned"
             android:lines="1"
             android:maxLength="9"
-            android:inputType="numberSigned"
-            android:hint="0"
-            android:textColorHint="@color/lightTextColor"/>
+            android:textColorHint="@color/lightTextColor" />
     </LinearLayout>
 
 </LinearLayout>

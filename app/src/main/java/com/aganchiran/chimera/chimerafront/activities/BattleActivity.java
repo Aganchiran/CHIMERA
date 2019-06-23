@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.activities;
 
 import android.arch.lifecycle.MutableLiveData;
@@ -11,7 +29,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,12 +42,10 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
+import com.aganchiran.chimera.chimerafront.utils.Quicksort;
 import com.aganchiran.chimera.chimerafront.utils.adapters.DefendersAdapter;
 import com.aganchiran.chimera.chimerafront.utils.adapters.InitiativeAdapter;
-import com.aganchiran.chimera.chimerafront.utils.Quicksort;
 import com.aganchiran.chimera.viewmodels.BattleVM;
-
-import org.apache.commons.collections4.list.SetUniqueList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -417,8 +432,7 @@ public class BattleActivity extends ActivityWithUpperBar {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_battle, menu);
+        getMenuInflater().inflate(R.menu.menu_battle, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

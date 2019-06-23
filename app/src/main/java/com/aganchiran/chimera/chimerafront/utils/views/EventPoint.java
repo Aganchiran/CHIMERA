@@ -1,17 +1,31 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.utils.views;
 
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.widget.AppCompatImageView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +40,7 @@ public class EventPoint extends AppCompatImageView {
     private float scale;
     private TextView nameText;
     private RelativeLayout nameTag;
-    private Coordinates coords = new Coordinates(0, 0, 0 , 0);
+    private Coordinates coords = new Coordinates(0, 0, 0, 0);
     public float xPercentage = 0;
     public float yPercentage = 0;
 
@@ -108,7 +122,7 @@ public class EventPoint extends AppCompatImageView {
         setLayoutParams(params);
 
         RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) nameTag.getLayoutParams();
-        params2.setMargins((int) (xCoord + xOffset + (eventSize * (scale - 1))), yCoord + yOffset , 0, 0);
+        params2.setMargins((int) (xCoord + xOffset + (eventSize * (scale - 1))), yCoord + yOffset, 0, 0);
         nameTag.setLayoutParams(params2);
 
         coords.set(xCoord, yCoord);
@@ -119,7 +133,7 @@ public class EventPoint extends AppCompatImageView {
         return coords;
     }
 
-    public void resize(float scale){
+    public void resize(float scale) {
         this.scale = scale;
         setScaleX(scale);
         setScaleY(scale);
@@ -128,7 +142,7 @@ public class EventPoint extends AppCompatImageView {
         RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) nameTag.getLayoutParams();
         params2.setMargins(
                 (int) (getCoords().x + getCoords().xOffset + (eventSize * (scale - 1))),
-                  getCoords().y + getCoords().yOffset , 0, 0);
+                getCoords().y + getCoords().yOffset, 0, 0);
         nameTag.setLayoutParams(params2);
     }
 
@@ -136,7 +150,7 @@ public class EventPoint extends AppCompatImageView {
         return nameTag;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         nameText.setText(name);
     }
 
@@ -155,6 +169,7 @@ public class EventPoint extends AppCompatImageView {
 
     public interface OnEventClickListener {
         void onEventClick(EventPoint eventPoint);
+
         void onDragStart(EventPoint eventPoint);
     }
 

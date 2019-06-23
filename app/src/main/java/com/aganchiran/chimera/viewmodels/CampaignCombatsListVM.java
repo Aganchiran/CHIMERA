@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.viewmodels;
 
 import android.app.Application;
@@ -22,33 +40,33 @@ public class CampaignCombatsListVM extends AndroidViewModel implements ItemVM<Co
     }
 
     @Override
-    public void insert(CombatModel combatModel){
+    public void insert(CombatModel combatModel) {
         combatRepo.insert(combatModel);
     }
 
     @Override
-    public void update(CombatModel combatModel){
+    public void update(CombatModel combatModel) {
         combatRepo.update(combatModel);
     }
 
-    public void updateCombats(List<CombatModel> combatModelList){
+    public void updateCombats(List<CombatModel> combatModelList) {
         combatRepo.updateCombats(combatModelList);
     }
 
     @Override
-    public void delete(CombatModel combatModel){
+    public void delete(CombatModel combatModel) {
         combatRepo.delete(combatModel);
     }
 
-    public void deleteAllCombats(){
+    public void deleteAllCombats() {
         combatRepo.deleteAllCombats();
     }
 
-    public LiveData<CombatModel> getCombatById(int id){
+    public LiveData<CombatModel> getCombatById(int id) {
         return combatRepo.getCombatById(id);
     }
 
-    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId){
+    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId) {
         return combatRepo.getCampaignCombats(campaignId);
     }
 

@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of CHIMERA: Companion for Humans Intending to
+    Master Extreme Role Adventures ("CHIMERA").
+
+    CHIMERA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CHIMERA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -36,75 +54,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameBarr4"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="4dp"-->
-    <!--app:layout_constraintBottom_toTopOf="@+id/frameBarr3"-->
-    <!--app:layout_constraintEnd_toEndOf="@+id/character_image"-->
-    <!--app:layout_constraintStart_toStartOf="@+id/character_image">-->
-
-    <!--<ProgressBar-->
-    <!--style="?android:attr/progressBarStyleHorizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:progress="100"-->
-    <!--android:alpha="0.8"/>-->
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameBarr3"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="4dp"-->
-    <!--app:layout_constraintBottom_toTopOf="@+id/frameBarr2"-->
-    <!--app:layout_constraintEnd_toEndOf="@+id/character_image"-->
-    <!--app:layout_constraintStart_toStartOf="@+id/character_image">-->
-
-    <!--<ProgressBar-->
-    <!--style="?android:attr/progressBarStyleHorizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:progress="70"-->
-    <!--android:alpha="0.8"-->
-    <!--android:progressTint="@color/defenderColor" />-->
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameBarr2"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="4dp"-->
-    <!--app:layout_constraintBottom_toTopOf="@+id/frameBarr1"-->
-    <!--app:layout_constraintEnd_toEndOf="@+id/character_image"-->
-    <!--app:layout_constraintStart_toStartOf="@+id/character_image">-->
-
-    <!--<ProgressBar-->
-    <!--style="?android:attr/progressBarStyleHorizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:progress="85"-->
-    <!--android:alpha="0.8"/>-->
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameBarr1"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="4dp"-->
-    <!--app:layout_constraintBottom_toBottomOf="@+id/character_image"-->
-    <!--app:layout_constraintEnd_toEndOf="@+id/character_image"-->
-    <!--app:layout_constraintStart_toStartOf="@+id/character_image">-->
-
-    <!--<ProgressBar-->
-    <!--style="?android:attr/progressBarStyleHorizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:progress="40"-->
-    <!--android:alpha="0.8"-->
-    <!--android:progressTint="@color/attackerColor" />-->
-    <!--</FrameLayout>-->
 
 </android.support.constraint.ConstraintLayout>
