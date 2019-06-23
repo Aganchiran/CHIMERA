@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<!--This file is part of CHIMERA: Companion for Humans Intending to
+    Master Extreme Role Adventures ("CHIMERA").
+
+    CHIMERA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CHIMERA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
@@ -14,18 +33,20 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/ic_character"
-                android:background="@color/backgroundColor"/>
+                android:background="@color/backgroundColor"
+                android:src="@drawable/ic_character" />
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_photo_camera"
                 android:layout_centerInParent="true"
-                android:alpha="0.7"/>
+                android:alpha="0.7"
+                android:src="@drawable/ic_photo_camera" />
         </RelativeLayout>
 
         <EditText

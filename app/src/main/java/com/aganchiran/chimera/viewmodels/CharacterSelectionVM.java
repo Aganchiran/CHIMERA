@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.viewmodels;
 
 import android.app.Application;
@@ -22,29 +40,29 @@ public class CharacterSelectionVM extends AndroidViewModel implements ItemVM<Cha
     }
 
     @Override
-    public void insert(CharacterModel characterModel){
+    public void insert(CharacterModel characterModel) {
         characterRepo.insert(characterModel);
     }
 
     @Override
-    public void update(CharacterModel characterModel){
+    public void update(CharacterModel characterModel) {
         characterRepo.update(characterModel);
     }
 
-    public void updateCharacters(List<CharacterModel> characterModelList){
+    public void updateCharacters(List<CharacterModel> characterModelList) {
         characterRepo.updateCharacters(characterModelList);
     }
 
     @Override
-    public void delete(CharacterModel characterModel){
+    public void delete(CharacterModel characterModel) {
         characterRepo.delete(characterModel);
     }
 
-    public void deleteAllCharacters(){
+    public void deleteAllCharacters() {
         characterRepo.deleteAllCharacters();
     }
 
-    public LiveData<CharacterModel> getCharacterById(int id){
+    public LiveData<CharacterModel> getCharacterById(int id) {
         return characterRepo.getCharacterById(id);
     }
 
@@ -52,7 +70,7 @@ public class CharacterSelectionVM extends AndroidViewModel implements ItemVM<Cha
         return allCharacters;
     }
 
-    public LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId){
+    public LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId) {
         return characterRepo.getCampaignCharacters(campaignId);
     }
 }

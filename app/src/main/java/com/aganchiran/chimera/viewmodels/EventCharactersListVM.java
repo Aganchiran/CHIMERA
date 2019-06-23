@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.viewmodels;
 
 import android.app.Application;
@@ -36,45 +54,45 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
     }
 
     @Override
-    public void insert(CharacterModel characterModel){
+    public void insert(CharacterModel characterModel) {
         characterRepo.insert(characterModel);
     }
 
     @Override
-    public void update(CharacterModel characterModel){
+    public void update(CharacterModel characterModel) {
         characterRepo.update(characterModel);
     }
 
-    public void updateCharacters(List<CharacterModel> characterModelList){
+    public void updateCharacters(List<CharacterModel> characterModelList) {
         characterRepo.updateCharacters(characterModelList);
     }
 
-    public void updateECs(List<EventCharacter> eventCharacterList){
+    public void updateECs(List<EventCharacter> eventCharacterList) {
         eventCharacterRepo.updateECs(eventCharacterList);
     }
 
     @Override
-    public void delete(CharacterModel characterModel){
+    public void delete(CharacterModel characterModel) {
         characterRepo.delete(characterModel);
     }
 
-    public void deleteAllCharacters(){
+    public void deleteAllCharacters() {
         characterRepo.deleteAllCharacters();
     }
 
-    public LiveData<CharacterModel> getCharacterById(int id){
+    public LiveData<CharacterModel> getCharacterById(int id) {
         return characterRepo.getCharacterById(id);
     }
 
-    public LiveData<List<CharacterModel>> getCharactersForEvent(int eventId){
-        if (eventCharacters == null){
+    public LiveData<List<CharacterModel>> getCharactersForEvent(int eventId) {
+        if (eventCharacters == null) {
             eventCharacters = eventCharacterRepo.getCharactersForEvent(eventId);
         }
         return eventCharacters;
     }
 
-    public LiveData<List<EventCharacter>> getECsForEvent(int eventId){
-        if (ecs == null){
+    public LiveData<List<EventCharacter>> getECsForEvent(int eventId) {
+        if (ecs == null) {
             ecs = eventCharacterRepo.getECsForEvent(eventId);
         }
         return ecs;
@@ -84,15 +102,15 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
         return allCharacters;
     }
 
-    public void linkCharacter(int characterId){
+    public void linkCharacter(int characterId) {
         eventCharacterRepo.linkCharacterToEvent(eventModel.getId(), characterId);
     }
 
-    public void linkCharacters(List<Integer> charactersIds){
+    public void linkCharacters(List<Integer> charactersIds) {
         eventCharacterRepo.linkCharactersToEvent(eventModel.getId(), charactersIds);
     }
 
-    public void unlinkCharacter(int characterId){
+    public void unlinkCharacter(int characterId) {
         eventCharacterRepo.unlinkCharacterToEvent(eventModel.getId(), characterId);
     }
 

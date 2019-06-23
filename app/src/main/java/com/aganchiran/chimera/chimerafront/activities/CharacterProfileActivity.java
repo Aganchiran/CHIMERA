@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.activities;
 
 import android.arch.lifecycle.Observer;
@@ -16,9 +34,9 @@ import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
-import com.aganchiran.chimera.chimerafront.fragments.ChaDetailsFragment;
 import com.aganchiran.chimera.chimerafront.fragments.ChaCombatFragment;
 import com.aganchiran.chimera.chimerafront.fragments.ChaConsumablesFragment;
+import com.aganchiran.chimera.chimerafront.fragments.ChaDetailsFragment;
 import com.aganchiran.chimera.viewmodels.CharacterProfileVM;
 
 public class CharacterProfileActivity extends ActivityWithUpperBar {
@@ -81,7 +99,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
             @Override
             public void onChanged(@Nullable CharacterModel characterModel) {
                 character = characterModel;
-                if (characterModel != null){
+                if (characterModel != null) {
                     toolbarTitle.setText(characterModel.getName());
                 }
             }
@@ -91,7 +109,7 @@ public class CharacterProfileActivity extends ActivityWithUpperBar {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

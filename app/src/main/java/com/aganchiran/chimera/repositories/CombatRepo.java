@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.repositories;
 
 import android.app.Application;
@@ -17,46 +35,46 @@ public class CombatRepo {
     private LiveData<List<CombatModel>> allCombats;
     private OnInsertListener onInsertListener;
 
-    public CombatRepo(Application application){
+    public CombatRepo(Application application) {
         ChimeraDB database = ChimeraDB.getInstance(application);
         combatDAO = database.combatDAO();
         allCombats = combatDAO.getAllCombats();
     }
 
-    public void insert(CombatModel combatModel){
+    public void insert(CombatModel combatModel) {
         new InsertCombatAsyncTask(combatDAO, onInsertListener).execute(combatModel);
     }
 
-    public void update(CombatModel combatModel){
+    public void update(CombatModel combatModel) {
         new UpdateCombatAsyncTask(combatDAO).execute(combatModel);
 
     }
 
-    public void updateCombats(List<CombatModel> combatModelList){
+    public void updateCombats(List<CombatModel> combatModelList) {
         CombatModel[] combatArray = new CombatModel[combatModelList.size()];
         combatArray = combatModelList.toArray(combatArray);
         new UpdateCombatListAsyncTask(combatDAO).execute(combatArray);
     }
 
-    public void delete(CombatModel combatModel){
+    public void delete(CombatModel combatModel) {
         new DeleteCombatAsyncTask(combatDAO).execute(combatModel);
 
     }
 
-    public void deleteAllCombats(){
+    public void deleteAllCombats() {
         new DeleteAllCombatAsyncTask(combatDAO).execute();
 
     }
 
-    public LiveData<CombatModel> getCombatById(int id){
+    public LiveData<CombatModel> getCombatById(int id) {
         return combatDAO.getCombatById(id);
     }
 
-    public LiveData<List<CombatModel>> getAllCombats(){
+    public LiveData<List<CombatModel>> getAllCombats() {
         return allCombats;
     }
 
-    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId){
+    public LiveData<List<CombatModel>> getCampaignCombats(int campaignId) {
         return combatDAO.getCampaignCombats(campaignId);
     }
 
@@ -69,7 +87,7 @@ public class CombatRepo {
         private CombatDAO combatDAO;
         private OnInsertListener onInsertListener;
 
-        private InsertCombatAsyncTask(CombatDAO combatDAO, OnInsertListener onInsertListener){
+        private InsertCombatAsyncTask(CombatDAO combatDAO, OnInsertListener onInsertListener) {
             this.combatDAO = combatDAO;
             this.onInsertListener = onInsertListener;
         }
@@ -81,7 +99,7 @@ public class CombatRepo {
 
         @Override
         protected void onPostExecute(Long characterId) {
-            if (onInsertListener != null){
+            if (onInsertListener != null) {
                 onInsertListener.onInsert(characterId);
             }
         }
@@ -91,7 +109,7 @@ public class CombatRepo {
 
         private CombatDAO combatDAO;
 
-        private UpdateCombatAsyncTask(CombatDAO combatDAO){
+        private UpdateCombatAsyncTask(CombatDAO combatDAO) {
             this.combatDAO = combatDAO;
         }
 
@@ -106,7 +124,7 @@ public class CombatRepo {
 
         private CombatDAO combatDAO;
 
-        private UpdateCombatListAsyncTask(CombatDAO combatDAO){
+        private UpdateCombatListAsyncTask(CombatDAO combatDAO) {
             this.combatDAO = combatDAO;
         }
 
@@ -122,7 +140,7 @@ public class CombatRepo {
 
         private CombatDAO combatDAO;
 
-        private DeleteCombatAsyncTask(CombatDAO combatDAO){
+        private DeleteCombatAsyncTask(CombatDAO combatDAO) {
             this.combatDAO = combatDAO;
         }
 
@@ -137,7 +155,7 @@ public class CombatRepo {
 
         private CombatDAO combatDAO;
 
-        private DeleteAllCombatAsyncTask(CombatDAO combatDAO){
+        private DeleteAllCombatAsyncTask(CombatDAO combatDAO) {
             this.combatDAO = combatDAO;
         }
 
@@ -152,7 +170,7 @@ public class CombatRepo {
 
         private CombatDAO combatDAO;
 
-        private GetCombatAsyncTask(CombatDAO combatDAO){
+        private GetCombatAsyncTask(CombatDAO combatDAO) {
             this.combatDAO = combatDAO;
         }
 

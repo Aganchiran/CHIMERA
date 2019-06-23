@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.activities;
 
 import android.arch.lifecycle.Observer;
@@ -19,7 +37,6 @@ import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.aganchiran.chimera.chimerafront.fragments.EventCharactersFragment;
 import com.aganchiran.chimera.chimerafront.fragments.EventCombatsFragment;
 import com.aganchiran.chimera.chimerafront.fragments.EventDetailsFragment;
-import com.aganchiran.chimera.viewmodels.EventDetailsVM;
 import com.aganchiran.chimera.viewmodels.EventProfileVM;
 
 public class EventProfileActivity extends ActivityWithUpperBar {
@@ -78,7 +95,7 @@ public class EventProfileActivity extends ActivityWithUpperBar {
         eventProfileVM.getEventById(event.getId()).observe(this, new Observer<EventModel>() {
             @Override
             public void onChanged(@Nullable EventModel eventModel) {
-                if (eventModel != null){
+                if (eventModel != null) {
                     toolbarTitle.setText(eventModel.getName());
                 }
             }
@@ -88,7 +105,7 @@ public class EventProfileActivity extends ActivityWithUpperBar {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
