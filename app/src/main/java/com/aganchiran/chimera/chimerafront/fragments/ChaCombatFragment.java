@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.fragments;
 
 import android.app.Activity;
@@ -21,7 +39,6 @@ import android.widget.Toast;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
-import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
 import com.aganchiran.chimera.viewmodels.CombatProfileVM;
 
 import java.util.Objects;
@@ -117,13 +134,7 @@ public class ChaCombatFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_general, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void saveCombatProfile(CharacterModel characterModel){
+    private void saveCombatProfile(CharacterModel characterModel) {
         int[] numValues = new int[8];
         String[] strValues = {
                 lifeValue.getText().toString(),
@@ -154,15 +165,14 @@ public class ChaCombatFragment extends Fragment {
         characterModel.setAttackEnabled(attackRoll.isChecked());
         characterModel.setDefenseEnabled(defenseRoll.isChecked());
 
-//        ((CharacterProfileActivity) activity).setCharacter(characterModel);
         combatProfileVM.update(characterModel);
         Toast.makeText(getActivity(), "Combat profile saved.", Toast.LENGTH_SHORT).show();
         closeKeyboard();
     }
 
-    private void closeKeyboard(){
+    private void closeKeyboard() {
         View view = activity.getCurrentFocus();
-        if (view != null){
+        if (view != null) {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }

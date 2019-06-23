@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.utils.views;
 
 import android.content.Context;
@@ -8,7 +26,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -25,12 +42,8 @@ import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
@@ -425,7 +438,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         dimensions.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.no_map, dimensions);
         final int height = dimensions.outHeight;
-        final int width =  dimensions.outWidth;
+        final int width = dimensions.outWidth;
 
         if (eventMap.getWidth() != 0 && eventMap.getHeight() != 0) {
             recalculateOffsets(width, height);

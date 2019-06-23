@@ -16,31 +16,18 @@
  along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.aganchiran.chimera.chimeracore.dice;
+package com.aganchiran.chimera.chimerafront.activities;
 
-import java.util.Random;
+import android.os.Bundle;
 
-public class AnimaDice {
+import com.aganchiran.chimera.R;
 
-    public static int getRollOpen() {
-        int openThreshold = 90;
+public class SettingsActivity extends ActivityWithUpperBar {
 
-        final Random random = new Random();
-        int roll = random.nextInt(100) + 1;
-        int rollSum = roll;
-
-        while (roll >= openThreshold) {
-            roll = random.nextInt(100) + 1;
-            openThreshold++;
-            rollSum += roll;
-        }
-
-        return rollSum;
-    }
-
-    public static int getRoll() {
-        final Random random = new Random();
-        return random.nextInt(100) + 1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_settings);
+        super.onCreate(savedInstanceState);
     }
 
 }

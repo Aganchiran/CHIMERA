@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.viewmodels;
 
 import android.app.Application;
@@ -22,33 +40,33 @@ public class ConsumableListVM extends AndroidViewModel implements ItemVM<Consuma
     }
 
     @Override
-    public void insert(ConsumableModel consumableModel){
+    public void insert(ConsumableModel consumableModel) {
         consumableRepo.insert(consumableModel);
     }
 
     @Override
-    public void update(ConsumableModel consumableModel){
+    public void update(ConsumableModel consumableModel) {
         consumableRepo.update(consumableModel);
     }
 
-    public void updateConsumables(List<ConsumableModel> consumableModelList){
+    public void updateConsumables(List<ConsumableModel> consumableModelList) {
         consumableRepo.updateConsumables(consumableModelList);
     }
 
     @Override
-    public void delete(ConsumableModel consumableModel){
+    public void delete(ConsumableModel consumableModel) {
         consumableRepo.delete(consumableModel);
     }
 
-    public void deleteAllConsumables(){
+    public void deleteAllConsumables() {
         consumableRepo.deleteAllConsumables();
     }
 
-    public LiveData<ConsumableModel> getConsumableById(int id){
+    public LiveData<ConsumableModel> getConsumableById(int id) {
         return consumableRepo.getConsumableById(id);
     }
 
-    public LiveData<List<ConsumableModel>> getCharacterConsumables(int characterId){
+    public LiveData<List<ConsumableModel>> getCharacterConsumables(int characterId) {
         return consumableRepo.getCharacterConsumables(characterId);
     }
 

@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of CHIMERA: Companion for Humans Intending to
+    Master Extreme Role Adventures ("CHIMERA").
+
+    CHIMERA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CHIMERA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+    -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aganchiran.chimera">
 
@@ -12,33 +30,41 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.aganchiran.chimera.chimerafront.activities.MainMenuActivity"
-            android:launchMode="singleTop"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+        <activity
+            android:name="com.aganchiran.chimera.chimerafront.activities.MainMenuActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity"/>
+        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity" />
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CommingSoonActivity" />
-        <activity android:name="com.aganchiran.chimera.chimerafront.activities.CharacterSelectionActivity"
+        <activity
+            android:name="com.aganchiran.chimera.chimerafront.activities.CharacterSelectionActivity"
             android:label="@string/characters"
             android:launchMode="singleTop" />
         <activity android:name="com.aganchiran.chimera.chimerafront.activities.CreateEditCharacterActivity" />
-        <activity android:name=".chimerafront.activities.CombatSelectionActivity"
+        <activity
+            android:name=".chimerafront.activities.CombatSelectionActivity"
             android:label="@string/combats"
-            android:launchMode="singleTop"/>
-        <activity android:name=".chimerafront.activities.BattleActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".chimerafront.activities.CampaignListActivity"
-            android:label="@string/campaigns"/>
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".chimerafront.activities.BattleActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".chimerafront.activities.CampaignListActivity"
+            android:label="@string/campaigns" />
         <activity android:name=".chimerafront.activities.CampaignProfileActivity" />
         <activity android:name=".chimerafront.activities.EventMapActivity" />
         <activity android:name=".chimerafront.activities.EventProfileActivity" />
-        <activity android:name=".chimerafront.activities.PlayerCharactersActivity"
-            android:label="@string/characters"/>
+        <activity
+            android:name=".chimerafront.activities.PlayerCharactersActivity"
+            android:label="@string/characters" />
+        <activity android:name=".chimerafront.activities.SettingsActivity" />
     </application>
 
 </manifest>

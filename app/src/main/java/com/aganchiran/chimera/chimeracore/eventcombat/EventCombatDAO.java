@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimeracore.eventcombat;
 
 import android.arch.lifecycle.LiveData;
@@ -10,7 +28,6 @@ import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
 import com.aganchiran.chimera.chimeracore.combat.CombatModel;
-import com.aganchiran.chimera.chimeracore.eventcombat.EventCombat;
 
 import java.util.List;
 
@@ -31,7 +48,7 @@ public abstract class EventCombatDAO {
     public abstract void update(EventCombat eventCombat);
 
     @Transaction
-    public void updateECs(List<EventCombat> eventCombats){
+    public void updateECs(List<EventCombat> eventCombats) {
         for (EventCombat eventCombat : eventCombats) {
             update(eventCombat);
         }

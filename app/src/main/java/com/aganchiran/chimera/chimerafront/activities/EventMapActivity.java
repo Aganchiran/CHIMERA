@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.chimerafront.activities;
 
 import android.arch.lifecycle.LiveData;
@@ -115,7 +133,7 @@ public class EventMapActivity extends ActivityWithUpperBar {
         campaign = (CampaignModel) getIntent().getSerializableExtra("CAMPAIGN");
         if (campaign.getBackgroundImage() != null) {
             zoomLayout.setBackgroundImage(Uri.parse(campaign.getBackgroundImage()));
-        }else {
+        } else {
             zoomLayout.setDefaultImage();
         }
         eventMapVM.getCampaignEvents(campaign.getId()).observe(this, new Observer<List<EventModel>>() {
@@ -144,9 +162,8 @@ public class EventMapActivity extends ActivityWithUpperBar {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_event_map, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.menu_event_map, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -185,7 +202,7 @@ public class EventMapActivity extends ActivityWithUpperBar {
             zoomLayout.setBackgroundImage(selectedImage);
             campaign.setBackgroundImage(selectedImage.toString());
             eventMapVM.updateCampaign(campaign);
-        } else if (requestCode == REQUEST_EVENT_PROFILE){
+        } else if (requestCode == REQUEST_EVENT_PROFILE) {
             zoomLayout.updateEventName((EventModel) data.getSerializableExtra("EVENT"));
         }
     }

@@ -1,3 +1,21 @@
+/*
+ This file is part of CHIMERA: Companion for Humans Intending to
+ Master Extreme Role Adventures ("CHIMERA").
+
+ CHIMERA is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ CHIMERA is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.aganchiran.chimera.viewmodels;
 
 import android.app.Application;
@@ -36,45 +54,45 @@ public class EventCombatsListVM extends AndroidViewModel implements ItemVM<Comba
     }
 
     @Override
-    public void insert(CombatModel combatModel){
+    public void insert(CombatModel combatModel) {
         combatRepo.insert(combatModel);
     }
 
     @Override
-    public void update(CombatModel combatModel){
+    public void update(CombatModel combatModel) {
         combatRepo.update(combatModel);
     }
 
-    public void updateCombats(List<CombatModel> combatModelList){
+    public void updateCombats(List<CombatModel> combatModelList) {
         combatRepo.updateCombats(combatModelList);
     }
 
-    public void updateECs(List<EventCombat> eventCombatList){
+    public void updateECs(List<EventCombat> eventCombatList) {
         eventCombatRepo.updateECs(eventCombatList);
     }
 
     @Override
-    public void delete(CombatModel combatModel){
+    public void delete(CombatModel combatModel) {
         combatRepo.delete(combatModel);
     }
 
-    public void deleteAllCombats(){
+    public void deleteAllCombats() {
         combatRepo.deleteAllCombats();
     }
 
-    public LiveData<CombatModel> getCombatById(int id){
+    public LiveData<CombatModel> getCombatById(int id) {
         return combatRepo.getCombatById(id);
     }
 
-    public LiveData<List<CombatModel>> getCombatsForEvent(int eventId){
-        if (eventCombats == null){
+    public LiveData<List<CombatModel>> getCombatsForEvent(int eventId) {
+        if (eventCombats == null) {
             eventCombats = eventCombatRepo.getCombatsForEvent(eventId);
         }
         return eventCombats;
     }
 
-    public LiveData<List<EventCombat>> getECsForEvent(int eventId){
-        if (ecs == null){
+    public LiveData<List<EventCombat>> getECsForEvent(int eventId) {
+        if (ecs == null) {
             ecs = eventCombatRepo.getECsForEvent(eventId);
         }
         return ecs;
@@ -84,15 +102,15 @@ public class EventCombatsListVM extends AndroidViewModel implements ItemVM<Comba
         return allCombats;
     }
 
-    public void linkCombat(int combatId){
+    public void linkCombat(int combatId) {
         eventCombatRepo.linkCombatToEvent(eventModel.getId(), combatId);
     }
 
-    public void linkCombats(List<Integer> combatsIds){
+    public void linkCombats(List<Integer> combatsIds) {
         eventCombatRepo.linkCombatsToEvent(eventModel.getId(), combatsIds);
     }
 
-    public void unlinkCombat(int combatId){
+    public void unlinkCombat(int combatId) {
         eventCombatRepo.unlinkCombatToEvent(eventModel.getId(), combatId);
     }
 

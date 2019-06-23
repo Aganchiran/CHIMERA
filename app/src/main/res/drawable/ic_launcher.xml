@@ -1,14 +1,32 @@
+<!--This file is part of CHIMERA: Companion for Humans Intending to
+    Master Extreme Role Adventures ("CHIMERA").
+
+    CHIMERA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CHIMERA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CHIMERA.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 <vector xmlns:ns0="http://schemas.android.com/apk/res/android"
     ns0:name="svg2"
     ns0:width="150.0dp"
     ns0:height="150.0dp"
     ns0:viewportWidth="1000.0"
     ns0:viewportHeight="1000.0">
-    <group ns0:name="layer1"
-        ns0:scaleY="0.9"
+    <group
+        ns0:name="layer1"
         ns0:scaleX="0.9"
-        ns0:translateY="50"
-        ns0:translateX="50">
+        ns0:scaleY="0.9"
+        ns0:translateX="50"
+        ns0:translateY="50">
         <path
             ns0:name="rect8992"
             ns0:fillAlpha="0.1"
