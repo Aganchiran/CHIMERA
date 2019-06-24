@@ -32,6 +32,7 @@ public class DragItemListener implements View.OnDragListener {
     private final ItemAdapter adapter;
     private int previousIndex = -1;
     private int previousNewIndex = -1;
+    private View hiddenView;
 
     public DragItemListener(ItemAdapter adapter) {
         this.adapter = adapter;
@@ -39,15 +40,17 @@ public class DragItemListener implements View.OnDragListener {
 
     @Override
     public boolean onDrag(final View recyclerView, DragEvent event) {
-        final View hiddenView = (View) event.getLocalState();
-        if (hiddenView == null) return false;
 
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
                 if (previousIndex < 0) {
-                    previousIndex = ((RecyclerView) recyclerView).getChildAdapterPosition(hiddenView);
+                    previousIndex = adapter.getFlyingItemPos();
                 }
-                adapter.setFlyingItemPos(previousIndex);
+
+                ItemAdapter.ItemHolder itemHolder = getFlyingItem((RecyclerView) recyclerView);
+                if (itemHolder == null) return false;
+                hiddenView = itemHolder.getView();
+//                adapter.setFlyingItemPos(previousIndex);
                 break;
             case DragEvent.ACTION_DRAG_LOCATION:
                 final int scrollY = recyclerView.getScrollY();
@@ -87,13 +90,13 @@ public class DragItemListener implements View.OnDragListener {
                 }
                 break;
             case DragEvent.ACTION_DROP:
+                hiddenView.setVisibility(View.VISIBLE);
                 onDrop(hiddenView);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 previousIndex = -1;
 
-                ItemAdapter.ItemHolder item = ((ItemAdapter.ItemHolder) ((RecyclerView) recyclerView)
-                        .findViewHolderForAdapterPosition(adapter.getFlyingItemPos()));
+                ItemAdapter.ItemHolder item = getFlyingItem((RecyclerView) recyclerView);
                 if (item != null) {
                     item.setVisibility(View.VISIBLE);
 
@@ -145,6 +148,11 @@ public class DragItemListener implements View.OnDragListener {
 
     protected void onDrop(View hiddenView) {
         hiddenView.setVisibility(View.VISIBLE);
+    }
+
+    private ItemAdapter.ItemHolder getFlyingItem(RecyclerView recyclerView){
+        return (ItemAdapter.ItemHolder)
+                recyclerView.findViewHolderForAdapterPosition(adapter.getFlyingItemPos());
     }
 
 }
