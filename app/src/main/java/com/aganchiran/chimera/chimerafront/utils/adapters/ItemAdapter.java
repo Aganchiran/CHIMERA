@@ -159,6 +159,8 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
                             if (longClicked && (dragOnX || dragOnY)) {
                                 popup.dismiss();
 
+                                flyingItemPos = getAdapterPosition();
+
                                 final ClipData clipData = ClipData.newPlainText("", "");
 
                                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
@@ -230,6 +232,10 @@ public abstract class ItemAdapter<M, VH extends ItemAdapter.ItemHolder> extends 
             check.setVisibility(View.INVISIBLE);
             checked = false;
             checkedItemModels.clear();
+        }
+
+        public View getView(){
+            return itemView;
         }
 
         public void setVisibility(int visibility) {

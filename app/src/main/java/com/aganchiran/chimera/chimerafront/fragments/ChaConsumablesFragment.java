@@ -117,10 +117,10 @@ public class ChaConsumablesFragment extends Fragment {
 
     private void setupGrid(LiveData<List<ConsumableModel>> data, RecyclerView recyclerView) {
         final View consumableCard = getLayoutInflater().inflate(R.layout.item_consumable, null);
-        final View characterLayout = consumableCard.findViewById(R.id.consumable_item_layout);
-        int characterWidth = SizeUtil.getViewWidth(characterLayout);
+        final View consumableLayout = consumableCard.findViewById(R.id.consumable_item_layout);
+        int consumableWidth = SizeUtil.getViewWidth(consumableLayout);
         int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / characterWidth;
+        int columnNumber = screenWidth / consumableWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
@@ -217,7 +217,7 @@ public class ChaConsumablesFragment extends Fragment {
                 for (ConsumableModel consumableModel : adapter.getCheckedItemModels()) {
                     consumableListVM.delete(consumableModel);
                 }
-                cancelCharacterDeletion(rootView);
+                cancelConsumableDeletion(rootView);
             }
         });
 
@@ -225,12 +225,12 @@ public class ChaConsumablesFragment extends Fragment {
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancelCharacterDeletion(rootView);
+                cancelConsumableDeletion(rootView);
             }
         });
     }
 
-    private void cancelCharacterDeletion(View rootView) {
+    private void cancelConsumableDeletion(View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addConsumableButton.show();
