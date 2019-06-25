@@ -104,8 +104,8 @@ public class EventModel implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof CombatModel
-                && ((CombatModel) obj).getId() == this.getId());
+        return (obj instanceof EventModel
+                && ((EventModel) obj).getId() == this.getId());
     }
 
     public boolean contentsTheSame(Object obj) {
