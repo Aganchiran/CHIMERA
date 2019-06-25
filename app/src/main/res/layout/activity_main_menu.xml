@@ -52,7 +52,7 @@
                     android:src="@drawable/ic_campaign" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/master_zone"
                     android:textAlignment="center"
@@ -74,7 +74,7 @@
                     android:src="@drawable/ic_character" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/player_zone"
                     android:textAlignment="center"

@@ -24,8 +24,8 @@ android {
         applicationId "com.aganchiran.chimera"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 9
-        versionName "1.0.8"
+        versionCode 10
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
