@@ -61,9 +61,9 @@ public class CreateEditConsumableDialog extends AppCompatDialogFragment {
             editTextName.setText(consumableModel.getName());
             editTextMaxValue.setText(String.valueOf(consumableModel.getMaxValue()));
             editTextMinValue.setText(String.valueOf(consumableModel.getMinValue()));
-            builder.setTitle("Edit consumable");
+            builder.setTitle(getResources().getString(R.string.edit_consumable));
         } else {
-            builder.setTitle("Create consumable");
+            builder.setTitle(getResources().getString(R.string.create_consumable));
         }
 
         builder.setView(view)

@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aganchiran.chimera.R;
@@ -47,9 +48,13 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
         ConsumableModel currentConsumable = getItemAt(position);
         holder.textViewName.setText(currentConsumable.getName());
         holder.textViewCurrentValue.setText(currentConsumable.getValueFormated());
+        int percentage = (int) (((double) currentConsumable.getCurrentValue()
+                / (double) currentConsumable.getMaxValue()) * 100);
+        holder.progressBar.setProgress(percentage);
     }
 
     class ConsumableHolder extends ItemAdapter.ItemHolder {
+        private final ProgressBar progressBar;
         private TextView textViewName;
         private TextView textViewCurrentValue;
 
@@ -57,6 +62,7 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
             super(itemView);
             textViewName = itemView.findViewById(R.id.consumable_name);
             textViewCurrentValue = itemView.findViewById(R.id.consumable_value);
+            progressBar = itemView.findViewById(R.id.consumable_progress);
         }
 
         @Override

@@ -94,9 +94,9 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
                 imageView.setImageResource(R.drawable.ic_character);
             }
 
-            builder.setTitle("Edit character");
+            builder.setTitle(getResources().getString(R.string.edit_character));
         } else {
-            builder.setTitle("Create character");
+            builder.setTitle(getResources().getString(R.string.create_character));
         }
 
         builder.setView(view)

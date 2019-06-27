@@ -56,9 +56,7 @@ public class CreateEditEventDialog extends AppCompatDialogFragment {
         if (eventModel != null) {
             editTextName.setText(eventModel.getName());
             editTextDescription.setText(eventModel.getDescription());
-            builder.setTitle("Edit event");
-        } else {
-            builder.setTitle("Create event");
+            builder.setTitle(getResources().getString(R.string.edit_event));
         }
 
         builder.setView(view)

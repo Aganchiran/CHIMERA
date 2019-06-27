@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
     private NumberPicker numberPicker;
     private ImageButton substractBttn;
     private ImageButton addBttn;
+    private ProgressBar progressBar;
 
     @NonNull
     @Override
@@ -64,17 +66,20 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
 
         textValue = view.findViewById(R.id.consumable_value);
         textValue.setText(String.valueOf(consumableModel.getCurrentValue()));
+        progressBar = view.findViewById(R.id.consumable_progress);
 
         seekBar = view.findViewById(R.id.seekBar);
         double proportionalValue = (double) (consumableModel.getCurrentValue() - minValue);
         double proportionalMax = (double) (maxValue - minValue);
         int newPercentage = (int) ((proportionalValue / proportionalMax) * 100);
         seekBar.setProgress(newPercentage);
+        progressBar.setProgress(newPercentage);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 final long value = Math.round((progress / 100.0) * (maxValue - minValue)) + minValue;
                 textValue.setText(String.valueOf(value));
+                progressBar.setProgress(progress);
             }
 
             @Override
@@ -122,6 +127,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
                 double proportionalMax = (double) (maxValue - minValue);
                 int newPercentage = (int) ((proportionalValue / proportionalMax) * 100);
                 seekBar.setProgress(newPercentage);
+                progressBar.setProgress(newPercentage);
                 textValue.setText(String.valueOf(newValue));
             }
         });

@@ -68,4 +68,8 @@
     <string name="value">Value:</string>
     <string name="modifier">Modifier:</string>
     <string name="copyright_note" translatable="false">Copyright © 2019 Javier Pastor Pérez \n under GNU GPL v3 license.</string>
+    <string name="create_character">Create character</string>
+    <string name="create_campaign">Create campaign</string>
+    <string name="create_combat">Create combat</string>
+    <string name="create_consumable">Create consumable</string>
 </resources>

@@ -45,4 +45,8 @@
     <string name="tab_consumables">Consumibles</string>
     <string name="tab_details">Detalles</string>
     <string name="value">Valor:</string>
+    <string name="create_character">Crear personaje</string>
+    <string name="create_campaign">Crear campaña</string>
+    <string name="create_combat">Crear combate</string>
+    <string name="create_consumable">Crear consumible</string>
 </resources>
