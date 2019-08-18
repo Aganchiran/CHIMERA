@@ -24,54 +24,62 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.repositories.CharacterRepo;
+import com.aganchiran.chimera.repositories.ConsumableRepo;
 
 import java.util.List;
 
 public class CampaignCharactersListVM extends AndroidViewModel implements ItemVM<CharacterModel> {
 
     private CharacterRepo characterRepo;
+    private ConsumableRepo consumableRepo;
     private LiveData<List<CharacterModel>> allCharacters;
 
-    public CampaignCharactersListVM(@NonNull Application application) {
+    public CampaignCharactersListVM(@NonNull final Application application) {
         super(application);
         characterRepo = new CharacterRepo(application);
+        consumableRepo = new ConsumableRepo(application);
         allCharacters = characterRepo.getAllCharacters();
     }
 
     @Override
-    public void insert(CharacterModel characterModel) {
+    public void insert(final CharacterModel characterModel) {
         characterRepo.insert(characterModel);
     }
 
+    public void duplicateCharacter(final CharacterModel character, final List<ConsumableModel> characterConsumables){
+        characterRepo.duplicateCharacter(character, characterConsumables);
+    }
+
     @Override
-    public void update(CharacterModel characterModel) {
+    public void update(final CharacterModel characterModel) {
         characterRepo.update(characterModel);
     }
 
-    public void updateCharacters(List<CharacterModel> characterModelList) {
+    public void updateCharacters(final List<CharacterModel> characterModelList) {
         characterRepo.updateCharacters(characterModelList);
     }
 
     @Override
-    public void delete(CharacterModel characterModel) {
+    public void delete(final CharacterModel characterModel) {
         characterRepo.delete(characterModel);
     }
 
-    public void deleteAllCharacters() {
-        characterRepo.deleteAllCharacters();
-    }
-
-    public LiveData<CharacterModel> getCharacterById(int id) {
+    public LiveData<CharacterModel> getCharacterById(final int id) {
         return characterRepo.getCharacterById(id);
     }
 
-    public LiveData<List<CharacterModel>> getCampaignCharacters(int campaignId) {
+    public LiveData<List<CharacterModel>> getCampaignCharacters(final int campaignId) {
         return characterRepo.getCampaignCharacters(campaignId);
     }
 
     public LiveData<List<CharacterModel>> getCharactersWithoutCampaign() {
         return characterRepo.getCharactersWithoutCampaign();
+    }
+
+    public LiveData<List<ConsumableModel>> getCharacterConsumables(final int characterId){
+        return consumableRepo.getCharacterConsumables(characterId);
     }
 
     public LiveData<List<CharacterModel>> getAllCharacters() {

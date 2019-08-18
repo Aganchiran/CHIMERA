@@ -23,4 +23,8 @@
         android:id="@+id/edit_character"
         android:title="@string/edit_character"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/duplicate_character"
+        android:title="@string/duplicate_character"
+        app:showAsAction="never" />
 </menu>

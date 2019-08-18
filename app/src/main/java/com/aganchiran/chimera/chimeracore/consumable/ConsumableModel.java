@@ -54,7 +54,7 @@ public class ConsumableModel extends ItemModel {
     private int characterId;
 
     @Ignore
-    public ConsumableModel(String name, long maxValue, long minValue, String color, int characterId) {
+    public ConsumableModel(final String name, final long maxValue, final long minValue, final String color, final int characterId) {
         this.name = name;
         this.maxValue = maxValue;
         this.minValue = minValue;
@@ -66,7 +66,7 @@ public class ConsumableModel extends ItemModel {
         this.characterId = characterId;
     }
 
-    public ConsumableModel(String name, long maxValue, long minValue, long currentValue, long increment, boolean showOnIcon, String color, int displayPosition, int characterId) {
+    public ConsumableModel(final String name, final long maxValue, final long minValue, final long currentValue, final long increment, final boolean showOnIcon, final String color, final int displayPosition, final int characterId) {
         this.name = name;
         this.maxValue = maxValue;
         this.minValue = minValue;
@@ -78,13 +78,26 @@ public class ConsumableModel extends ItemModel {
         this.characterId = characterId;
     }
 
+    @Ignore
+    public ConsumableModel(final ConsumableModel consumableModel, final int characterId) {
+        this.name = consumableModel.name;
+        this.maxValue = consumableModel.maxValue;
+        this.minValue = consumableModel.minValue;
+        this.currentValue = consumableModel.currentValue;
+        this.increment = consumableModel.increment;
+        this.showOnIcon = consumableModel.showOnIcon;
+        this.color = consumableModel.color;
+        this.displayPosition = consumableModel.displayPosition;
+        this.characterId = characterId;
+    }
+
     @Override
     public int getId() {
         return id;
     }
 
     @Override
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -100,7 +113,7 @@ public class ConsumableModel extends ItemModel {
         return maxValue;
     }
 
-    public void setMaxValue(long maxValue) {
+    public void setMaxValue(final long maxValue) {
         if (getCurrentValue() > maxValue) {
             setCurrentValue(maxValue);
         }
@@ -111,7 +124,7 @@ public class ConsumableModel extends ItemModel {
         return minValue;
     }
 
-    public void setMinValue(long minValue) {
+    public void setMinValue(final long minValue) {
         if (getCurrentValue() < minValue) {
             setCurrentValue(minValue);
         }
@@ -144,7 +157,7 @@ public class ConsumableModel extends ItemModel {
         return formattedNumber;
     }
 
-    public void setCurrentValue(long currentValue) {
+    public void setCurrentValue(final long currentValue) {
         this.currentValue = currentValue;
     }
 
@@ -152,7 +165,7 @@ public class ConsumableModel extends ItemModel {
         return increment;
     }
 
-    public void setIncrement(long increment) {
+    public void setIncrement(final long increment) {
         this.increment = increment;
     }
 
@@ -160,7 +173,7 @@ public class ConsumableModel extends ItemModel {
         return showOnIcon;
     }
 
-    public void setShowOnIcon(boolean showOnIcon) {
+    public void setShowOnIconfinal (boolean showOnIcon) {
         this.showOnIcon = showOnIcon;
     }
 
@@ -176,7 +189,7 @@ public class ConsumableModel extends ItemModel {
         return displayPosition;
     }
 
-    public void setDisplayPosition(int displayPosition) {
+    public void setDisplayPosition(final int displayPosition) {
         this.displayPosition = displayPosition;
     }
 
@@ -184,18 +197,18 @@ public class ConsumableModel extends ItemModel {
         return characterId;
     }
 
-    public void setCharacterId(int characterId) {
+    public void setCharacterId(final int characterId) {
         this.characterId = characterId;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return (obj instanceof ConsumableModel
                 && ((ConsumableModel) obj).getId() == this.getId());
     }
 
     @Override
-    public boolean contentsTheSame(Object obj) {
+    public boolean contentsTheSame(final Object obj) {
         return (obj instanceof ConsumableModel
                 && ((ConsumableModel) obj).getId() == this.getId()
                 && ((ConsumableModel) obj).getName().equals(this.getName())

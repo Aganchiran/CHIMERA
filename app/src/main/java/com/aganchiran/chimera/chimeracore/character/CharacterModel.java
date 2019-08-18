@@ -80,7 +80,7 @@ public class CharacterModel extends ItemModel {
     @Ignore
     private int lastHit = 0;
 
-    public CharacterModel(String name, String description, Integer campaignId) {
+    public CharacterModel(final String name, final String description, final Integer campaignId) {
         this.name = name;
         this.description = description;
         this.displayPosition = Integer.MAX_VALUE;
@@ -92,13 +92,32 @@ public class CharacterModel extends ItemModel {
         this.campaignId = campaignId;
     }
 
+    @Ignore
+    public CharacterModel(final CharacterModel characterModel){
+        this.name = characterModel.name;
+        this.description = characterModel.description;
+        this.image = characterModel.image;
+        this.displayPosition = characterModel.displayPosition;
+        this.initiative = characterModel.initiative;
+        this.attack = characterModel.attack;
+        this.defense = characterModel.defense;
+        this.initiativeMod = characterModel.initiativeMod;
+        this.attackMod = characterModel.attackMod;
+        this.defenseMod = characterModel.defenseMod;
+        this.attackEnabled = characterModel.attackEnabled;
+        this.defenseEnabled = characterModel.defenseEnabled;
+        this.life = characterModel.life;
+        this.weaponDamage = characterModel.weaponDamage;
+        this.campaignId = characterModel.campaignId;
+    }
+
     @Override
     public int getId() {
         return id;
     }
 
     @Override
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -106,7 +125,7 @@ public class CharacterModel extends ItemModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -114,7 +133,7 @@ public class CharacterModel extends ItemModel {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -122,7 +141,7 @@ public class CharacterModel extends ItemModel {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 
@@ -130,7 +149,7 @@ public class CharacterModel extends ItemModel {
         return displayPosition;
     }
 
-    public void setDisplayPosition(int displayPosition) {
+    public void setDisplayPosition(final int displayPosition) {
         this.displayPosition = displayPosition;
     }
 
@@ -138,7 +157,7 @@ public class CharacterModel extends ItemModel {
         return initiative;
     }
 
-    public void setInitiative(int initiative) {
+    public void setInitiative(final int initiative) {
         this.initiative = initiative;
     }
 
@@ -146,7 +165,7 @@ public class CharacterModel extends ItemModel {
         return attack;
     }
 
-    public void setAttack(int attack) {
+    public void setAttack(final int attack) {
         this.attack = attack;
     }
 
@@ -154,7 +173,7 @@ public class CharacterModel extends ItemModel {
         return defense;
     }
 
-    public void setDefense(int defense) {
+    public void setDefense(final int defense) {
         this.defense = defense;
     }
 
@@ -162,7 +181,7 @@ public class CharacterModel extends ItemModel {
         return initiativeMod;
     }
 
-    public void setInitiativeMod(int initiativeMod) {
+    public void setInitiativeMod(final int initiativeMod) {
         this.initiativeMod = initiativeMod;
     }
 
@@ -170,7 +189,7 @@ public class CharacterModel extends ItemModel {
         return attackMod;
     }
 
-    public void setAttackMod(int attackMod) {
+    public void setAttackMod(final int attackMod) {
         this.attackMod = attackMod;
     }
 
@@ -178,7 +197,7 @@ public class CharacterModel extends ItemModel {
         return defenseMod;
     }
 
-    public void setDefenseMod(int defenseMod) {
+    public void setDefenseMod(final int defenseMod) {
         this.defenseMod = defenseMod;
     }
 
@@ -186,7 +205,7 @@ public class CharacterModel extends ItemModel {
         return life;
     }
 
-    public void setLife(int life) {
+    public void setLife(final int life) {
         this.life = life;
     }
 
@@ -194,7 +213,7 @@ public class CharacterModel extends ItemModel {
         return weaponDamage;
     }
 
-    public void setWeaponDamage(int weaponDamage) {
+    public void setWeaponDamage(final int weaponDamage) {
         this.weaponDamage = weaponDamage;
     }
 
@@ -202,7 +221,7 @@ public class CharacterModel extends ItemModel {
         return attackEnabled;
     }
 
-    public void setAttackEnabled(boolean attackEnabled) {
+    public void setAttackEnabled(final boolean attackEnabled) {
         this.attackEnabled = attackEnabled;
     }
 
@@ -210,7 +229,7 @@ public class CharacterModel extends ItemModel {
         return defenseEnabled;
     }
 
-    public void setDefenseEnabled(boolean defenseEnabled) {
+    public void setDefenseEnabled(final boolean defenseEnabled) {
         this.defenseEnabled = defenseEnabled;
     }
 
@@ -218,7 +237,7 @@ public class CharacterModel extends ItemModel {
         return campaignId;
     }
 
-    public void setCampaignId(Integer campaignId) {
+    public void setCampaignId(final Integer campaignId) {
         this.campaignId = campaignId;
     }
 
@@ -226,7 +245,7 @@ public class CharacterModel extends ItemModel {
         return iniRoll;
     }
 
-    public void setIniRoll(int iniRoll) {
+    public void setIniRoll(final int iniRoll) {
         this.iniRoll = iniRoll;
     }
 
@@ -242,7 +261,7 @@ public class CharacterModel extends ItemModel {
         return lastHit;
     }
 
-    public void setLastHit(int lastHit) {
+    public void setLastHit(final int lastHit) {
         this.lastHit = lastHit;
     }
 
@@ -252,7 +271,7 @@ public class CharacterModel extends ItemModel {
         lastHit = 0;
     }
 
-    public void hit(int damage) {
+    public void hit(final int damage) {
         life -= damage;
     }
 
@@ -294,14 +313,14 @@ public class CharacterModel extends ItemModel {
         defenseRoll = roll + getDefense() + getDefenseMod();
     }
 
-    public int calculateDamage(int defenseResult) {
+    public int calculateDamage(final int defenseResult) {
         int result = (int) (((double) (getAttackRoll() - defenseResult) / 100.0) * weaponDamage);
         if (result < 0) result = 0;
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return (obj instanceof CharacterModel
                 && ((CharacterModel) obj).getId() == this.getId());
     }
@@ -311,7 +330,7 @@ public class CharacterModel extends ItemModel {
         return Objects.hash(id);
     }
 
-    public boolean contentsTheSame(Object obj) {
+    public boolean contentsTheSame(final Object obj) {
         return (obj instanceof CharacterModel
                 && ((CharacterModel) obj).getId() == this.getId()
                 && ((CharacterModel) obj).getName().equals(this.getName())

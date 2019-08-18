@@ -24,9 +24,11 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.aganchiran.chimera.chimeracore.eventcharacter.EventCharacter;
 import com.aganchiran.chimera.repositories.CharacterRepo;
+import com.aganchiran.chimera.repositories.ConsumableRepo;
 import com.aganchiran.chimera.repositories.EventCharacterRepo;
 
 import java.util.List;
@@ -35,13 +37,15 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
 
     private CharacterRepo characterRepo;
     private EventCharacterRepo eventCharacterRepo;
+    private ConsumableRepo consumableRepo;
     private LiveData<List<CharacterModel>> allCharacters;
     private LiveData<List<CharacterModel>> eventCharacters;
     private LiveData<List<EventCharacter>> ecs;
     private EventModel eventModel;
 
-    public EventCharactersListVM(@NonNull Application application) {
+    public EventCharactersListVM(@NonNull final Application application) {
         super(application);
+        consumableRepo = new ConsumableRepo(application);
         characterRepo = new CharacterRepo(application);
         characterRepo.setListener(new CharacterRepo.OnInsertListener() {
             @Override
@@ -54,44 +58,44 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
     }
 
     @Override
-    public void insert(CharacterModel characterModel) {
+    public void insert(final CharacterModel characterModel) {
         characterRepo.insert(characterModel);
     }
 
+    public void duplicateCharacter(final CharacterModel character, final List<ConsumableModel> characterConsumables){
+        characterRepo.duplicateCharacter(character, characterConsumables);
+    }
+
     @Override
-    public void update(CharacterModel characterModel) {
+    public void update(final CharacterModel characterModel) {
         characterRepo.update(characterModel);
     }
 
-    public void updateCharacters(List<CharacterModel> characterModelList) {
+    public void updateCharacters(final List<CharacterModel> characterModelList) {
         characterRepo.updateCharacters(characterModelList);
     }
 
-    public void updateECs(List<EventCharacter> eventCharacterList) {
+    public void updateECs(final List<EventCharacter> eventCharacterList) {
         eventCharacterRepo.updateECs(eventCharacterList);
     }
 
     @Override
-    public void delete(CharacterModel characterModel) {
+    public void delete(final CharacterModel characterModel) {
         characterRepo.delete(characterModel);
     }
 
-    public void deleteAllCharacters() {
-        characterRepo.deleteAllCharacters();
-    }
-
-    public LiveData<CharacterModel> getCharacterById(int id) {
+    public LiveData<CharacterModel> getCharacterById(final int id) {
         return characterRepo.getCharacterById(id);
     }
 
-    public LiveData<List<CharacterModel>> getCharactersForEvent(int eventId) {
+    public LiveData<List<CharacterModel>> getCharactersForEvent(final int eventId) {
         if (eventCharacters == null) {
             eventCharacters = eventCharacterRepo.getCharactersForEvent(eventId);
         }
         return eventCharacters;
     }
 
-    public LiveData<List<EventCharacter>> getECsForEvent(int eventId) {
+    public LiveData<List<EventCharacter>> getECsForEvent(final int eventId) {
         if (ecs == null) {
             ecs = eventCharacterRepo.getECsForEvent(eventId);
         }
@@ -102,15 +106,15 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
         return allCharacters;
     }
 
-    public void linkCharacter(int characterId) {
+    public void linkCharacter(final int characterId) {
         eventCharacterRepo.linkCharacterToEvent(eventModel.getId(), characterId);
     }
 
-    public void linkCharacters(List<Integer> charactersIds) {
+    public void linkCharacters(final List<Integer> charactersIds) {
         eventCharacterRepo.linkCharactersToEvent(eventModel.getId(), charactersIds);
     }
 
-    public void unlinkCharacter(int characterId) {
+    public void unlinkCharacter(final int characterId) {
         eventCharacterRepo.unlinkCharacterToEvent(eventModel.getId(), characterId);
     }
 
@@ -118,7 +122,12 @@ public class EventCharactersListVM extends AndroidViewModel implements ItemVM<Ch
         return eventModel;
     }
 
-    public void setEventModel(EventModel eventModel) {
+    public void setEventModel(final EventModel eventModel) {
         this.eventModel = eventModel;
     }
+
+    public LiveData<List<ConsumableModel>> getCharacterConsumables(final int characterId){
+        return consumableRepo.getCharacterConsumables(characterId);
+    }
+
 }

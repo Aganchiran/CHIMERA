@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
@@ -75,7 +76,7 @@ public class CamCharactersFragment extends Fragment {
     public CamCharactersFragment() {
     }
 
-    public static CamCharactersFragment newInstance(CampaignModel campaignModel) {
+    public static CamCharactersFragment newInstance(final CampaignModel campaignModel) {
         CamCharactersFragment fragment = new CamCharactersFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CAMPAIGN_MODEL, campaignModel);
@@ -84,14 +85,14 @@ public class CamCharactersFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_character_list, container, false);
         camChaListVM = ViewModelProviders.of(this).get(CampaignCharactersListVM.class);
 
@@ -119,7 +120,7 @@ public class CamCharactersFragment extends Fragment {
         return rootView;
     }
 
-    private void setupGrid(LiveData<List<CharacterModel>> data, RecyclerView recyclerView) {
+    private void setupGrid(final LiveData<List<CharacterModel>> data, final RecyclerView recyclerView) {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
         int characterWidth = SizeUtil.getViewWidth(characterLayout);
@@ -159,6 +160,20 @@ public class CamCharactersFragment extends Fragment {
                 });
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit character");
+            }
+
+            @Override
+            public void duplicateCharacter(final CharacterModel characterModel) {
+                final LiveData<List<ConsumableModel>> characterConsumableLD =
+                        camChaListVM.getCharacterConsumables(characterModel.getId());
+
+                characterConsumableLD.observe(getActivity(), new Observer<List<ConsumableModel>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<ConsumableModel> consumableModels) {
+                        camChaListVM.duplicateCharacter(characterModel, consumableModels);
+                        characterConsumableLD.removeObserver(this);
+                    }
+                });
             }
         });
 

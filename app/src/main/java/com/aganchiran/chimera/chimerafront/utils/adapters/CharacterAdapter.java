@@ -39,15 +39,15 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
 
     @NonNull
     @Override
-    public CharacterHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View itemView = LayoutInflater.from(parent.getContext())
+    public CharacterHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int position) {
+        final View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_character, parent, false);
         return new CharacterHolder(itemView);
     }
 
     @Override
-    public void onBindItemHolder(@NonNull CharacterHolder holder, int position) {
-        CharacterModel currentCharacter = getItemAt(position);
+    public void onBindItemHolder(@NonNull final CharacterHolder holder, final int position) {
+        final CharacterModel currentCharacter = getItemAt(position);
         holder.textViewName.setText(currentCharacter.getName());
         if (currentCharacter.getImage() != null) {
             Glide.with(holder.itemView)
@@ -63,7 +63,7 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
         private TextView textViewName;
         private ImageView portrait;
 
-        CharacterHolder(@NonNull View itemView) {
+        CharacterHolder(@NonNull final View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.character_name);
             portrait = itemView.findViewById(R.id.character_image);
@@ -79,10 +79,15 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
             return new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
+                    final CharacterModel character = CharacterAdapter.this.getItemAt(
+                            CharacterHolder.this.getAdapterPosition());
+
                     switch (menuItem.getItemId()) {
                         case R.id.edit_character:
-                            menuActions.editCharacter(CharacterAdapter.this.getItemAt(
-                                    CharacterHolder.this.getAdapterPosition()));
+                            menuActions.editCharacter(character);
+                            return true;
+                        case R.id.duplicate_character:
+                            menuActions.duplicateCharacter(character);
                             return true;
                         default:
                             return false;
@@ -92,12 +97,13 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
         }
     }
 
-    public void setMenuActions(MenuActions menuActions) {
+    public void setMenuActions(final MenuActions menuActions) {
         this.menuActions = menuActions;
     }
 
     public interface MenuActions {
-        void editCharacter(CharacterModel characterModel);
+        void editCharacter(final CharacterModel characterModel);
+        void duplicateCharacter(final CharacterModel characterModel);
     }
 
 }

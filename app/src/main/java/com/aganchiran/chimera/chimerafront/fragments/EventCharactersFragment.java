@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 
 import com.aganchiran.chimera.R;
 import com.aganchiran.chimera.chimeracore.character.CharacterModel;
+import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 import com.aganchiran.chimera.chimeracore.event.EventModel;
 import com.aganchiran.chimera.chimeracore.eventcharacter.EventCharacter;
 import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
@@ -83,7 +84,7 @@ public class EventCharactersFragment extends Fragment {
     public EventCharactersFragment() {
     }
 
-    public static EventCharactersFragment newInstance(EventModel eventModel) {
+    public static EventCharactersFragment newInstance(final EventModel eventModel) {
         EventCharactersFragment fragment = new EventCharactersFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_EVENT_MODEL, eventModel);
@@ -92,13 +93,13 @@ public class EventCharactersFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_character_list, container, false);
         eventChaListVM = ViewModelProviders.of(this).get(EventCharactersListVM.class);
@@ -134,7 +135,7 @@ public class EventCharactersFragment extends Fragment {
         return rootView;
     }
 
-    private void setupGrid(LiveData<List<CharacterModel>> data, RecyclerView recyclerView) {
+    private void setupGrid(final LiveData<List<CharacterModel>> data, final RecyclerView recyclerView) {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
         int characterWidth = SizeUtil.getViewWidth(characterLayout);
@@ -159,7 +160,7 @@ public class EventCharactersFragment extends Fragment {
                 CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(String newName, String newDescription, String image) {
+                    public void saveCharacter(final String newName, final String newDescription, final String image) {
                         character.setName(newName);
                         character.setDescription(newDescription);
                         character.setImage(image);
@@ -175,18 +176,32 @@ public class EventCharactersFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit character");
             }
+
+            @Override
+            public void duplicateCharacter(final CharacterModel characterModel) {
+                final LiveData<List<ConsumableModel>> characterConsumableLD =
+                        eventChaListVM.getCharacterConsumables(characterModel.getId());
+
+                characterConsumableLD.observe(getActivity(), new Observer<List<ConsumableModel>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<ConsumableModel> consumableModels) {
+                        eventChaListVM.duplicateCharacter(characterModel, consumableModels);
+                        characterConsumableLD.removeObserver(this);
+                    }
+                });
+            }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setOnDragListener(new DragItemListener(adapter) {
             @Override
-            protected void onDrop(View hiddenView) {
+            protected void onDrop(final View hiddenView) {
                 super.onDrop(hiddenView);
 
                 final LiveData<List<EventCharacter>> ecs = eventChaListVM.getECsForEvent(eventChaListVM.getEventModel().getId());
                 ecs.observe(getActivity(), new Observer<List<EventCharacter>>() {
                     @Override
-                    public void onChanged(@Nullable List<EventCharacter> eventCharacters) {
+                    public void onChanged(@Nullable final List<EventCharacter> eventCharacters) {
                         reorderCharacters(eventCharacters);
                         ecs.removeObserver(this);
                     }
@@ -220,7 +235,7 @@ public class EventCharactersFragment extends Fragment {
         });
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 createCharacterDialog();
             }
         });
@@ -244,19 +259,19 @@ public class EventCharactersFragment extends Fragment {
         Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 cancelCharacterDeletion(rootView);
             }
         });
     }
 
-    private void cancelCharacterDeletion(View rootView) {
+    private void cancelCharacterDeletion(final View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addCharacterButton.show();
     }
 
-    private void createCharacter(String name, String description, String image) {
+    private void createCharacter(final String name, final String description, final String image) {
         assert getArguments() != null;
         EventModel eventModel =
                 (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
@@ -271,7 +286,7 @@ public class EventCharactersFragment extends Fragment {
         CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
         dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
             @Override
-            public void saveCharacter(String name, String description, String image) {
+            public void saveCharacter(final String name, final String description, final String image) {
                 createCharacter(name, description, image);
             }
 
@@ -284,7 +299,7 @@ public class EventCharactersFragment extends Fragment {
         dialog.show(getFragmentManager(), "create character");
     }
 
-    private void reorderCharacters(List<EventCharacter> eventCharacters) {
+    private void reorderCharacters(final List<EventCharacter> eventCharacters) {
         Map<Integer, EventCharacter> ecMap = new HashMap<>();
         for (final EventCharacter ec : eventCharacters) {
             ecMap.put(ec.getCharacterId(), ec);
@@ -298,13 +313,13 @@ public class EventCharactersFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_event_character_management, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.select_characters:
@@ -330,7 +345,7 @@ public class EventCharactersFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_CHARACTERS && resultCode == RESULT_OK) {
 
