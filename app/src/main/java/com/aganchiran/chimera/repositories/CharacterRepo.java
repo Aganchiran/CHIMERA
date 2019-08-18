@@ -87,7 +87,8 @@ public class CharacterRepo {
         return characterDAO.getCharactersWithoutCampaign();
     }
 
-    public void duplicateCharacter(final CharacterModel character, final List<ConsumableModel> characterConsumables){
+    public void duplicateCharacter(final CharacterModel character,
+                                   final List<ConsumableModel> characterConsumables){
         final CharacterModel charCopy = new CharacterModel(character);
 
         new InsertCharacterAsyncTask(characterDAO, new OnInsertListener() {
@@ -112,7 +113,8 @@ public class CharacterRepo {
         private CharacterDAO characterDAO;
         private OnInsertListener onInsertListener;
 
-        private InsertCharacterAsyncTask(final CharacterDAO characterDAO, final OnInsertListener onInsertListener) {
+        private InsertCharacterAsyncTask(final CharacterDAO characterDAO,
+                                         final OnInsertListener onInsertListener) {
             this.characterDAO = characterDAO;
             this.onInsertListener = onInsertListener;
         }
@@ -204,7 +206,8 @@ public class CharacterRepo {
         private CharacterDAO characterDAO;
         private OnInsertListener onInsertListener;
 
-        private DuplicateCharacterAsyncTask(final CharacterDAO characterDAO, final OnInsertListener onInsertListener) {
+        private DuplicateCharacterAsyncTask(final CharacterDAO characterDAO,
+                                            final OnInsertListener onInsertListener) {
             this.characterDAO = characterDAO;
             this.onInsertListener = onInsertListener;
         }
