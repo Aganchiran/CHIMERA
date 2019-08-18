@@ -53,9 +53,9 @@ public class CreateEditCombatDialog extends AppCompatDialogFragment {
         final CombatModel combatModel = listener.getCombat();
         if (combatModel != null) {
             editTextName.setText(combatModel.getName());
-            builder.setTitle("Edit combat");
+            builder.setTitle(getResources().getString(R.string.edit_combat));
         } else {
-            builder.setTitle("Create combat");
+            builder.setTitle(getResources().getString(R.string.create_combat));
         }
 
         builder.setView(view)

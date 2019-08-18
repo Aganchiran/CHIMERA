@@ -24,6 +24,7 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
+import com.aganchiran.chimera.chimeracore.combat.CombatModel;
 
 import java.io.Serializable;
 
@@ -99,5 +100,21 @@ public class EventModel implements Serializable {
 
     public void setYCoord(float yCoord) {
         this.yCoord = yCoord;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof EventModel
+                && ((EventModel) obj).getId() == this.getId());
+    }
+
+    public boolean contentsTheSame(Object obj) {
+        return (obj instanceof EventModel
+                && ((EventModel) obj).getId() == this.getId()
+                && ((EventModel) obj).getName().equals(this.getName())
+                && ((EventModel) obj).getDescription().equals(this.getDescription())
+                && ((EventModel) obj).getCampaignId().equals(this.getCampaignId())
+                && ((EventModel) obj).getXCoord() == this.getXCoord()
+                && ((EventModel) obj).getYCoord() == this.getYCoord());
     }
 }

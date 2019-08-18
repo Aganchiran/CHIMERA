@@ -56,9 +56,9 @@ public class CreateEditCampaignDialog extends AppCompatDialogFragment {
         if (campaignModel != null) {
             editTextName.setText(campaignModel.getName());
             editTextDescription.setText(campaignModel.getDescription());
-            builder.setTitle("Edit campaign");
+            builder.setTitle(getResources().getString(R.string.edit_campaign));
         } else {
-            builder.setTitle("Create campaign");
+            builder.setTitle(getResources().getString(R.string.create_campaign));
         }
 
         builder.setView(view)

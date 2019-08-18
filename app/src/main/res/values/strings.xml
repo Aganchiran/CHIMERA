@@ -17,9 +17,9 @@
 
 <resources>
     <!--Image descriptions-->
-    <string name="character_image">Character image</string>
-    <string name="combat_image">Combat Image</string>
-    <string name="settings_icon">Settings icon</string>
+    <string name="character_image" translatable="false">Character image</string>
+    <string name="combat_image" translatable="false">Combat Image</string>
+    <string name="settings_icon" translatable="false">Settings icon</string>
     <string name="description">Description</string>
 
     <!--App text-->
@@ -27,14 +27,12 @@
     <string name="campaigns">Campaigns</string>
     <string name="characters">Characters</string>
     <string name="combats">Combats</string>
-    <string name="loading_text">Loading</string>
     <string name="action_settings">Settings</string>
     <string name="name">Name</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
     <string name="select_characters">Select characters</string>
     <string name="edit_character">Edit character</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_details">Details</string>
     <string name="tab_consumables">Consumables</string>
     <string name="minimum">Minimum</string>
@@ -45,29 +43,20 @@
     <string name="edit_combat">Edit combat</string>
     <string name="empty_defenders_message">Swipe characters to select defenders</string>
     <string name="attack">Attack</string>
-    <string name="attack_value">Attack value:</string>
-    <string name="attack_modifier">Attack modifier:</string>
     <string name="initiative">Initiative</string>
-    <string name="initiative_modifier">Initiative modifier:</string>
-    <string name="initiative_value">Initiative value:</string>
     <string name="defense">Defense</string>
-    <string name="defense_value">Defense value:</string>
-    <string name="defense_modifier">Defense modifier:</string>
     <string name="save">Save</string>
     <string name="combat">Combat</string>
     <string name="life">Life</string>
-    <string name="life_value">Life value:</string>
     <string name="damage">Damage:</string>
     <string name="empty_attacker_message">Tap a character to select attacker</string>
     <string name="roll">Roll</string>
     <string name="edit_campaign">Edit campaign</string>
     <string name="select_campaigns">Select campaigns</string>
-    <string name="master_zone">Master Zone</string>
-    <string name="player_zone">Player Zone</string>
+    <string name="master_zone">Master</string>
+    <string name="player_zone">Player</string>
     <string name="event_map">Event Map</string>
     <string name="edit_event">Edit event</string>
-    <string name="add_characters">Add characters</string>
-    <string name="add_combats">Add combats</string>
     <string name="change_map">Change map</string>
     <string name="new_campaign">New campaign</string>
     <string name="delete">Delete</string>
@@ -78,6 +67,10 @@
     <string name="link_characters">Link characters</string>
     <string name="value">Value:</string>
     <string name="modifier">Modifier:</string>
-    <string name="copyright_note">Copyright © 2019 Javier Pastor Pérez \n under GNU GPL v3 license.</string>
+    <string name="copyright_note" translatable="false">Copyright © 2019 Javier Pastor Pérez \n under GNU GPL v3 license.</string>
+    <string name="create_character">Create character</string>
+    <string name="create_campaign">Create campaign</string>
+    <string name="create_combat">Create combat</string>
+    <string name="create_consumable">Create consumable</string>
     <string name="duplicate_character">Duplicate character</string>
 </resources>
