@@ -18,9 +18,11 @@
 
 package com.aganchiran.chimera.chimerafront.activities;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +32,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +43,8 @@ import com.aganchiran.chimera.chimeracore.campaign.CampaignModel;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCampaignDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.chimerafront.utils.adapters.CampaignAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.AbstractDropToListener;
 import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.viewmodels.CampaignListVM;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
     private CampaignAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_campaign_list);
         campaignListVM = ViewModelProviders.of(this).get(CampaignListVM.class);
 
@@ -72,17 +73,25 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         setupButtons();
 
         final ImageView deleteArea = findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, campaignListVM));
+        deleteArea.setOnDragListener(new AbstractDropToListener() {
+            @Override
+            protected void onDrop() {
+                if (adapter.getFlyingItemPos() != -1) {
+                    final CampaignModel campaignModel = adapter.getItemAt(adapter.getFlyingItemPos());
+                    deleteCampaign(campaignModel);
+                }
+            }
+        });
 
         super.onCreate(savedInstanceState);
     }
 
-    private void setupGrid(LiveData<List<CampaignModel>> data, RecyclerView recyclerView) {
+    private void setupGrid(final LiveData<List<CampaignModel>> data, final RecyclerView recyclerView) {
         final View campaignCard = getLayoutInflater().inflate(R.layout.item_campaign, null);
         final View campaignLayout = campaignCard.findViewById(R.id.campaign_item_layout);
-        int campaignWidth = SizeUtil.getViewWidth(campaignLayout);
-        int screenWidth = SizeUtil.getScreenWidth(CampaignListActivity.this);
-        int columnNumber = screenWidth / campaignWidth;
+        final int campaignWidth = SizeUtil.getViewWidth(campaignLayout);
+        final int screenWidth = SizeUtil.getScreenWidth(CampaignListActivity.this);
+        final int columnNumber = screenWidth / campaignWidth;
 
         recyclerView.setLayoutManager(
                 new GridLayoutManager(CampaignListActivity.this, columnNumber));
@@ -91,8 +100,8 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         adapter = new CampaignAdapter();
         adapter.setListener(new CampaignAdapter.OnItemClickListener<CampaignModel>() {
             @Override
-            public void onItemClick(CampaignModel campaignModel) {
-                Intent intent = new Intent(CampaignListActivity.this,
+            public void onItemClick(final CampaignModel campaignModel) {
+                final Intent intent = new Intent(CampaignListActivity.this,
                         CampaignProfileActivity.class);
                 intent.putExtra("CAMPAIGN", campaignModel);
                 startActivity(intent);
@@ -101,10 +110,10 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         adapter.setMenuActions(new CampaignAdapter.MenuActions() {
             @Override
             public void editCampaign(final CampaignModel campaign) {
-                CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
+                final CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
                 dialog.setListener(new CreateEditCampaignDialog.CreateCampaignDialogListener() {
                     @Override
-                    public void saveCampaign(String name, String description) {
+                    public void saveCampaign(final String name, final String description) {
                         campaign.setName(name);
                         campaign.setDescription(description);
                         campaignListVM.update(campaign);
@@ -120,17 +129,22 @@ public class CampaignListActivity extends ActivityWithUpperBar {
             }
 
             @Override
-            public void openMap(CampaignModel campaignModel) {
-                Intent intent = new Intent(CampaignListActivity.this, EventMapActivity.class);
+            public void openMap(final CampaignModel campaignModel) {
+                final Intent intent = new Intent(CampaignListActivity.this, EventMapActivity.class);
                 intent.putExtra("CAMPAIGN", campaignModel);
                 startActivity(intent);
+            }
+
+            @Override
+            public void deleteCampaign(final CampaignModel campaignModel) {
+                CampaignListActivity.this.deleteCampaign(campaignModel);
             }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setOnDragListener(new DragItemListener(adapter) {
             @Override
-            protected void onDrop(View hiddenView) {
+            protected void onDrop(final View hiddenView) {
                 super.onDrop(hiddenView);
                 new ReorderCampaignAsyncTask(adapter, campaignListVM).execute();
             }
@@ -138,7 +152,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
 
         data.observe(this, new Observer<List<CampaignModel>>() {
             @Override
-            public void onChanged(@Nullable List<CampaignModel> campaignModels) {
+            public void onChanged(@Nullable final List<CampaignModel> campaignModels) {
                 adapter.setItemModels(campaignModels);
             }
         });
@@ -148,7 +162,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         addCampaignButton = findViewById(R.id.add_campaign_button);
         addCampaignButton.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag(View v, DragEvent event) {
+            public boolean onDrag(final View v, final DragEvent event) {
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         ((FloatingActionButton) v).hide();
@@ -162,32 +176,56 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         });
         addCampaignButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 createCampaign();
             }
         });
 
     }
 
-    public void cancelCampaignDeletion(View view) {
+    public void cancelCampaignDeletion(final View view) {
         adapter.disableSelectMode();
         findViewById(R.id.campaign_deletion_interface).setLayoutParams(INVISIBLE);
         addCampaignButton.show();
     }
 
-    public void deleteSelectedCampaigns(View view) {
-        for (CampaignModel campaignModel : adapter.getCheckedItemModels()) {
-            campaignListVM.delete(campaignModel);
-        }
-        cancelCampaignDeletion(view);
+    public void deleteCampaign(final CampaignModel campaignModel){
+        new AlertDialog.Builder(CampaignListActivity.this, R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete) + " " + campaignModel.getName())
+                .setMessage(getResources().getString(R.string.delete_campaign_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        campaignListVM.delete(campaignModel);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    public void deleteSelectedCampaigns(final View view) {
+        new AlertDialog.Builder(CampaignListActivity.this, R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete_campaigns))
+                .setMessage(getResources().getString(R.string.delete_campaigns_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        for (final CampaignModel campaignModel : adapter.getCheckedItemModels()) {
+                            campaignListVM.delete(campaignModel);
+                        }
+                        cancelCampaignDeletion(view);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void createCampaign() {
-        CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
+        final CreateEditCampaignDialog dialog = new CreateEditCampaignDialog();
         dialog.setListener(new CreateEditCampaignDialog.CreateCampaignDialogListener() {
             @Override
-            public void saveCampaign(String name, String description) {
-                CampaignModel campaignModel = new CampaignModel(name, description);
+            public void saveCampaign(final String name, final String description) {
+                final CampaignModel campaignModel = new CampaignModel(name, description);
                 campaignListVM.insert(campaignModel);
             }
 
@@ -201,13 +239,13 @@ public class CampaignListActivity extends ActivityWithUpperBar {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_campaign_list, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.select_campaigns:
                 if (!adapter.getSelectModeEnabled()) {
@@ -228,7 +266,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         private CampaignAdapter adapter;
         private CampaignListVM campaignListVM;
 
-        private ReorderCampaignAsyncTask(CampaignAdapter adapter, CampaignListVM campaignListVM) {
+        private ReorderCampaignAsyncTask(final CampaignAdapter adapter, final CampaignListVM campaignListVM) {
             this.adapter = adapter;
             this.campaignListVM = campaignListVM;
         }
@@ -236,7 +274,7 @@ public class CampaignListActivity extends ActivityWithUpperBar {
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                CampaignModel campaignModel = adapter.getItemAt(i);
+                final CampaignModel campaignModel = adapter.getItemAt(i);
                 campaignModel.setDisplayPosition(i);
             }
             campaignListVM.updateCampaigns(adapter.getItemModels());

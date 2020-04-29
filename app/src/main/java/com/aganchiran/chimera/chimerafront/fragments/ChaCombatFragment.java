@@ -120,7 +120,7 @@ public class ChaCombatFragment extends Fragment {
                 Button saveButton = rootView.findViewById(R.id.save_button);
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         saveCombatProfile(characterModel);
                     }
                 });

@@ -23,4 +23,9 @@
         android:id="@+id/edit_consumable"
         android:title="@string/edit_consumable"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_consumable"
+        android:title="@string/delete_consumable"
+        app:showAsAction="never" />
 </menu>

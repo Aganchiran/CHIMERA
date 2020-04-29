@@ -39,7 +39,7 @@
     <string name="roll">Tirar dado</string>
     <string name="save">Guardar</string>
     <string name="select_campaigns">Seleccionar campañas</string>
-    <string name="select_characters">Seleccionar jugadores</string>
+    <string name="select_characters">Seleccionar personajes</string>
     <string name="select_combats">Seleccionar combates</string>
     <string name="select_consumables">Seleccionar consumibles</string>
     <string name="tab_consumables">Consumibles</string>

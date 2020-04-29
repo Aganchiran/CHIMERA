@@ -18,9 +18,11 @@
 
 package com.aganchiran.chimera.chimerafront.fragments;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,8 +49,8 @@ import com.aganchiran.chimera.chimerafront.dialogs.CreateEditConsumableDialog;
 import com.aganchiran.chimera.chimerafront.dialogs.ModifyConsumableDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.chimerafront.utils.adapters.ConsumableAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.AbstractDropToListener;
 import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.viewmodels.ConsumableListVM;
 
 import java.util.List;
@@ -68,38 +70,38 @@ public class ChaConsumablesFragment extends Fragment {
     private ConsumableAdapter adapter;
 
     private static final String ARG_CHARACTER_MODEL = "character_model";
+    private View rootView;
 
 
     public ChaConsumablesFragment() {
     }
 
-    public static ChaConsumablesFragment newInstance(CharacterModel characterModel) {
-        ChaConsumablesFragment fragment = new ChaConsumablesFragment();
-        Bundle args = new Bundle();
+    public static ChaConsumablesFragment newInstance(final CharacterModel characterModel) {
+        final ChaConsumablesFragment fragment = new ChaConsumablesFragment();
+        final Bundle args = new Bundle();
         args.putSerializable(ARG_CHARACTER_MODEL, characterModel);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater
-                .inflate(R.layout.fragment_consumable_list, container, false);
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_consumable_list, container, false);
         consumableListVM = ViewModelProviders.of(this).get(ConsumableListVM.class);
 
         assert getArguments() != null;
-        CharacterModel characterModel = (CharacterModel) getArguments()
+        final CharacterModel characterModel = (CharacterModel) getArguments()
                 .getSerializable(ARG_CHARACTER_MODEL);
 
         if (characterModel != null) {
-            LiveData<List<ConsumableModel>> consumableListLiveData =
+            final LiveData<List<ConsumableModel>> consumableListLiveData =
                     consumableListVM.getCharacterConsumables(characterModel.getId());
             final RecyclerView recyclerView =
                     rootView.findViewById(R.id.consumable_recycler_view);
@@ -107,10 +109,18 @@ public class ChaConsumablesFragment extends Fragment {
             setupGrid(consumableListLiveData, recyclerView);
         }
 
-        setupButtons(rootView);
+        setupButtons();
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, consumableListVM));
+        deleteArea.setOnDragListener(new AbstractDropToListener() {
+            @Override
+            protected void onDrop() {
+                if (adapter.getFlyingItemPos() != -1) {
+                    final ConsumableModel consumableModel = adapter.getItemAt(adapter.getFlyingItemPos());
+                    deleteConsumable(consumableModel);
+                }
+            }
+        });
 
         return rootView;
     }
@@ -118,9 +128,9 @@ public class ChaConsumablesFragment extends Fragment {
     private void setupGrid(LiveData<List<ConsumableModel>> data, RecyclerView recyclerView) {
         final View consumableCard = getLayoutInflater().inflate(R.layout.item_consumable, null);
         final View consumableLayout = consumableCard.findViewById(R.id.consumable_item_layout);
-        int consumableWidth = SizeUtil.getViewWidth(consumableLayout);
-        int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / consumableWidth;
+        final int consumableWidth = SizeUtil.getViewWidth(consumableLayout);
+        final int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
+        final int columnNumber = screenWidth / consumableWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
@@ -129,10 +139,10 @@ public class ChaConsumablesFragment extends Fragment {
         adapter.setListener(new ConsumableAdapter.OnItemClickListener<ConsumableModel>() {
             @Override
             public void onItemClick(final ConsumableModel consumableModel) {
-                ModifyConsumableDialog dialog = new ModifyConsumableDialog();
+                final ModifyConsumableDialog dialog = new ModifyConsumableDialog();
                 dialog.setListener(new ModifyConsumableDialog.CreateConsumableDialogListener() {
                     @Override
-                    public void saveValue(long value) {
+                    public void saveValue(final long value) {
                         consumableModel.setCurrentValue(value);
                         consumableListVM.update(consumableModel);
                     }
@@ -146,13 +156,13 @@ public class ChaConsumablesFragment extends Fragment {
                 dialog.show(getFragmentManager(), "modify consumable");
             }
         });
-        adapter.setSaveConsumable(new ConsumableAdapter.SaveConsumable() {
+        adapter.setMenuActions(new ConsumableAdapter.MenuActions() {
             @Override
-            public void perform(final ConsumableModel consumable) {
-                CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
+            public void editConsumable(final ConsumableModel consumable) {
+                final CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
                 dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
                     @Override
-                    public void saveConsumable(String newName, long newMax, long newMin) {
+                    public void saveConsumable(final String newName, final long newMax, final long newMin) {
                         consumable.setName(newName);
                         consumable.setMaxValue(newMax);
                         consumable.setMinValue(newMin);
@@ -168,12 +178,17 @@ public class ChaConsumablesFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit consumable");
             }
+
+            @Override
+            public void deleteConsumable(final ConsumableModel consumableModel) {
+                ChaConsumablesFragment.this.deleteConsumable(consumableModel);
+            }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setOnDragListener(new DragItemListener(adapter) {
             @Override
-            protected void onDrop(View hiddenView) {
+            protected void onDrop(final View hiddenView) {
                 super.onDrop(hiddenView);
                 new ReorderConsumableAsyncTask(adapter, consumableListVM).execute();
             }
@@ -181,17 +196,17 @@ public class ChaConsumablesFragment extends Fragment {
 
         data.observe(this, new Observer<List<ConsumableModel>>() {
             @Override
-            public void onChanged(@Nullable List<ConsumableModel> consumableModels) {
+            public void onChanged(@Nullable final List<ConsumableModel> consumableModels) {
                 adapter.setItemModels(consumableModels);
             }
         });
     }
 
-    private void setupButtons(final View rootView) {
+    private void setupButtons() {
         addConsumableButton = rootView.findViewById(R.id.add_consumable_button);
         addConsumableButton.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag(View v, DragEvent event) {
+            public boolean onDrag(final View v, final DragEvent event) {
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         ((FloatingActionButton) v).hide();
@@ -205,53 +220,50 @@ public class ChaConsumablesFragment extends Fragment {
         });
         addConsumableButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 createConsumableDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
+        final Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                for (ConsumableModel consumableModel : adapter.getCheckedItemModels()) {
-                    consumableListVM.delete(consumableModel);
-                }
-                cancelConsumableDeletion(rootView);
+            public void onClick(final View view) {
+                deleteConsumables();
             }
         });
 
-        Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
+        final Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 cancelConsumableDeletion(rootView);
             }
         });
     }
 
-    private void cancelConsumableDeletion(View rootView) {
+    private void cancelConsumableDeletion(final View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addConsumableButton.show();
     }
 
-    private void createConsumable(String name, long max, long min) {
+    private void createConsumable(final String name, final long max, final long min) {
         assert getArguments() != null;
-        CharacterModel characterModel =
+        final CharacterModel characterModel =
                 (CharacterModel) getArguments().getSerializable(ARG_CHARACTER_MODEL);
 
         assert characterModel != null;
-        ConsumableModel consumableModel = new ConsumableModel(name, max, min,
+        final ConsumableModel consumableModel = new ConsumableModel(name, max, min,
                 "FF0000", characterModel.getId());
         consumableListVM.insert(consumableModel);
     }
 
     public void createConsumableDialog() {
-        CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
+        final CreateEditConsumableDialog dialog = new CreateEditConsumableDialog();
         dialog.setListener(new CreateEditConsumableDialog.CreateConsumableDialogListener() {
             @Override
-            public void saveConsumable(String name, long max, long min) {
+            public void saveConsumable(final String name, final long max, final long min) {
                 ChaConsumablesFragment.this.createConsumable(name, max, min);
             }
 
@@ -264,14 +276,45 @@ public class ChaConsumablesFragment extends Fragment {
         dialog.show(getFragmentManager(), "create consumable");
     }
 
+    private void deleteConsumable(final ConsumableModel consumableModel){
+        new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete) + " " + consumableModel.getName())
+                .setMessage(getResources().getString(R.string.delete_consumable_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        consumableListVM.delete(consumableModel);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteConsumables(){
+        new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete_consumables))
+                .setMessage(getResources().getString(R.string.delete_consumables_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        for (ConsumableModel consumableModel : adapter.getCheckedItemModels()) {
+                            consumableListVM.delete(consumableModel);
+                        }
+                        cancelConsumableDeletion(rootView);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_consumable_management, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.delete_consumables:
@@ -294,15 +337,16 @@ public class ChaConsumablesFragment extends Fragment {
         private ConsumableAdapter adapter;
         private ConsumableListVM consumableListVM;
 
-        private ReorderConsumableAsyncTask(ConsumableAdapter adapter, ConsumableListVM consumableListVM) {
+        private ReorderConsumableAsyncTask(final ConsumableAdapter adapter,
+                                           final ConsumableListVM consumableListVM) {
             this.adapter = adapter;
             this.consumableListVM = consumableListVM;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(final Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                ConsumableModel consumableModel = adapter.getItemAt(i);
+                final ConsumableModel consumableModel = adapter.getItemAt(i);
                 consumableModel.setDisplayPosition(i);
             }
             consumableListVM.updateConsumables(adapter.getItemModels());

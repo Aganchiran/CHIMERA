@@ -36,22 +36,22 @@ public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.
 
     @NonNull
     @Override
-    public CampaignHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View itemView = LayoutInflater.from(parent.getContext())
+    public CampaignHolder onCreateViewHolder(@NonNull ViewGroup parent, final int position) {
+        final View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_campaign, parent, false);
         return new CampaignHolder(itemView);
     }
 
     @Override
-    public void onBindItemHolder(@NonNull CampaignHolder holder, int position) {
-        CampaignModel currentCampaign = getItemAt(position);
+    public void onBindItemHolder(@NonNull final CampaignHolder holder, final int position) {
+        final CampaignModel currentCampaign = getItemAt(position);
         holder.textViewName.setText(currentCampaign.getName());
     }
 
     class CampaignHolder extends ItemAdapter.ItemHolder {
         private TextView textViewName;
 
-        CampaignHolder(@NonNull View itemView) {
+        CampaignHolder(@NonNull final View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.campaign_name);
         }
@@ -65,15 +65,19 @@ public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.
         protected PopupMenu.OnMenuItemClickListener getPopupItemClickListener() {
             return new PopupMenu.OnMenuItemClickListener() {
                 @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
+                public boolean onMenuItemClick(final MenuItem menuItem) {
+                    final CampaignModel campaign = CampaignAdapter.this.getItemAt(
+                            CampaignHolder.this.getAdapterPosition());
+
                     switch (menuItem.getItemId()) {
                         case R.id.edit_campaign:
-                            menuActions.editCampaign(CampaignAdapter.this.getItemAt(
-                                    CampaignHolder.this.getAdapterPosition()));
+                            menuActions.editCampaign(campaign);
                             return true;
                         case R.id.open_map:
-                            menuActions.openMap(CampaignAdapter.this.getItemAt(
-                                    CampaignHolder.this.getAdapterPosition()));
+                            menuActions.openMap(campaign);
+                            return true;
+                        case R.id.delete_campaign:
+                            menuActions.deleteCampaign(campaign);
                             return true;
                         default:
                             return false;
@@ -83,13 +87,15 @@ public class CampaignAdapter extends ItemAdapter<CampaignModel, CampaignAdapter.
         }
     }
 
-    public void setMenuActions(MenuActions menuActions) {
+    public void setMenuActions(final MenuActions menuActions) {
         this.menuActions = menuActions;
     }
 
     public interface MenuActions {
-        void editCampaign(CampaignModel campaignModel);
+        void editCampaign(final CampaignModel campaignModel);
 
-        void openMap(CampaignModel campaignModel);
+        void openMap(final CampaignModel campaignModel);
+
+        void deleteCampaign(final CampaignModel campaignModel);
     }
 }

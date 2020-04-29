@@ -18,7 +18,9 @@
 
 package com.aganchiran.chimera.chimerafront.utils.views;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -96,17 +98,17 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
 
     private boolean firstTime = true;
 
-    public ZoomLayout(Context context) {
+    public ZoomLayout(final Context context) {
         super(context);
         init(context);
     }
 
-    public ZoomLayout(Context context, AttributeSet attrs) {
+    public ZoomLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ZoomLayout(Context context, AttributeSet attrs, int defStyle) {
+    public ZoomLayout(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -121,7 +123,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
             private int maxFingers = 0;
 
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(final View view, final MotionEvent motionEvent) {
 
                 switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
@@ -185,13 +187,13 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     // ScaleGestureDetector
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector scaleDetector) {
+    public boolean onScaleBegin(final ScaleGestureDetector scaleDetector) {
         Log.i(TAG, "onScaleBegin");
         return true;
     }
 
     @Override
-    public boolean onScale(ScaleGestureDetector scaleDetector) {
+    public boolean onScale(final ScaleGestureDetector scaleDetector) {
         float scaleFactor = scaleDetector.getScaleFactor();
         Log.i(TAG, "onScale" + scaleFactor);
         if (lastScaleFactor == 0 || (Math.signum(scaleFactor) == Math.signum(lastScaleFactor))) {
@@ -212,7 +214,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector scaleDetector) {
+    public void onScaleEnd(final ScaleGestureDetector scaleDetector) {
         Log.i(TAG, "onScaleEnd");
         mode = Mode.NONE;
     }
@@ -237,7 +239,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         return getChildAt(0);
     }
 
-    private void setupMap(Context context) {
+    private void setupMap(final Context context) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -252,7 +254,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         this.addView(child);
     }
 
-    private void createEvent(MotionEvent e) {
+    private void createEvent(final MotionEvent e) {
         boolean isRelLay = child() instanceof RelativeLayout;
         boolean oneFinger = e.getPointerCount() == 1;
         if (isRelLay && oneFinger) {
@@ -284,18 +286,18 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         }
     }
 
-    public int getMapXCoord(float xScreenPoint) {
+    public int getMapXCoord(final float xScreenPoint) {
         return (int) (offsetX + (xScreenPoint / scale) - (eventSize / 2));
     }
 
-    public int getMapYCoord(float yScreenPoint) {
+    public int getMapYCoord(final float yScreenPoint) {
         return (int) (offsetY + (yScreenPoint / scale) - (eventSize / 2));
     }
 
     public class DragEventListener implements View.OnDragListener {
 
         @Override
-        public boolean onDrag(View v, DragEvent event) {
+        public boolean onDrag(final View v, final DragEvent event) {
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_LOCATION:
                     break;
@@ -306,9 +308,9 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                             backgroundOffsetX,
                             backgroundOffsetY);
                     listener.onMoveEvent(fliyingEvent);
-                    fliyingEvent.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
+                    fliyingEvent.setVisibility(View.VISIBLE);
                     fliyingEvent = null;
                     break;
             }
@@ -320,17 +322,27 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         return fliyingEvent;
     }
 
-    public void deleteEvent(EventPoint eventPoint) {
-        eventMap.removeView(eventPoint.getNameTag());
-        eventMap.removeView(eventPoint);
-        events.remove(eventPoint);
+    public void deleteEvent(final EventPoint eventPoint) {
+        new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete_event))
+                .setMessage(getResources().getString(R.string.delete_event_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
 
-        if (listener != null) {
-            listener.onDeleteEvent(eventPoint);
-        }
+                        if (listener != null) {
+                            eventMap.removeView(eventPoint.getNameTag());
+                            eventMap.removeView(eventPoint);
+                            events.remove(eventPoint);
+                            listener.onDeleteEvent(eventPoint);
+                        }
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
-    public void setEvents(List<EventModel> eventModels) {
+    public void setEvents(final List<EventModel> eventModels) {
         firstTime = false;
         eventMap.removeAllViews();
         events.clear();
@@ -338,12 +350,12 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         for (final EventModel eventModel : eventModels) {
             final EventPoint eventPoint = new EventPoint(getContext(), new EventPoint.OnEventClickListener() {
                 @Override
-                public void onEventClick(EventPoint eventPoint) {
+                public void onEventClick(final EventPoint eventPoint) {
                     listener.onEventClick(eventPoint);
                 }
 
                 @Override
-                public void onDragStart(EventPoint eventPoint) {
+                public void onDragStart(final EventPoint eventPoint) {
                     fliyingEvent = eventPoint;
                 }
             });
@@ -363,7 +375,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         }
     }
 
-    public void updateEventName(EventModel eventModel) {
+    public void updateEventName(final EventModel eventModel) {
         for (final EventPoint eventPoint : events) {
             if (eventPoint.getId() == eventModel.getId()) {
                 eventPoint.setName(eventModel.getName());
@@ -372,19 +384,19 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         }
     }
 
-    public int getPXFromPercentageX(float percentageX) {
+    public int getPXFromPercentageX(final float percentageX) {
         return (int) (imageBoundaries.x * percentageX);
     }
 
-    public int getPXFromPercentageY(float percentageY) {
+    public int getPXFromPercentageY(final float percentageY) {
         return (int) (imageBoundaries.y * percentageY);
     }
 
-    public float getPercenageXFromPX(int px) {
+    public float getPercenageXFromPX(final int px) {
         return (float) px / imageBoundaries.x;
     }
 
-    public float getPercenageYFromPX(int px) {
+    public float getPercenageYFromPX(final int px) {
         return (float) px / imageBoundaries.y;
     }
 
@@ -408,7 +420,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
                 .centerInside()
                 .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    public void onResourceReady(@NonNull final Bitmap resource, @Nullable final Transition<? super Bitmap> transition) {
                         final int width = resource.getWidth();
                         final int height = resource.getHeight();
                         backgroundImage.setImageBitmap(resource);
@@ -434,7 +446,7 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
     }
 
     public void setDefaultImage() {
-        BitmapFactory.Options dimensions = new BitmapFactory.Options();
+        final BitmapFactory.Options dimensions = new BitmapFactory.Options();
         dimensions.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.no_map, dimensions);
         final int height = dimensions.outHeight;
@@ -454,9 +466,9 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         backgroundImage.setImageResource(R.drawable.no_map);
     }
 
-    private void recalculateOffsets(int imageWidth, int imageHeight) {
-        float imageAspect = imageWidth / (float) imageHeight;
-        float mapAspect = eventMap.getWidth() / (float) eventMap.getHeight();
+    private void recalculateOffsets(final int imageWidth, final int imageHeight) {
+        final float imageAspect = imageWidth / (float) imageHeight;
+        final float mapAspect = eventMap.getWidth() / (float) eventMap.getHeight();
         imageBoundaries = new Point(0, 0);
 
         if (imageAspect > mapAspect) {
@@ -485,17 +497,17 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         }
     }
 
-    public void setListener(OnItemClickListener listener) {
+    public void setListener(final OnItemClickListener listener) {
         this.listener = listener;
     }
 
     public interface OnItemClickListener {
-        void onCreateEvent(EventPoint eventPoint);
+        void onCreateEvent(final EventPoint eventPoint);
 
-        void onDeleteEvent(EventPoint eventPoint);
+        void onDeleteEvent(final EventPoint eventPoint);
 
-        void onMoveEvent(EventPoint eventPoint);
+        void onMoveEvent(final EventPoint eventPoint);
 
-        void onEventClick(EventPoint eventPoint);
+        void onEventClick(final EventPoint eventPoint);
     }
 }

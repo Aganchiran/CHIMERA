@@ -35,7 +35,7 @@ import com.bumptech.glide.Glide;
 
 public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapter.CharacterHolder> {
 
-    private MenuActions menuActions;
+    protected MenuActions menuActions;
 
     @NonNull
     @Override
@@ -89,6 +89,9 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
                         case R.id.duplicate_character:
                             menuActions.duplicateCharacter(character);
                             return true;
+                        case R.id.delete_character:
+                            menuActions.deleteCharacter(character);
+                            return true;
                         default:
                             return false;
                     }
@@ -103,7 +106,10 @@ public class CharacterAdapter extends ItemAdapter<CharacterModel, CharacterAdapt
 
     public interface MenuActions {
         void editCharacter(final CharacterModel characterModel);
+
         void duplicateCharacter(final CharacterModel characterModel);
+
+        void deleteCharacter(final CharacterModel characterModel);
     }
 
 }

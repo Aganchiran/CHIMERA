@@ -18,9 +18,11 @@
 
 package com.aganchiran.chimera.chimerafront.fragments;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -49,8 +51,8 @@ import com.aganchiran.chimera.chimerafront.activities.CombatSelectionActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCombatDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.chimerafront.utils.adapters.CombatAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.AbstractDropToListener;
 import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.viewmodels.EventCombatsListVM;
 
 import java.util.ArrayList;
@@ -82,34 +84,33 @@ public class EventCombatsFragment extends Fragment {
     public EventCombatsFragment() {
     }
 
-    public static EventCombatsFragment newInstance(EventModel eventModel) {
-        EventCombatsFragment fragment = new EventCombatsFragment();
-        Bundle args = new Bundle();
+    public static EventCombatsFragment newInstance(final EventModel eventModel) {
+        final EventCombatsFragment fragment = new EventCombatsFragment();
+        final Bundle args = new Bundle();
         args.putSerializable(ARG_EVENT_MODEL, eventModel);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_combat_list, container, false);
         eventCombatsListVM = ViewModelProviders.of(this).get(EventCombatsListVM.class);
 
         assert getArguments() != null;
-        final EventModel eventModel = (EventModel) getArguments()
-                .getSerializable(ARG_EVENT_MODEL);
+        final EventModel eventModel = (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
 
         if (eventModel != null) {
             eventCombatsListVM.setEventModel(eventModel);
 
-            LiveData<List<CombatModel>> combatListLiveData =
+            final LiveData<List<CombatModel>> combatListLiveData =
                     eventCombatsListVM.getCombatsForEvent(eventModel.getId());
             final RecyclerView recyclerView =
                     rootView.findViewById(R.id.combat_recycler_view);
@@ -119,8 +120,9 @@ public class EventCombatsFragment extends Fragment {
 
         setupButtons(rootView);
 
-        final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, eventCombatsListVM) {
+        final ImageView unlinkArea = rootView.findViewById(R.id.delete_area);
+        unlinkArea.setImageResource(R.drawable.ic_unlink);
+        unlinkArea.setOnDragListener(new AbstractDropToListener() {
             @Override
             protected void onDrop() {
                 if (adapter.getFlyingItemPos() != -1) {
@@ -133,12 +135,12 @@ public class EventCombatsFragment extends Fragment {
         return rootView;
     }
 
-    private void setupGrid(LiveData<List<CombatModel>> data, RecyclerView recyclerView) {
+    private void setupGrid(final LiveData<List<CombatModel>> data, final RecyclerView recyclerView) {
         final View combatCard = getLayoutInflater().inflate(R.layout.item_combat, null);
         final View combatLayout = combatCard.findViewById(R.id.combat_item_layout);
-        int combatWidth = SizeUtil.getViewWidth(combatLayout);
-        int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / combatWidth;
+        final int combatWidth = SizeUtil.getViewWidth(combatLayout);
+        final int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
+        final int columnNumber = screenWidth / combatWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
@@ -171,17 +173,32 @@ public class EventCombatsFragment extends Fragment {
                 assert getFragmentManager() != null;
                 dialog.show(getFragmentManager(), "edit combat");
             }
+
+            @Override
+            public void deleteCombat(final CombatModel combatModel) {
+                new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                        .setTitle(getResources().getString(R.string.delete) + " " + combatModel.getName())
+                        .setMessage(getResources().getString(R.string.delete_combat_confirmation))
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                eventCombatsListVM.delete(combatModel);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.setOnDragListener(new DragItemListener(adapter) {
             @Override
-            protected void onDrop(View hiddenView) {
+            protected void onDrop(final View hiddenView) {
                 super.onDrop(hiddenView);
                 final LiveData<List<EventCombat>> ecs = eventCombatsListVM.getECsForEvent(eventCombatsListVM.getEventModel().getId());
                 ecs.observe(getActivity(), new Observer<List<EventCombat>>() {
                     @Override
-                    public void onChanged(@Nullable List<EventCombat> eventCharacters) {
+                    public void onChanged(@Nullable final List<EventCombat> eventCharacters) {
                         reorderCombats(eventCharacters);
                         ecs.removeObserver(this);
                     }
@@ -191,7 +208,7 @@ public class EventCombatsFragment extends Fragment {
 
         data.observe(this, new Observer<List<CombatModel>>() {
             @Override
-            public void onChanged(@Nullable List<CombatModel> combatModels) {
+            public void onChanged(@Nullable final List<CombatModel> combatModels) {
                 adapter.setItemModels(combatModels);
             }
         });
@@ -215,58 +232,59 @@ public class EventCombatsFragment extends Fragment {
         });
         addCombatButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 createCombatDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
-        acceptDeletion.setOnClickListener(new View.OnClickListener() {
+        final Button acceptUnlink = rootView.findViewById(R.id.delete_button);
+        acceptUnlink.setText(R.string.unlink);
+        acceptUnlink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                for (CombatModel combatModel : adapter.getCheckedItemModels()) {
+            public void onClick(final View view) {
+                for (final CombatModel combatModel : adapter.getCheckedItemModels()) {
 
                     assert getArguments() != null;
-                    EventModel eventModel = (EventModel) getArguments()
-                            .getSerializable(ARG_EVENT_MODEL);
+                    final EventModel eventModel =
+                            (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
                     assert eventModel != null;
                     eventCombatsListVM.unlinkCombat(combatModel.getId());
                 }
-                cancelCombatDeletion(rootView);
+                cancelCombatUnlink(rootView);
             }
         });
 
-        Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
+        final Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                cancelCombatDeletion(rootView);
+            public void onClick(final View view) {
+                cancelCombatUnlink(rootView);
             }
         });
     }
 
-    private void cancelCombatDeletion(View rootView) {
+    private void cancelCombatUnlink(final View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addCombatButton.show();
     }
 
-    private void createCombat(String name) {
+    private void createCombat(final String name) {
         assert getArguments() != null;
-        EventModel eventModel =
+        final EventModel eventModel =
                 (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
 
         assert eventModel != null;
-        CombatModel combatModel = new CombatModel(name, eventModel.getCampaignId());
+        final CombatModel combatModel = new CombatModel(name, eventModel.getCampaignId());
         eventCombatsListVM.insert(combatModel);
     }
 
     private void createCombatDialog() {
-        CreateEditCombatDialog dialog = new CreateEditCombatDialog();
+        final CreateEditCombatDialog dialog = new CreateEditCombatDialog();
         dialog.setListener(new CreateEditCombatDialog.CreateCombatDialogListener() {
 
             @Override
-            public void saveCombat(String name) {
+            public void saveCombat(final String name) {
                 createCombat(name);
             }
 
@@ -279,8 +297,8 @@ public class EventCombatsFragment extends Fragment {
         dialog.show(getFragmentManager(), "create combat");
     }
 
-    private void reorderCombats(List<EventCombat> eventCharacters) {
-        Map<Integer, EventCombat> ecMap = new HashMap<>();
+    private void reorderCombats(final List<EventCombat> eventCharacters) {
+        final Map<Integer, EventCombat> ecMap = new HashMap<>();
         for (final EventCombat ec : eventCharacters) {
             ecMap.put(ec.getCombatId(), ec);
         }
@@ -293,13 +311,13 @@ public class EventCombatsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_event_combat_management, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.select_combats:
@@ -310,7 +328,7 @@ public class EventCombatsFragment extends Fragment {
                 }
                 return true;
             case R.id.link_combats:
-                Intent intent = new Intent(getActivity(), CombatSelectionActivity.class);
+                final Intent intent = new Intent(getActivity(), CombatSelectionActivity.class);
                 intent.putExtra("SELECTION_SCREEN", true);
                 intent.putExtra("CAMPAIGN", eventCombatsListVM.getEventModel().getCampaignId());
                 startActivityForResult(intent, ADD_COMBATS);
@@ -324,17 +342,19 @@ public class EventCombatsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_COMBATS && resultCode == RESULT_OK) {
 
             final List<CombatModel> combatsToAdd
                     = (List<CombatModel>) data.getSerializableExtra("COMBATS");
             final ArrayList<Integer> combatsIds = new ArrayList<>();
-            for (CombatModel c : combatsToAdd) {
+            for (final CombatModel c : combatsToAdd) {
                 combatsIds.add(c.getId());
             }
             eventCombatsListVM.linkCombats(combatsIds);
+
         }
     }
+
 }

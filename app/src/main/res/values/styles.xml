@@ -33,7 +33,10 @@
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/backgroundLightColor</item>
+        <item name="android:windowBackground">@color/backgroundLightColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="colorAccent">@color/contrastColor</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="@android:style/Theme.Holo.Light">

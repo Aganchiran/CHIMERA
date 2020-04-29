@@ -33,7 +33,7 @@ import com.aganchiran.chimera.chimeracore.consumable.ConsumableModel;
 
 public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAdapter.ConsumableHolder> {
 
-    private SaveConsumable saveConsumable;
+    private MenuActions menuActions;
 
     @NonNull
     @Override
@@ -75,11 +75,16 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
             return new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
+                    final ConsumableModel consumable = ConsumableAdapter.this
+                            .getItemAt(ConsumableHolder.this.getAdapterPosition());
+
                     switch (menuItem.getItemId()) {
                         case R.id.edit_consumable:
-                            final ConsumableModel consumable = ConsumableAdapter.this
-                                    .getItemAt(ConsumableHolder.this.getAdapterPosition());
-                            saveConsumable.perform(consumable);
+
+                            menuActions.editConsumable(consumable);
+                            return true;
+                        case R.id.delete_consumable:
+                            menuActions.deleteConsumable(consumable);
                             return true;
                         default:
                             return false;
@@ -89,16 +94,17 @@ public class ConsumableAdapter extends ItemAdapter<ConsumableModel, ConsumableAd
         }
     }
 
-    private SaveConsumable getSaveConsumable() {
-        return saveConsumable;
+    private MenuActions getMenuActions() {
+        return menuActions;
     }
 
-    public void setSaveConsumable(SaveConsumable saveConsumable) {
-        this.saveConsumable = saveConsumable;
+    public void setMenuActions(MenuActions menuActions) {
+        this.menuActions = menuActions;
     }
 
-    public interface SaveConsumable {
-        void perform(ConsumableModel consumableModel);
+    public interface MenuActions {
+        void editConsumable(final ConsumableModel consumableModel);
+        void deleteConsumable(final ConsumableModel consumableModel);
     }
 
 }

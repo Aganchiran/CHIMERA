@@ -36,22 +36,22 @@ public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.Combat
 
     @NonNull
     @Override
-    public CombatHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View itemView = LayoutInflater.from(parent.getContext())
+    public CombatHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int position) {
+        final View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_combat, parent, false);
         return new CombatHolder(itemView);
     }
 
     @Override
-    public void onBindItemHolder(@NonNull CombatHolder holder, int position) {
-        CombatModel currentCombat = getItemAt(position);
+    public void onBindItemHolder(@NonNull final CombatHolder holder, final int position) {
+        final CombatModel currentCombat = getItemAt(position);
         holder.textViewName.setText(currentCombat.getName());
     }
 
     class CombatHolder extends ItemAdapter.ItemHolder {
         private TextView textViewName;
 
-        CombatHolder(@NonNull View itemView) {
+        CombatHolder(@NonNull final View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.combat_name);
         }
@@ -66,10 +66,15 @@ public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.Combat
             return new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
+                    final CombatModel combat =
+                            CombatAdapter.this.getItemAt(CombatHolder.this.getAdapterPosition());
+
                     switch (menuItem.getItemId()) {
                         case R.id.edit_combat:
-                            menuActions.editCombat(CombatAdapter.this.getItemAt(
-                                    CombatHolder.this.getAdapterPosition()));
+                            menuActions.editCombat(combat);
+                            return true;
+                        case R.id.delete_combat:
+                            menuActions.deleteCombat(combat);
                             return true;
                         default:
                             return false;
@@ -79,11 +84,13 @@ public class CombatAdapter extends ItemAdapter<CombatModel, CombatAdapter.Combat
         }
     }
 
-    public void setMenuActions(MenuActions menuActions) {
+    public void setMenuActions(final MenuActions menuActions) {
         this.menuActions = menuActions;
     }
 
     public interface MenuActions {
-        void editCombat(CombatModel combatModel);
+        void editCombat(final CombatModel combatModel);
+
+        void deleteCombat(final CombatModel combatModel);
     }
 }

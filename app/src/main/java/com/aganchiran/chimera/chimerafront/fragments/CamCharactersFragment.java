@@ -18,9 +18,11 @@
 
 package com.aganchiran.chimera.chimerafront.fragments;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,8 +51,8 @@ import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
 import com.aganchiran.chimera.chimerafront.utils.adapters.CharacterAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.AbstractDropToListener;
 import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.viewmodels.CampaignCharactersListVM;
 
 import java.util.List;
@@ -77,8 +79,8 @@ public class CamCharactersFragment extends Fragment {
     }
 
     public static CamCharactersFragment newInstance(final CampaignModel campaignModel) {
-        CamCharactersFragment fragment = new CamCharactersFragment();
-        Bundle args = new Bundle();
+        final CamCharactersFragment fragment = new CamCharactersFragment();
+        final Bundle args = new Bundle();
         args.putSerializable(ARG_CAMPAIGN_MODEL, campaignModel);
         fragment.setArguments(args);
         return fragment;
@@ -97,7 +99,7 @@ public class CamCharactersFragment extends Fragment {
         camChaListVM = ViewModelProviders.of(this).get(CampaignCharactersListVM.class);
 
         assert getArguments() != null;
-        CampaignModel campaignModel = (CampaignModel) getArguments()
+        final CampaignModel campaignModel = (CampaignModel) getArguments()
                 .getSerializable(ARG_CAMPAIGN_MODEL);
 
         final LiveData<List<CharacterModel>> characterListLiveData;
@@ -115,7 +117,15 @@ public class CamCharactersFragment extends Fragment {
         setupButtons(rootView);
 
         final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, camChaListVM));
+        deleteArea.setOnDragListener(new AbstractDropToListener() {
+            @Override
+            protected void onDrop() {
+                if (adapter.getFlyingItemPos() != -1) {
+                    final CharacterModel characterModel = adapter.getItemAt(adapter.getFlyingItemPos());
+                    deleteCharacter(characterModel);
+                }
+            }
+        });
 
         return rootView;
     }
@@ -123,9 +133,9 @@ public class CamCharactersFragment extends Fragment {
     private void setupGrid(final LiveData<List<CharacterModel>> data, final RecyclerView recyclerView) {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
-        int characterWidth = SizeUtil.getViewWidth(characterLayout);
-        int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / characterWidth;
+        final int characterWidth = SizeUtil.getViewWidth(characterLayout);
+        final int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
+        final int columnNumber = screenWidth / characterWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
@@ -134,7 +144,7 @@ public class CamCharactersFragment extends Fragment {
         adapter.setListener(new CharacterAdapter.OnItemClickListener<CharacterModel>() {
             @Override
             public void onItemClick(final CharacterModel characterModel) {
-                Intent intent = new Intent(getActivity(), CharacterProfileActivity.class);
+                final Intent intent = new Intent(getActivity(), CharacterProfileActivity.class);
                 intent.putExtra("CHARACTER", characterModel);
                 startActivity(intent);
             }
@@ -142,10 +152,10 @@ public class CamCharactersFragment extends Fragment {
         adapter.setMenuActions(new CharacterAdapter.MenuActions() {
             @Override
             public void editCharacter(final CharacterModel character) {
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+                final CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(String newName, String newDescription, String image) {
+                    public void saveCharacter(final String newName, final String newDescription, final String image) {
                         character.setName(newName);
                         character.setDescription(newDescription);
                         character.setImage(image);
@@ -174,6 +184,11 @@ public class CamCharactersFragment extends Fragment {
                         characterConsumableLD.removeObserver(this);
                     }
                 });
+            }
+
+            @Override
+            public void deleteCharacter(final CharacterModel characterModel) {
+                CamCharactersFragment.this.deleteCharacter(characterModel);
             }
         });
 
@@ -212,56 +227,53 @@ public class CamCharactersFragment extends Fragment {
         });
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 createCharacterDialog();
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
+        final Button acceptDeletion = rootView.findViewById(R.id.delete_button);
         acceptDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                for (CharacterModel characterModel : adapter.getCheckedItemModels()) {
-                    camChaListVM.delete(characterModel);
-                }
-                cancelCharacterDeletion(rootView);
+            public void onClick(final View view) {
+                deleteCharacters();
             }
         });
 
-        Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
+        final Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
         cancelDeletion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 cancelCharacterDeletion(rootView);
             }
         });
     }
 
-    private void cancelCharacterDeletion(View rootView) {
+    private void cancelCharacterDeletion(final View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addCharacterButton.show();
     }
 
-    private void createCharacter(String name, String description, String image) {
+    private void createCharacter(final String name, final String description, final String image) {
         assert getArguments() != null;
-        CampaignModel campaignModel =
+        final CampaignModel campaignModel =
                 (CampaignModel) getArguments().getSerializable(ARG_CAMPAIGN_MODEL);
 
         Integer campaignId = null;
         if (campaignModel != null) {
             campaignId = campaignModel.getId();
         }
-        CharacterModel characterModel = new CharacterModel(name, description, campaignId);
+        final CharacterModel characterModel = new CharacterModel(name, description, campaignId);
         characterModel.setImage(image);
         camChaListVM.insert(characterModel);
     }
 
     private void createCharacterDialog() {
-        CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+        final CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
         dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
             @Override
-            public void saveCharacter(String name, String description, String image) {
+            public void saveCharacter(final String name, final String description, final String image) {
                 createCharacter(name, description, image);
             }
 
@@ -274,14 +286,45 @@ public class CamCharactersFragment extends Fragment {
         dialog.show(getFragmentManager(), "create character");
     }
 
+    private void deleteCharacter(final CharacterModel characterModel){
+        new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete) + " " + characterModel.getName())
+                .setMessage(getResources().getString(R.string.delete_character_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        camChaListVM.delete(characterModel);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteCharacters(){
+        new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.delete_characters))
+                .setMessage(getResources().getString(R.string.delete_characters_confirmation))
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        for (final CharacterModel characterModel : adapter.getCheckedItemModels()) {
+                            camChaListVM.delete(characterModel);
+                        }
+                        cancelCharacterDeletion(rootView);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_character_management, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.select_characters:
@@ -304,15 +347,15 @@ public class CamCharactersFragment extends Fragment {
         private CharacterAdapter adapter;
         private CampaignCharactersListVM camChaListVM;
 
-        private ReorderCharacterAsyncTask(CharacterAdapter adapter, CampaignCharactersListVM camChaListVM) {
+        private ReorderCharacterAsyncTask(final CharacterAdapter adapter, final CampaignCharactersListVM camChaListVM) {
             this.adapter = adapter;
             this.camChaListVM = camChaListVM;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(final Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                CharacterModel characterModel = adapter.getItemAt(i);
+                final CharacterModel characterModel = adapter.getItemAt(i);
                 characterModel.setDisplayPosition(i);
             }
             camChaListVM.updateCharacters(adapter.getItemModels());

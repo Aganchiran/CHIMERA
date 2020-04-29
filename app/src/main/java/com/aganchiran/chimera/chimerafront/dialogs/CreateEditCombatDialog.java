@@ -68,7 +68,7 @@ public class CreateEditCombatDialog extends AppCompatDialogFragment {
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 final String name = editTextName.getText().toString();
 
                 if (name.trim().isEmpty()) {

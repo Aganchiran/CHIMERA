@@ -18,9 +18,11 @@
 
 package com.aganchiran.chimera.chimerafront.fragments;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,9 +52,9 @@ import com.aganchiran.chimera.chimerafront.activities.CharacterProfileActivity;
 import com.aganchiran.chimera.chimerafront.activities.CharacterSelectionActivity;
 import com.aganchiran.chimera.chimerafront.dialogs.CreateEditCharacterDialog;
 import com.aganchiran.chimera.chimerafront.utils.SizeUtil;
-import com.aganchiran.chimera.chimerafront.utils.adapters.CharacterAdapter;
+import com.aganchiran.chimera.chimerafront.utils.adapters.EventCharacterAdapter;
+import com.aganchiran.chimera.chimerafront.utils.listeners.AbstractDropToListener;
 import com.aganchiran.chimera.chimerafront.utils.listeners.DragItemListener;
-import com.aganchiran.chimera.chimerafront.utils.listeners.DropToDeleteRecyclerListener;
 import com.aganchiran.chimera.viewmodels.EventCharactersListVM;
 
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class EventCharactersFragment extends Fragment {
 
     private FloatingActionButton addCharacterButton;
     private EventCharactersListVM eventChaListVM;
-    private CharacterAdapter adapter;
+    private EventCharacterAdapter adapter;
 
     private static final String ARG_EVENT_MODEL = "event_model";
     private View rootView;
@@ -111,7 +113,7 @@ public class EventCharactersFragment extends Fragment {
         if (eventModel != null) {
             eventChaListVM.setEventModel(eventModel);
 
-            LiveData<List<CharacterModel>> characterListLiveData =
+            final LiveData<List<CharacterModel>> characterListLiveData =
                     eventChaListVM.getCharactersForEvent(eventModel.getId());
             final RecyclerView recyclerView =
                     rootView.findViewById(R.id.character_recycler_view);
@@ -121,8 +123,9 @@ public class EventCharactersFragment extends Fragment {
 
         setupButtons(rootView);
 
-        final ImageView deleteArea = rootView.findViewById(R.id.delete_area);
-        deleteArea.setOnDragListener(new DropToDeleteRecyclerListener(adapter, eventChaListVM) {
+        final ImageView unlinkArea = rootView.findViewById(R.id.delete_area);
+        unlinkArea.setImageResource(R.drawable.ic_unlink);
+        unlinkArea.setOnDragListener(new AbstractDropToListener() {
             @Override
             protected void onDrop() {
                 if (adapter.getFlyingItemPos() != -1) {
@@ -138,29 +141,35 @@ public class EventCharactersFragment extends Fragment {
     private void setupGrid(final LiveData<List<CharacterModel>> data, final RecyclerView recyclerView) {
         final View characterCard = getLayoutInflater().inflate(R.layout.item_character, null);
         final View characterLayout = characterCard.findViewById(R.id.character_item_layout);
-        int characterWidth = SizeUtil.getViewWidth(characterLayout);
-        int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
-        int columnNumber = screenWidth / characterWidth;
+        final int characterWidth = SizeUtil.getViewWidth(characterLayout);
+        final int screenWidth = SizeUtil.getScreenWidth(Objects.requireNonNull(getContext()));
+        final int columnNumber = screenWidth / characterWidth;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnNumber));
         recyclerView.setHasFixedSize(true);
 
-        adapter = new CharacterAdapter();
-        adapter.setListener(new CharacterAdapter.OnItemClickListener<CharacterModel>() {
+        adapter = new EventCharacterAdapter();
+        adapter.setListener(new EventCharacterAdapter.OnItemClickListener<CharacterModel>() {
             @Override
             public void onItemClick(final CharacterModel characterModel) {
-                Intent intent = new Intent(getActivity(), CharacterProfileActivity.class);
+                final Intent intent = new Intent(getActivity(), CharacterProfileActivity.class);
                 intent.putExtra("CHARACTER", characterModel);
                 startActivity(intent);
             }
         });
-        adapter.setMenuActions(new CharacterAdapter.MenuActions() {
+        adapter.setMenuActions(new EventCharacterAdapter.EventMenuActions() {
+            @Override
+            public void unlinkCharacter(final CharacterModel characterModel) {
+                eventChaListVM.unlinkCharacter(characterModel.getId());
+            }
+
             @Override
             public void editCharacter(final CharacterModel character) {
-                CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+                final CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
                 dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
                     @Override
-                    public void saveCharacter(final String newName, final String newDescription, final String image) {
+                    public void saveCharacter(final String newName, final String newDescription,
+                                              final String image) {
                         character.setName(newName);
                         character.setDescription(newDescription);
                         character.setImage(image);
@@ -189,6 +198,21 @@ public class EventCharactersFragment extends Fragment {
                         characterConsumableLD.removeObserver(this);
                     }
                 });
+            }
+
+            @Override
+            public void deleteCharacter(final CharacterModel characterModel) {
+                new AlertDialog.Builder(getContext(), R.style.DialogTheme)
+                        .setTitle(getResources().getString(R.string.delete) + " " + characterModel.getName())
+                        .setMessage(getResources().getString(R.string.delete_character_confirmation))
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                eventChaListVM.delete(characterModel);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
             }
         });
 
@@ -240,32 +264,33 @@ public class EventCharactersFragment extends Fragment {
             }
         });
 
-        Button acceptDeletion = rootView.findViewById(R.id.delete_button);
-        acceptDeletion.setOnClickListener(new View.OnClickListener() {
+        final Button acceptUnlink = rootView.findViewById(R.id.delete_button);
+        acceptUnlink.setText(R.string.unlink);
+        acceptUnlink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 for (CharacterModel characterModel : adapter.getCheckedItemModels()) {
 
                     assert getArguments() != null;
-                    EventModel eventModel = (EventModel) getArguments()
+                    final EventModel eventModel = (EventModel) getArguments()
                             .getSerializable(ARG_EVENT_MODEL);
                     assert eventModel != null;
                     eventChaListVM.unlinkCharacter(characterModel.getId());
                 }
-                cancelCharacterDeletion(rootView);
+                cancelCharacterUnlink(rootView);
             }
         });
 
-        Button cancelDeletion = rootView.findViewById(R.id.cancel_button);
-        cancelDeletion.setOnClickListener(new View.OnClickListener() {
+        final Button cancelUnlink = rootView.findViewById(R.id.cancel_button);
+        cancelUnlink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                cancelCharacterDeletion(rootView);
+                cancelCharacterUnlink(rootView);
             }
         });
     }
 
-    private void cancelCharacterDeletion(final View rootView) {
+    private void cancelCharacterUnlink(final View rootView) {
         adapter.disableSelectMode();
         rootView.findViewById(R.id.deletion_interface).setLayoutParams(INVISIBLE);
         addCharacterButton.show();
@@ -273,17 +298,17 @@ public class EventCharactersFragment extends Fragment {
 
     private void createCharacter(final String name, final String description, final String image) {
         assert getArguments() != null;
-        EventModel eventModel =
+        final EventModel eventModel =
                 (EventModel) getArguments().getSerializable(ARG_EVENT_MODEL);
 
         assert eventModel != null;
-        CharacterModel characterModel = new CharacterModel(name, description, eventModel.getCampaignId());
+        final CharacterModel characterModel = new CharacterModel(name, description, eventModel.getCampaignId());
         characterModel.setImage(image);
         eventChaListVM.insert(characterModel);
     }
 
     private void createCharacterDialog() {
-        CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
+        final CreateEditCharacterDialog dialog = new CreateEditCharacterDialog();
         dialog.setListener(new CreateEditCharacterDialog.CreateCharacterDialogListener() {
             @Override
             public void saveCharacter(final String name, final String description, final String image) {
@@ -300,7 +325,7 @@ public class EventCharactersFragment extends Fragment {
     }
 
     private void reorderCharacters(final List<EventCharacter> eventCharacters) {
-        Map<Integer, EventCharacter> ecMap = new HashMap<>();
+        final Map<Integer, EventCharacter> ecMap = new HashMap<>();
         for (final EventCharacter ec : eventCharacters) {
             ecMap.put(ec.getCharacterId(), ec);
         }
@@ -360,10 +385,10 @@ public class EventCharactersFragment extends Fragment {
     }
 
     private static class ReorderCharacterAsyncTask extends AsyncTask<Void, Void, Void> {
-        private CharacterAdapter adapter;
+        private EventCharacterAdapter adapter;
         private EventCharactersListVM eventCharactersListVM;
 
-        private ReorderCharacterAsyncTask(CharacterAdapter adapter, EventCharactersListVM eventCharactersListVM) {
+        private ReorderCharacterAsyncTask(final EventCharacterAdapter adapter, final EventCharactersListVM eventCharactersListVM) {
             this.adapter = adapter;
             this.eventCharactersListVM = eventCharactersListVM;
         }
@@ -371,7 +396,7 @@ public class EventCharactersFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < adapter.getItemCount(); i++) {
-                CharacterModel characterModel = adapter.getItemAt(i);
+                final CharacterModel characterModel = adapter.getItemAt(i);
                 characterModel.setDisplayPosition(i);
             }
             eventCharactersListVM.updateCharacters(adapter.getItemModels());

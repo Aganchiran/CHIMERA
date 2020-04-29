@@ -27,4 +27,9 @@
         android:id="@+id/open_map"
         android:title="@string/open_event_map"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_campaign"
+        android:title="@string/delete_campaign"
+        app:showAsAction="never" />
 </menu>

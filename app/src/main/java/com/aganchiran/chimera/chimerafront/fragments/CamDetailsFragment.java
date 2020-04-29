@@ -106,7 +106,7 @@ public class CamDetailsFragment extends Fragment {
                         }
                         eventMapButton.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) {
+                            public void onClick(final View v) {
                                 openEventMap();
                             }
                         });

@@ -71,7 +71,7 @@ public class CreateEditCampaignDialog extends AppCompatDialogFragment {
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 final String name = editTextName.getText().toString();
                 final String description = editTextDescription.getText().toString();
 

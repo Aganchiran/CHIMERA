@@ -74,7 +74,7 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
         imageView = view.findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 changeImage();
             }
         });
@@ -114,7 +114,7 @@ public class CreateEditCharacterDialog extends AppCompatDialogFragment {
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 final String name = editTextName.getText().toString();
                 String description = editTextDescription.getText().toString();
 

@@ -88,7 +88,7 @@ public class CombatSelectionActivity extends ActivityWithUpperBar {
         Button acceptSelection = findViewById(R.id.select_button);
         acceptSelection.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 sendSelectedCombats();
             }
         });
@@ -96,7 +96,7 @@ public class CombatSelectionActivity extends ActivityWithUpperBar {
         Button cancelSelection = findViewById(R.id.cancel_button);
         cancelSelection.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 setResult(RESULT_CANCELED);
                 finish();
             }

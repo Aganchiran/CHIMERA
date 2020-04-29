@@ -60,6 +60,7 @@
     <string name="change_map">Change map</string>
     <string name="new_campaign">New campaign</string>
     <string name="delete">Delete</string>
+    <string name="unlink">Unlink</string>
     <string name="open_event_map">Open event map</string>
     <string name="new_character">New character</string>
     <string name="new_combat">New combat</string>
@@ -73,4 +74,23 @@
     <string name="create_combat">Create combat</string>
     <string name="create_consumable">Create consumable</string>
     <string name="duplicate_character">Duplicate character</string>
+    <string name="delete_character">Delete character</string>
+    <string name="delete_characters">Delete characters</string>
+    <string name="delete_combat">Delete combat</string>
+    <string name="delete_combats">Delete combats</string>
+    <string name="delete_campaign">Delete campaign</string>
+    <string name="delete_campaigns">Delete campaigns</string>
+    <string name="delete_consumable">Delete consumable</string>
+    <string name="delete_consumables">Delete consumables</string>
+    <string name="delete_event">Delete event</string>
+    <string name="unlink_character">Unlink character</string>
+    <string name="delete_campaign_confirmation">Are you sure you want to delete permanently this campaign?</string>
+    <string name="delete_campaigns_confirmation">Are you sure you want to delete permanently these campaigns?</string>
+    <string name="delete_character_confirmation">Are you sure you want to delete permanently this character?</string>
+    <string name="delete_characters_confirmation">Are you sure you want to delete permanently these characters?</string>
+    <string name="delete_combat_confirmation">Are you sure you want to delete permanently this combat?</string>
+    <string name="delete_combats_confirmation">Are you sure you want to delete permanently these combats?</string>
+    <string name="delete_event_confirmation">Are you sure you want to delete permanently this event?</string>
+    <string name="delete_consumable_confirmation">Are you sure you want to delete permanently this consumable?</string>
+    <string name="delete_consumables_confirmation">Are you sure you want to delete permanently these consumables?</string>
 </resources>

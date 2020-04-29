@@ -104,7 +104,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
         addBttn = view.findViewById(R.id.add_bttn);
         substractBttn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 long newValue = Long.parseLong(textValue.getText().toString()) - getValueNP();
                 if (newValue < minValue) {
                     newValue = minValue;
@@ -118,7 +118,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
         });
         addBttn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 long newValue = Long.parseLong(textValue.getText().toString()) + getValueNP();
                 if (newValue > maxValue) {
                     newValue = maxValue;
@@ -138,7 +138,7 @@ public class ModifyConsumableDialog extends AppCompatDialogFragment {
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(final DialogInterface dialog, int which) {
                         final long value = Long.parseLong(textValue.getText().toString());
                         listener.saveValue(value);
                     }

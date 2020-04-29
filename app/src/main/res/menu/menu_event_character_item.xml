@@ -29,7 +29,13 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/unlink_character"
+        android:title="@string/unlink_character"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/delete_character"
         android:title="@string/delete_character"
         app:showAsAction="never" />
+
 </menu>
